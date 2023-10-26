@@ -6,6 +6,7 @@
 from flask import request, session, make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
+from marshmallow import fields
 
 # Local imports
 from config import app, db, api, ma, CORS
@@ -14,26 +15,6 @@ from models import *
 
 # Views go here!
 CORS(app)
-
-
-
-class CustomerSchema(ma.SQLAlchemySchema):
-
-    class Meta:
-        model = Customer
-        load_instance = True
-
-    id = ma.auto_field()
-    first_name = ma.auto_field()
-    last_name = ma.auto_field()
-    email = ma.auto_field()
-    phone_number = ma.auto_field()
-    billing_address_id = ma.auto_field()
-    shipping_address_id = ma.auto_field()
-    _password_hash = ma.auto_field()
-
-customer_schema = CustomerSchema()
-customers_schema = CustomerSchema(many=True)
 
 class AddressSchema(ma.SQLAlchemySchema):
 
@@ -50,14 +31,31 @@ class AddressSchema(ma.SQLAlchemySchema):
 address_schema = AddressSchema()
 addresses_schema = AddressSchema(many=True)
 
-class ItemSchema(ma.SQLAlchemySchema):
+class CustomerSchema(ma.SQLAlchemySchema):
 
+    class Meta:
+        model = Customer
+        load_instance = True
+
+    id = ma.auto_field()
+    first_name = ma.auto_field()
+    last_name = ma.auto_field()
+    email = ma.auto_field()
+    phone_number = ma.auto_field()
+    billing_address = fields.Nested(AddressSchema)
+    shipping_address = fields.Nested(AddressSchema)
+
+customer_schema = CustomerSchema()
+customers_schema = CustomerSchema(many=True)
+
+class ItemSchema(ma.SQLAlchemySchema):
     class Meta:
         model = Item
         load_instance = True
 
     id = ma.auto_field()
     name = ma.auto_field()
+    image = ma.auto_field()
     category = ma.auto_field()
     description = ma.auto_field()
     inventory = ma.auto_field()
@@ -74,7 +72,7 @@ class OrderSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field()
     status = ma.auto_field()
-    customer_id = ma.auto_field()
+    customer = fields.Nested(CustomerSchema(only=("email",)))
     shipping = ma.auto_field()
     total = ma.auto_field()
 
@@ -88,9 +86,9 @@ class OrderItemSchema(ma.SQLAlchemySchema):
         load_instance = True
 
     id = ma.auto_field()
-    item_id = ma.auto_field()
+    items = fields.Nested(ItemSchema)
     quantity = ma.auto_field()
-    order_id = ma.auto_field()
+    orders = fields.Nested(OrderSchema)
 
 order_item_schema = OrderItemSchema()
 order_items_schema = OrderItemSchema(many=True)
@@ -99,6 +97,8 @@ class Customers(Resource):
 
     def get(self):
         customers = Customer.query.all()
+        billings = [customer.billing_address for customer in Customer.query.all()]
+
         response = make_response(
             customers_schema.dump(customers), 200
         )

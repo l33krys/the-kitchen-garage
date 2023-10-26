@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Standard library imports
-from random import randint, choice as rc
+from random import randint, choice as rc, sample
 
 # Remote library imports
 from faker import Faker
@@ -45,7 +45,7 @@ def create_order():
     for _ in range(5):
         shipping_cost = 4.99
         o = Order(
-            status = "draft",
+            status = "created",
             customer_id = rc(customers).id,
             shipping = shipping_cost,
             total = shipping_cost
@@ -94,10 +94,10 @@ if __name__ == '__main__':
         db.session.commit()
 
         print("Seeding items...")
-        item1 = Item(name="Stand Mixer", category="appliance", description="Help make mixing easier.", inventory=10, price=200)
-        item2 = Item(name="Blender", category="appliance", description="Create smoothies effortlessly.", inventory=5, price=50)
-        item3 = Item(name="Single Cup Coffee Machine", category="appliance", description="Brew coffee in seconds.", inventory=15, price=99)
-        item4 = Item(name="Air Fryer", category="appliance", description="Make chicken wings in no time.", inventory=15, price=149)
+        item1 = Item(name="Stand Mixer", image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliance", description="Help make mixing easier.", inventory=10, price=200)
+        item2 = Item(name="Blender", image="https://images.pexels.com/photos/17890636/pexels-photo-17890636/free-photo-of-spinach-and-bananas-inside-blender.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliance", description="Create smoothies effortlessly.", inventory=5, price=50)
+        item3 = Item(name="Single Cup Coffee Machine", image="./assets/kitchenImages/server/assets/kitchenImages/vecteezy_coffe-style-illustration-ai-generated_21946989_918.jpg", category="appliance", description="Brew coffee in seconds.", inventory=15, price=99)
+        item4 = Item(name="Air Fryer", image="./assets/kitchenImages/vecteezy_modern-electric-coffee-machine-and-french-fries-in-the_30491205_511.jpg", category="appliance", description="Make chicken wings in no time.", inventory=15, price=149)
 
         item_list = [item1, item2, item3, item4]
         
