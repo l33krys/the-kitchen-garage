@@ -4,6 +4,7 @@ import ItemContainer from "./ItemContainer";
 import NavBar from "./NavBar";
 import Home from "./Home";
 import Appliances from "./Appliances";
+import Login from "./Login";
 
 function App() {
 
@@ -16,6 +17,9 @@ function App() {
       </Route>
       <Route path="/appliances">
         <Appliances />
+      </Route>
+      <Route path="/login">
+        <Login />
       </Route>
       {/* <Route path="/tools">
         <Tools />
