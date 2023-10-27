@@ -95,10 +95,11 @@ if __name__ == '__main__':
 
         print("Seeding items...")
         item1 = Item(name="Stand Mixer", image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliance", description="Help make mixing easier.", inventory=10, price=200)
-        item2 = Item(name="Blender", image="https://images.pexels.com/photos/17890636/pexels-photo-17890636/free-photo-of-spinach-and-bananas-inside-blender.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliance", description="Create smoothies effortlessly.", inventory=5, price=50)
-        item3 = Item(name="Single Cup Coffee Machine", image="./assets/kitchenImages/server/assets/kitchenImages/vecteezy_coffe-style-illustration-ai-generated_21946989_918.jpg", category="appliance", description="Brew coffee in seconds.", inventory=15, price=99)
-        item4 = Item(name="Air Fryer", image="./assets/kitchenImages/vecteezy_modern-electric-coffee-machine-and-french-fries-in-the_30491205_511.jpg", category="appliance", description="Make chicken wings in no time.", inventory=15, price=149)
-
+        item2 = Item(name="Blender", image="https://images.pexels.com/photos/7460165/pexels-photo-7460165.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliance", description="Create smoothies effortlessly.", inventory=5, price=50)
+        item3 = Item(name="Single Cup Coffee Machine", image="https://images.pexels.com/photos/10078423/pexels-photo-10078423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliance", description="Brew coffee in seconds.", inventory=15, price=99)
+        item4 = Item(name="Toaster", image="https://images.pexels.com/photos/7936638/pexels-photo-7936638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliance", description="Make chicken wings in no time.", inventory=15, price=39)
+        # To use file images
+        # image="assets/applianceImages/vecteezy_coffe-style-illustration-ai-generated_21946989_918.jpg"
         item_list = [item1, item2, item3, item4]
         
         db.session.add_all(item_list)
