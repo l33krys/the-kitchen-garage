@@ -7,7 +7,6 @@ function ItemContainer({ items }) {
     return (
 
         <div>
-            <h3>Item Container</h3>
             <ItemList items={items} />
         </div>
     )

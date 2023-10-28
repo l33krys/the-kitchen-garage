@@ -15,7 +15,7 @@ function ItemCard({ item }) {
         </Card.Content>
         <Card.Content extra>
 
-            <Icon name='details' />
+            <Icon />
             View Details
         </Card.Content>
       </Card>
