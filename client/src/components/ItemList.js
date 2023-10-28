@@ -7,20 +7,12 @@ function ItemList({ items }) {
 
     const { data, error, isLoading } = useFetchItemsQuery();
 
-    console.log(data, error, isLoading);
-
-    // const itemsToDisplay = data.map((item, key) => (
-    //     <ItemCard item={item} />
-    // ))
-
     return (
 
         <div>
             <Card.Group>
                 {isLoading ? "Loading..." : data.map((item, key) => (
-        <ItemCard key={key} item={item} />
-    ))}
-                {/* {isLoading ? itemsToDisplay : "Loading..."} */}
+                <ItemCard key={key} item={item} />))}
             </Card.Group>
         </div>
     )

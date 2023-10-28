@@ -3,6 +3,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
 import datetime
+import re
 
 from config import db, bcrypt
 
@@ -24,6 +25,62 @@ class Customer(db.Model, SerializerMixin):
     billing_address = db.relationship("Address", foreign_keys=[billing_address_id])
     shipping_address = db.relationship("Address", foreign_keys=[shipping_address_id])
     orders = db.relationship("Order", back_populates="customer", cascade="all")
+
+    # Validations
+    @validates("first_name")
+    def validate_first_name(self, key, first_name):
+        if not first_name:
+            raise ValueError("First name is required")
+        if not 1 <= len(first_name) <= 15:
+            raise ValueError("First name must be between 1 and 15 characters")
+        return first_name
+    
+    @validates("last_name")
+    def validate_first_name(self, key, last_name):
+        if not last_name:
+            raise ValueError("Last name is required")
+        if not 1 <= len(last_name) <= 15:
+            raise ValueError("Last name must be between 1 and 15 characters")
+        return last_name
+    
+    @validates("email")
+    def validate_email(self, key, email):
+        if not email:
+            raise ValueError("Email address is required")
+        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+        if not re.match(email_regex, email):
+            raise ValueError("Invalid email address format")
+        if len(email) > 40:
+            raise ValueError("Email address must be between 1 and 40 characters")
+        return email
+
+    @validates("phone_number")
+    def validate_phone_number(self, key, phone_number):
+        phone_regex = r'^\d{3}-\d{3}-\d{4}$'
+        if not re.match(phone_regex, phone_number):
+            raise ValueError("Invalid phone number format. Please use XXX-XXX-XXXX format.")
+        return phone_number
+    
+    @validates("billing_address_id", "shipping_address_id")
+    def validate_address(self, key, id):
+        address_ids = [address.id for address in Address.query.all()]
+        if (key == "billing_address_id"):
+            if id not in address_ids:
+                raise ValueError("Address must be created before assigning to customer")
+        elif (key == "shipping_address_id"):
+            if id not in address_ids:
+                raise ValueError("Address must be created before assigning to customer")
+        return id
+
+    @validates("_password_hash")
+    def validate__password_hash(self, key, pw):
+        if not pw and len(pw) != 8:
+            raise ValueError("Password must be 8 characters long")
+        elif not re.search("[a-z]", pw) or re.search("[a-z]", pw) :
+            raise ValueError("Password must contain a letter")
+        elif not re.search("[0-9]", pw):
+            raise ValueError("Password must contain a number")
+        return pw
 
     @hybrid_property
     def password_hash(self):
@@ -56,6 +113,39 @@ class Address(db.Model, SerializerMixin):
     # customer = db.relationship("Customer", foreign_keys=[Customer.billing_address_id, Customer.shipping_address_id], back_populates="addresses")
     orders = association_proxy("customer", "orders")
 
+    # Validations
+    @validates("street")
+    def validate_street(self, key, street):
+        if not street:
+            raise ValueError("Street is required")
+        elif not len(street) > 1:
+            raise ValueError("Street is required")
+        return street
+    
+    @validates("city")
+    def validate_city(self, key, city):
+        if not city:
+            raise ValueError("City is required")
+        elif not len(city) > 1:
+            raise ValueError("City is required")
+        return city
+    
+    @validates("state")
+    def validate_state(self, key, state):
+        if not state:
+            raise ValueError("State is required")
+        if not len(state) > 1:
+            raise ValueError("State is required")
+        return state
+
+    @validates("zip_code")
+    def validate_zip_code(self, key, zip_code):
+        if not zip_code:
+            raise ValueError("Zip code is required")
+        elif not len(zip_code) > 1:
+            raise ValueError("Zip code is required")
+        return zip_code
+
     def __repr__(self):
         return f"Address {self.id}, {self.street}, {self.city}, {self.state}, {self.zip_code}"
 
@@ -73,6 +163,44 @@ class Item(db.Model, SerializerMixin):
 
     # Relationships
     order_items = db.relationship("OrderItem", back_populates="items")
+
+    # Validations
+    @validates("name")
+    def validate_name(self, key, name):
+        if not name:
+            raise ValueError("Item name is required")
+        if not 1 <= len(name) <= 15:
+            raise ValueError("Item name must be between 1 and 15 characters")
+        return name
+
+    @validates("category")
+    def validate_name(self, key, category):
+        categories = ["appliances", "tools", "accessories"]
+        if not category:
+            raise ValueError("Category is required")
+        elif category not in categories:
+            raise ValueError("Category must be either appliances, tools, or accessories")
+        return category
+    
+    @validates("inventory")
+    def validate_inventory(self, key, inventory):
+        if not inventory:
+            raise ValueError("Inventory is required")
+        elif not isinstance(inventory, int):
+            raise ValueError("Inventory must be a number")
+        elif inventory < 0:
+            raise ValueError("Inventory must be a positive integer")
+        return inventory
+    
+    @validates("price")
+    def validate_price(self, key, price):
+        if not price:
+            raise ValueError("Price is required")
+        elif not isinstance(price, int):
+            raise ValueError("Price must be a number")
+        elif price > 0:
+            raise ValueError("Price must be a positive integer")
+        return price
 
     def __repr__(self):
         return f"Item {self.id}, {self.name}, {self.category}, {self.inventory}, {self.price}"
@@ -92,6 +220,28 @@ class Order(db.Model, SerializerMixin):
     customer = db.relationship("Customer", back_populates="orders", cascade="all")
     order_items = db.relationship("OrderItem", back_populates="orders", cascade="all")
 
+    # Validations
+    @validates("status")
+    def validate_name(self, key, status):
+        statuses = ["saved", "submitted"]
+        if not status:
+            raise ValueError("Status is required")
+        elif status not in statuses:
+            raise ValueError("Status must be either saved or submitted")
+        return status
+
+    @validates("customer_id")
+    def validate_customer_id(self, key, customer_id):
+        if not customer_id:
+            raise ValueError("Customer Id or session Id is required")
+        return id
+    
+    @validates("shipping", "total")
+    def validates_amount(self, key, amount):
+        if not isinstance(amount, int):
+            raise ValueError("Shipping and total must be an integer")
+        return amount
+    
     def __repr__(self):
         return f"Order {self.id} {self.status}"
     
@@ -108,6 +258,36 @@ class OrderItem(db.Model, SerializerMixin):
     # Relationships
     items = db.relationship("Item", back_populates="order_items", cascade="all")
     orders = db.relationship("Order", back_populates="order_items")
+
+    # Validations
+    @validates("item_id")
+    def validate(self, key, item_id):
+        item_ids = [item.id for item in Item.query.all()]
+        if not item_id:
+            raise ValueError("Item id is required")
+        elif item_id not in item_ids:
+            raise ValueError("Item must exist")
+        return item_id
+
+    @validates("quantity")
+    def validate_quantity(self, key, quantity):
+        if not quantity:
+            raise ValueError("Quantity is required")
+        elif not isinstance(quantity, int):
+            raise ValueError("Quantity must be a number")
+        elif quantity > 0:
+            raise ValueError("Quantity must be greater than 0")
+        return quantity
+
+    @validates("order_id")
+    def validate(self, key, order_id):
+        order_ids = [order.id for order in Order.query.all()]
+        if not order_id:
+            raise ValueError("Order id is required")
+        elif order_id not in order_ids:
+            raise ValueError("Order must be created before adding items")
+        return order_id
+
 
     def __repr__(self):
         return f"OrderItems {self.id} {self.item} {self.quantity} {self.order_id}"
