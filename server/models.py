@@ -72,29 +72,29 @@ class Customer(db.Model, SerializerMixin):
                 raise ValueError("Address must be created before assigning to customer")
         return id
 
-    @validates("_password_hash")
-    def validate__password_hash(self, key, pw):
-        if not pw and len(pw) != 8:
-            raise ValueError("Password must be 8 characters long")
-        elif not re.search("[a-z]", pw) or re.search("[a-z]", pw) :
-            raise ValueError("Password must contain a letter")
-        elif not re.search("[0-9]", pw):
-            raise ValueError("Password must contain a number")
-        return pw
+    # @validates("_password_hash")
+    # def validate__password_hash(self, key, password):
+    #     if not pw and len(password) != 8:
+    #         raise ValueError("Password must be 8 characters long")
+    #     elif not re.search("[a-z]", password) or re.search("[A-Z]", pw) :
+    #         raise ValueError("Password must contain a letter")
+    #     elif not re.search("[0-9]", password):
+    #         raise ValueError("Password must contain a number")
+    #     return pw
 
     @hybrid_property
     def password_hash(self):
-        raise AttributeError("Password hashes may not be viewed")
-    
+        raise Exception('Password hashes may not be viewed.')
+
     @password_hash.setter
     def password_hash(self, password):
         password_hash = bcrypt.generate_password_hash(
-            password.encode("utf-8"))
-        self._password_hash = password_hash.decode("utf-8")
+            password.encode('utf-8'))
+        self._password_hash = password_hash.decode('utf-8')
 
     def authenticate(self, password):
         return bcrypt.check_password_hash(
-            self._password_hash, password.encode("utf-8"))
+            self._password_hash, password.encode('utf-8'))
 
     def __repr__(self):
         return f"Customer {self.id}, {self.first_name} {self.last_name}"
@@ -186,8 +186,8 @@ class Item(db.Model, SerializerMixin):
     def validate_inventory(self, key, inventory):
         if not inventory:
             raise ValueError("Inventory is required")
-        elif not isinstance(inventory, int):
-            raise ValueError("Inventory must be a number")
+        # elif not isinstance(inventory, int):
+        #     raise ValueError("Inventory must be a number")
         elif inventory < 0:
             raise ValueError("Inventory must be a positive integer")
         return inventory
@@ -196,10 +196,10 @@ class Item(db.Model, SerializerMixin):
     def validate_price(self, key, price):
         if not price:
             raise ValueError("Price is required")
-        elif not isinstance(price, int):
+        elif not isinstance(price, float):
             raise ValueError("Price must be a number")
-        elif price > 0:
-            raise ValueError("Price must be a positive integer")
+        elif price <= 0:
+            raise ValueError("Price must be a positive number")
         return price
 
     def __repr__(self):
@@ -230,7 +230,7 @@ class Order(db.Model, SerializerMixin):
             raise ValueError("Status must be either saved or submitted")
         return status
 
-    @validates("customer_id")
+    # @validates("customer_id")
     def validate_customer_id(self, key, customer_id):
         if not customer_id:
             raise ValueError("Customer Id or session Id is required")
@@ -238,8 +238,12 @@ class Order(db.Model, SerializerMixin):
     
     @validates("shipping", "total")
     def validates_amount(self, key, amount):
-        if not isinstance(amount, int):
-            raise ValueError("Shipping and total must be an integer")
+        if key == "shipping":
+            if not isinstance(amount, float):
+                raise ValueError("Shipping must be a number")
+        elif key == "total":
+            if not isinstance(amount, float):
+                raise ValueError("Total must be a number")
         return amount
     
     def __repr__(self):
@@ -275,7 +279,7 @@ class OrderItem(db.Model, SerializerMixin):
             raise ValueError("Quantity is required")
         elif not isinstance(quantity, int):
             raise ValueError("Quantity must be a number")
-        elif quantity > 0:
+        elif quantity < 0:
             raise ValueError("Quantity must be greater than 0")
         return quantity
 

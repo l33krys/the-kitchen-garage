@@ -7,13 +7,13 @@ function NavBar() {
 
         <div>
             <div style={{ textAlign: "right", paddingTop: "10px", marginLeft: "50px"}}>
-                <NavLink style={{ marginRight: "20px" }} to="/login">Customer Login</NavLink>
-                <NavLink style={{ marginRight: "20px" }} to="/login">Cart</NavLink>
+                <NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>
+                <NavLink style={{ marginRight: "20px" }} to="/cart">Cart</NavLink>
             </div>
             <div>
-                <div style={{ float: "right", paddingTop: "40px", marginLeft: "50px", marginRight: "20px"}}>
+                {/* <div style={{ float: "right", paddingTop: "40px", marginLeft: "50px", marginRight: "20px"}}>
                     <NavLink to="/login">Search</NavLink>
-                </div>
+                </div> */}
                 <div style={{ paddingTop: "10px", paddingBottom: "20px", marginLeft: "50px"}}>
                     <NavLink to="/" exact><h1 style={{ color: "black" }}>The Kitchen Garage</h1></NavLink>
                     <p>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>

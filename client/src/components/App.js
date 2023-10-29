@@ -5,6 +5,9 @@ import NavBar from "./NavBar";
 import Home from "./Home";
 import Appliances from "./Appliances";
 import Login from "./Login";
+import SignUp from "./SignUp";
+import Cart from "./Cart";
+import CustomerFormLayout from "./CustomerFormLayout";
 
 function App() {
 
@@ -20,6 +23,15 @@ function App() {
       </Route>
       <Route path="/login">
         <Login />
+      </Route>
+      <Route path="/signup">
+        <SignUp />
+      </Route>
+      <Route path="/cart">
+        <Cart />
+      </Route>
+      <Route path="/login_signup">
+        <CustomerFormLayout />
       </Route>
       {/* <Route path="/tools">
         <Tools />

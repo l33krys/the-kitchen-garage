@@ -3,11 +3,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 const customersApi = createApi({
     reducerPath: 'customers',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5555/'
+        baseUrl: ''
     }),
     endpoints(builder) {
         return {
             addCustomer: builder.mutation({
+                invalidatesTags: (result, error, customer) => {
+                    return [{ type: "Customer" }]
+                },
                 query: (customer) => {
                     return {
                         url: "/customers",
@@ -16,13 +19,12 @@ const customersApi = createApi({
                             first_name: customer.first_name,
                             last_name: customer.last_name,
                             email: customer.email,
-                            phone_number: customer.phone_number,
-                            _password_hash: customer._password_hash
+                            password: customer.password
                         }
                     }
                 }
             }),
-            fetchCustomers: builder.query({
+            fetchCustomer: builder.query({
                 query: (customer) => {
                     return {
                         url: "/customers",
@@ -33,10 +35,23 @@ const customersApi = createApi({
 
                     };
                 }
+            }),
+            fetchCustomers: builder.query({
+                providesTags: (result, error, customer) => {
+                    return [{ type: "Customer" }]
+                },
+                query: () => {
+                    return {
+                        url: "/customers",
+                        params: {},
+                        method: "GET",
+
+                    };
+                }
             })
         };
     }
 })
 
-export const { useFetchCustomersQuery, useAddCustomerMutation } = customersApi;
+export const { useFetchCustomersQuery, useFetchCustomerQuery, useAddCustomerMutation } = customersApi;
 export { customersApi };

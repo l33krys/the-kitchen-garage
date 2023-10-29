@@ -106,12 +106,33 @@ class Customers(Resource):
     
     def post(self):
 
-        data = request.get_json()
-        customer = Customer()
+        # username = request.get_json()["username"]
+        # password = request.get_json()["password"]
+
+        # if username and password:
+        #     new_user = User(username=username)
+        #     new_user.password_hash = password
+    
+        #     db.session.add(new_user)
+        #     db.session.commit()
+
+        #     session["user_id"] = new_user.id
+            
+        # first_name = request.get_json()["first_name"]
+        # last_name = request.get_json()["last_name"]
+        first_name = request.get_json()["first_name"]
+        last_name = request.get_json()["last_name"]
+        email = request.get_json()["email"]
+        password = request.get_json()["password"]
+        
         try:
-            for key in data:
-                if hasattr(customer, key):
-                    setattr(customer, key, data[key])
+            customer = Customer(
+                first_name=first_name,
+                last_name=last_name,
+                email=email
+            )
+            customer.password_hash = password
+
             db.session.add(customer)
             db.session.commit()
             return make_response(
@@ -473,18 +494,59 @@ class OrderItemById(Resource):
             return make_response(
                 {"error": "Order Item does not exist"}, 404
             )
+        
+class CheckSession(Resource):
+    def get(self):
+
+        customer_id = session['customer_id']
+        if customer_id:
+            customer = Customer.query.filter(Customer.id == customer_id).first()
+            return make_response(
+                customer_schema.dump(customer), 200
+            )
+        return {}, 401
+
+class Login(Resource):
+    def post(self):
+        
+        email = request.get_json()['email']
+        password = request.get_json()['password']
+        customer = Customer.query.filter(Customer.email == email).first()    
+
+        if customer:
+
+            if customer.authenticate(password):
+                session["customer_id"] = customer.id
+                # return customer.to_dict(), 200
+                res = make_response(customer_schema.dump(customer), 200)
+                res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
+                return res
+           
+        return {"error": "401 Unauthorized"}, 401
+    
 
 
-api.add_resource(Customers, "/customers")
-api.add_resource(CustomerById, "/customers/<int:id>")
-api.add_resource(Addresses, "/addresses")
-api.add_resource(AddressById, "/addresses/<int:id>")
-api.add_resource(Items, "/items")
-api.add_resource(ItemById, "/items/<int:id>")
-api.add_resource(Orders, "/orders")
-api.add_resource(OrderById, "/orders/<int:id>")
-api.add_resource(OrderItems, "/order_items")
-api.add_resource(OrderItemById, "/order_items/<int:id>")
+class Logout(Resource):
+    def delete(self):
+        
+        session["customer_id"] = None
+        return {}, 204
+
+
+api.add_resource(Customers, "/customers", endpoint="customer_list")
+api.add_resource(CustomerById, "/customers/<int:id>", endpoint="customer")
+api.add_resource(Addresses, "/addresses", endpoint="address_list")
+api.add_resource(AddressById, "/addresses/<int:id>", endpoint="address")
+api.add_resource(Items, "/items", endpoint="item_list")
+api.add_resource(ItemById, "/items/<int:id>", endpoint="item")
+api.add_resource(Orders, "/orders", endpoint="order_list")
+api.add_resource(OrderById, "/orders/<int:id>", endpoint="order")
+api.add_resource(OrderItems, "/order_items", endpoint="order_items_list")
+api.add_resource(OrderItemById, "/order_items/<int:id>", endpoint="order_item")
+api.add_resource(CheckSession, "/check_session", endpoint="check_session")
+api.add_resource(Login, "/login", endpoint="login")
+api.add_resource(Logout, "/logout", endpoint="logout")
+
 
 @app.route('/')
 def index():

@@ -15,13 +15,12 @@ const store = configureStore({
   },
   middleware: (getDefaultMiddleware) => {
     return getDefaultMiddleware()
-    .concat(itemsApi.middleware)
-    .concat(customersApi.middleware)
+    .concat([itemsApi.middleware, customersApi.middleware])
   }
 });
 
 setupListeners(store.dispatch);
 export { useFetchItemsQuery } from './apis/itemsApi';
-export { useFetchCustomersQuery, useAddCustomerMutation } from './apis/customersApi';
+export { useFetchCustomersQuery, useFetchCustomerQuery, useAddCustomerMutation } from './apis/customersApi';
 
 export { store };
