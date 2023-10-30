@@ -8,6 +8,7 @@ import Login from "./Login";
 import SignUp from "./SignUp";
 import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
+import ItemDetails from "./ItemDetails";
 
 function App() {
 
@@ -31,7 +32,10 @@ function App() {
         <Cart />
       </Route>
       <Route path="/login_signup">
-        <CustomerFormLayout />
+      <CustomerFormLayout />
+      </Route>
+      <Route path="/items/:itemId">
+        <ItemDetails />
       </Route>
       {/* <Route path="/tools">
         <Tools />

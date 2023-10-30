@@ -3,6 +3,7 @@
 # Standard library imports
 
 # Remote library imports
+from flask import jsonify
 from flask import request, session, make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -356,12 +357,18 @@ class Orders(Resource):
     
     def post(self):
 
-        data = request.get_json()
-        order = Order()
+        status = request.get_json()["status"]
+        customer_id = request.get_json()["customer_id"]
+        shipping = request.get_json()["shipping"]
+        total = request.get_json()["total"]
+
         try:
-            for key in data:
-                if hasattr(order, key):
-                    setattr(order, key, data[key])
+            order = Order(
+                status=status,
+                customer_id=customer_id,
+                shipping=shipping,
+                total=total
+            )
             db.session.add(order)
             db.session.commit()
             return make_response(
@@ -431,16 +438,21 @@ class OrderItems(Resource):
     
     def post(self):
 
-        data = request.get_json()
-        order_item = OrderItem()
+        item_id = request.get_json()["item_id"]
+        quantity = request.get_json()["quantity"]
+        order_id = request.get_json()["order_id"]
+        
         try:
-            for key in data:
-                if hasattr(order_item, key):
-                    setattr(order_item, key, data[key])
+            order_item = OrderItem(
+                item_id=item_id,
+                quantity=quantity,
+                order_id=order_id
+            )
+
             db.session.add(order_item)
             db.session.commit()
             return make_response(
-                order_item_schema.dump(order_item), 201
+                customer_schema.dump(order_item), 201
             )
         except ValueError:
             return make_response(
@@ -547,6 +559,26 @@ api.add_resource(CheckSession, "/check_session", endpoint="check_session")
 api.add_resource(Login, "/login", endpoint="login")
 api.add_resource(Logout, "/logout", endpoint="logout")
 
+
+# @app.route('/sessions/<string:key>', methods=['GET'])
+# def show_session(key):
+
+#     session["hello"] = session.get("hello") or "World"
+#     session["goodnight"] = session.get("goodnight") or "Moon"
+
+#     response = make_response(jsonify({
+#         'session': {
+#             'session_key': key,
+#             'session_value': session[key],
+#             'session_accessed': session.accessed,
+#         },
+#         'cookies': [{cookie: request.cookies[cookie]}
+#             for cookie in request.cookies],
+#     }), 200)
+
+#     response.set_cookie('mouse', 'Cookie')
+
+#     return response
 
 @app.route('/')
 def index():

@@ -70,24 +70,27 @@ export const Login = ({ guests, parties, refreshPage, setRefreshPage }) => {
         <Form.Field>
         <label htmlFor="email"style={{color: "#F6F1F1"}}>Email</label>
         <input
-          id="email"
+          id="email-login"
           name="email"
           onChange={formik.handleChange}
           value={formik.values.email}
           style={{ width: "250px", textAlign: "center" }}
         />
-        <p style={{ color: "red" }}> {formik.errors.email}</p>
+        {/* <p style={{ color: "white" }}> {formik.errors.email}</p> */}
         </Form.Field>
         <Form.Field>
         <label htmlFor="password"style={{color: "#F6F1F1"}}>Password</label>
-        <input
-          id="password"
+        <Form.Input
+          id="password-login"
+          type="password"
           name="password"
           onChange={formik.handleChange}
           value={formik.values.password}
           style={{ width: "250px", textAlign: "center" }}
+          icon='lock'
+          iconPosition='left'
         />
-        <p style={{ color: "red" }}> {formik.errors.password}</p>
+        {/* <p style={{ color: "white" }}> {formik.errors.password}</p> */}
         </Form.Field>
         <Button style={{ background: "white" }} type="submit">Login</Button>
         {showErrorMessage ? <Message style={{ margin: "auto", width: "350px", marginTop: "20px", color: '#E06469'}} header="Attention Required" content="Input(s) Invalid"></Message> : ""}

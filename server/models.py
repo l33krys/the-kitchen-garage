@@ -230,21 +230,27 @@ class Order(db.Model, SerializerMixin):
             raise ValueError("Status must be either saved or submitted")
         return status
 
-    # @validates("customer_id")
+    @validates("customer_id")
     def validate_customer_id(self, key, customer_id):
         if not customer_id:
             raise ValueError("Customer Id or session Id is required")
-        return id
+        return customer_id
     
-    @validates("shipping", "total")
-    def validates_amount(self, key, amount):
-        if key == "shipping":
-            if not isinstance(amount, float):
-                raise ValueError("Shipping must be a number")
-        elif key == "total":
-            if not isinstance(amount, float):
-                raise ValueError("Total must be a number")
-        return amount
+    @validates("shipping")
+    def validate_shipping(self, key, shipping):
+        if shipping < 0:
+            raise ValueError("Shipping must be $0 or greater")
+        elif not isinstance(shipping, float):
+            raise ValueError("Shipping must be a number")
+        return shipping
+    
+    @validates("total")
+    def validate_total(self, key, total):
+        if total < 0:
+            raise ValueError("Total must be $0 or greater")
+        elif not isinstance(total, float):
+            raise ValueError("Total must be a number")
+        return total
     
     def __repr__(self):
         return f"Order {self.id} {self.status}"
