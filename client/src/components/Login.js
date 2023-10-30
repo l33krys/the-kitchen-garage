@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, Form, Message } from 'semantic-ui-react'
 import SignUp from "./SignUp";
 
-export const Login = ({ guests, parties, refreshPage, setRefreshPage }) => {
+export const Login = ({ setUserLoggedIn, userLoggedIn }) => {
   const [showLoginSuccess, setShowLoginSuccess] = useState(false)
   const [showErrorMessage, setShowErrorMessage] = useState(false)
-
-  function goToSignup() {
-    <SignUp />
-  }
 
   const formSchema = yup.object().shape({
     email: yup.string().required("Must enter a valid email"),
@@ -34,7 +30,6 @@ export const Login = ({ guests, parties, refreshPage, setRefreshPage }) => {
     },
     validationSchema: formSchema,
     onSubmit: (values, { resetForm }) => {
-      console.log(values)
       fetch("/login", {
         method: "POST",
         mode: "cors",
@@ -46,21 +41,24 @@ export const Login = ({ guests, parties, refreshPage, setRefreshPage }) => {
             password: values.password
           }, null, 2),
       })
-      // .then((r) => r.json())
-      // .then((data) => console.log("status: ", data.status, data))
       .then((res) => {
         if (res.status == 200) {
-          console.log(res)
-          console.log("you are now logged in")
+          setShowErrorMessage(false)
+          setShowLoginSuccess(!showLoginSuccess)
           resetForm();
         }
         if (res.status === 401){
           setShowErrorMessage(true)
           setShowLoginSuccess(false)
         }
-      });
+      })
     },
   });
+
+  if (showLoginSuccess){
+    return <Redirect replace to="/"/>;
+    setShowLoginSuccess(false)
+  }
 
   return (
     <div style={{ backgroundColor: "#576F72", margin: "30px", paddingTop: "15px", paddingBottom: "15px" }}>

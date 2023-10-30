@@ -12,9 +12,12 @@ import ItemDetails from "./ItemDetails";
 
 function App() {
 
+  const [userLoggedIn, setUserLoggedIn] = useState({})
+
   return (
     <Router>
-    <NavBar />
+    <NavBar 
+      userLoggedIn={userLoggedIn} />
     <Switch>
       <Route path="/" exact>
         <Home />
@@ -32,7 +35,9 @@ function App() {
         <Cart />
       </Route>
       <Route path="/login_signup">
-      <CustomerFormLayout />
+      <CustomerFormLayout
+        setUserLoggedIn={setUserLoggedIn}
+        userLoggedIn={userLoggedIn} />
       </Route>
       <Route path="/items/:itemId">
         <ItemDetails />

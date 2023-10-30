@@ -24,7 +24,7 @@ const store = configureStore({
 
 setupListeners(store.dispatch);
 export { useFetchItemsQuery } from './apis/itemsApi';
-export { useFetchCustomersQuery, useFetchCustomerQuery, useAddCustomerMutation } from './apis/customersApi';
-export { useFetchOrderItemsQuery, useFetchOrderItemQuery, useAddOrderItemMutation } from './apis/orderItemsApi';
+export { useFetchCustomersQuery, useFetchCustomerQuery, useAddCustomerMutation, useDeleteCustomerMutation } from './apis/customersApi';
+export { useFetchOrderItemsQuery, useFetchOrderItemQuery, useAddOrderItemMutation, useDeleteOrderItemMutation } from './apis/orderItemsApi';
 
 export { store };

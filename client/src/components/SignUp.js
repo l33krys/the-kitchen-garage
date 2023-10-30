@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { Button, Form, Message, Grid, Segment } from 'semantic-ui-react'
 import { useAddCustomerMutation } from "../store";
 
-export const SignUp = ({ }) => {
+export const SignUp = ({ setUserLoggedIn, userLoggedIn }) => {
     const [addCustomer, results] = useAddCustomerMutation();
 
     const [showSignUpSuccess, setShowSignUpSuccess] = useState(false)

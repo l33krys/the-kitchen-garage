@@ -24,6 +24,20 @@ const customersApi = createApi({
                     }
                 }
             }),
+            deleteCustomer: builder.mutation({
+                invalidatesTags: (result, error, customer) => {
+                    return [{ type: "Customer" }]
+                },
+                query: (customer) => {
+                    return {
+                        url: "/customers",
+                        method: "DELETE",
+                        body: {
+                            id: customer.id,
+                        }
+                    }
+                }
+            }),
             fetchCustomer: builder.query({
                 query: (customer) => {
                     return {
@@ -53,5 +67,5 @@ const customersApi = createApi({
     }
 })
 
-export const { useFetchCustomersQuery, useFetchCustomerQuery, useAddCustomerMutation } = customersApi;
+export const { useFetchCustomersQuery, useFetchCustomerQuery, useAddCustomerMutation, useDeleteCustomerMutation } = customersApi;
 export { customersApi };

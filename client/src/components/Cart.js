@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { Card } from 'semantic-ui-react'
 import { useFetchItemsQuery } from '../store';
+import CartList from "./CartList";
 
 function Cart({ }) {
 
@@ -9,8 +10,9 @@ function Cart({ }) {
 
     return (
 
-        <div>
+        <div style={{ margin: "30px"}}>
             <h3>Shopping Cart</h3>
+            <CartList />
         </div>
     )
 }

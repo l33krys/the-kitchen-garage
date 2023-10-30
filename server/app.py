@@ -107,20 +107,6 @@ class Customers(Resource):
     
     def post(self):
 
-        # username = request.get_json()["username"]
-        # password = request.get_json()["password"]
-
-        # if username and password:
-        #     new_user = User(username=username)
-        #     new_user.password_hash = password
-    
-        #     db.session.add(new_user)
-        #     db.session.commit()
-
-        #     session["user_id"] = new_user.id
-            
-        # first_name = request.get_json()["first_name"]
-        # last_name = request.get_json()["last_name"]
         first_name = request.get_json()["first_name"]
         last_name = request.get_json()["last_name"]
         email = request.get_json()["email"]

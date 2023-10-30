@@ -23,6 +23,17 @@ const orderItemsApi = createApi({
                     }
                 }
             }),
+            deleteOrderItem: builder.mutation({
+                invalidatesTags: (result, error, orderItem) => {
+                    return [{ type: "OrderItem" }]
+                },
+                query: (delOrderItem) => {
+                    return {
+                        url: `/order_items/${delOrderItem}`,
+                        method: "DELETE",
+                    }
+                }
+            }),
             fetchOrderItem: builder.query({
                 query: (order_item) => {
                     return {
@@ -52,5 +63,5 @@ const orderItemsApi = createApi({
 })
 
 
-export const { useFetchOrderItemsQuery, useFetchOrderItemQuery, useAddOrderItemMutation } = orderItemsApi;
+export const { useFetchOrderItemsQuery, useFetchOrderItemQuery, useAddOrderItemMutation, useDeleteOrderItemMutation } = orderItemsApi;
 export { orderItemsApi };
