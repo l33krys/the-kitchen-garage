@@ -17,7 +17,7 @@ def create_address():
         a = Address(
             street = fake.street_address(),
             city = fake.city(),
-            state = fake.state(),
+            state = fake.state_abbr(),
             zip_code = fake.postcode()
         )
         addresses.append(a)
@@ -32,23 +32,23 @@ def create_customer():
             first_name = fake_first_name,
             last_name = fake_last_name,
             email = fake_first_name + "." + fake_last_name + "@email.com",
-            phone_number = fake.phone_number(),
+            phone_number = "123-456-7899",
             _password_hash = "Pass1234",
             billing_address_id = rc(addresses).id,
             shipping_address_id = rc(addresses).id
         )
+        c.password_hash = c.first_name + "pass"
         customers.append(c)
     return customers
 
 def create_order():
     orders = []
     for _ in range(5):
-        shipping_cost = 4.99
         o = Order(
-            status = "created",
+            status = "saved",
             customer_id = rc(customers).id,
-            shipping = shipping_cost,
-            total = shipping_cost
+            shipping = 4.99,
+            total = 4.99
         )
         orders.append(o)
     return orders
@@ -94,10 +94,10 @@ if __name__ == '__main__':
         db.session.commit()
 
         print("Seeding items...")
-        item1 = Item(name="Stand Mixer", image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliance", description="Help make mixing easier.", inventory=10, price=200)
-        item2 = Item(name="Blender", image="https://images.pexels.com/photos/7460165/pexels-photo-7460165.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliance", description="Create smoothies effortlessly.", inventory=5, price=50)
-        item3 = Item(name="Single Cup Coffee Machine", image="https://images.pexels.com/photos/10078423/pexels-photo-10078423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliance", description="Brew coffee in seconds.", inventory=15, price=99)
-        item4 = Item(name="Toaster", image="https://images.pexels.com/photos/7936638/pexels-photo-7936638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliance", description="Make chicken wings in no time.", inventory=15, price=39)
+        item1 = Item(name="Stand Mixer", image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliances", description="Help make mixing easier.", inventory=10, price=200.00)
+        item2 = Item(name="Blender", image="https://images.pexels.com/photos/7460165/pexels-photo-7460165.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Create smoothies effortlessly.", inventory=5, price=50.00)
+        item3 = Item(name="Single Cup Coffee Machine", image="https://images.pexels.com/photos/10078423/pexels-photo-10078423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Brew coffee in seconds.", inventory=15, price=99.00)
+        item4 = Item(name="Toaster", image="https://images.pexels.com/photos/7936638/pexels-photo-7936638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Make chicken wings in no time.", inventory=15, price=39.00)
         # To use file images
         # image="assets/applianceImages/vecteezy_coffe-style-illustration-ai-generated_21946989_918.jpg"
         item_list = [item1, item2, item3, item4]

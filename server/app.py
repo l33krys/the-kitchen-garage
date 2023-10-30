@@ -3,6 +3,7 @@
 # Standard library imports
 
 # Remote library imports
+from flask import jsonify
 from flask import request, session, make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -106,12 +107,19 @@ class Customers(Resource):
     
     def post(self):
 
-        data = request.get_json()
-        customer = Customer()
+        first_name = request.get_json()["first_name"]
+        last_name = request.get_json()["last_name"]
+        email = request.get_json()["email"]
+        password = request.get_json()["password"]
+        
         try:
-            for key in data:
-                if hasattr(customer, key):
-                    setattr(customer, key, data[key])
+            customer = Customer(
+                first_name=first_name,
+                last_name=last_name,
+                email=email
+            )
+            customer.password_hash = password
+
             db.session.add(customer)
             db.session.commit()
             return make_response(
@@ -335,12 +343,18 @@ class Orders(Resource):
     
     def post(self):
 
-        data = request.get_json()
-        order = Order()
+        status = request.get_json()["status"]
+        customer_id = request.get_json()["customer_id"]
+        shipping = request.get_json()["shipping"]
+        total = request.get_json()["total"]
+
         try:
-            for key in data:
-                if hasattr(order, key):
-                    setattr(order, key, data[key])
+            order = Order(
+                status=status,
+                customer_id=customer_id,
+                shipping=shipping,
+                total=total
+            )
             db.session.add(order)
             db.session.commit()
             return make_response(
@@ -402,7 +416,10 @@ class OrderById(Resource):
 class OrderItems(Resource):
 
     def get(self):
-        orderitems = OrderItem.query.all()
+
+        order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+        orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
+        
         response = make_response(
             order_items_schema.dump(orderitems), 200
         )
@@ -410,16 +427,24 @@ class OrderItems(Resource):
     
     def post(self):
 
-        data = request.get_json()
-        order_item = OrderItem()
+        item_id = request.get_json()["item_id"]
+        quantity = request.get_json()["quantity"]
+        order_id = request.get_json()["order_id"]
+        
         try:
-            for key in data:
-                if hasattr(order_item, key):
-                    setattr(order_item, key, data[key])
+            order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+            # exists = OrderItem.query.filter(OrderItem.item_id == item_id).first()
+
+            order_item = OrderItem(
+                item_id=item_id,
+                quantity=quantity,
+                order_id=1
+            )
+
             db.session.add(order_item)
             db.session.commit()
             return make_response(
-                order_item_schema.dump(order_item), 201
+                customer_schema.dump(order_item), 201
             )
         except ValueError:
             return make_response(
@@ -473,18 +498,79 @@ class OrderItemById(Resource):
             return make_response(
                 {"error": "Order Item does not exist"}, 404
             )
+        
+class CheckSession(Resource):
+    def get(self):
+
+        customer_id = session['customer_id']
+        if customer_id:
+            customer = Customer.query.filter(Customer.id == customer_id).first()
+            return make_response(
+                customer_schema.dump(customer), 200
+            )
+        return {}, 401
+
+class Login(Resource):
+    def post(self):
+        
+        email = request.get_json()['email']
+        password = request.get_json()['password']
+        customer = Customer.query.filter(Customer.email == email).first()    
+
+        if customer:
+
+            if customer.authenticate(password):
+                session["customer_id"] = customer.id
+                # return customer.to_dict(), 200
+                res = make_response(customer_schema.dump(customer), 200)
+                res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
+                return res
+           
+        return {"error": "401 Unauthorized"}, 401
+    
 
 
-api.add_resource(Customers, "/customers")
-api.add_resource(CustomerById, "/customers/<int:id>")
-api.add_resource(Addresses, "/addresses")
-api.add_resource(AddressById, "/addresses/<int:id>")
-api.add_resource(Items, "/items")
-api.add_resource(ItemById, "/items/<int:id>")
-api.add_resource(Orders, "/orders")
-api.add_resource(OrderById, "/orders/<int:id>")
-api.add_resource(OrderItems, "/order_items")
-api.add_resource(OrderItemById, "/order_items/<int:id>")
+class Logout(Resource):
+    def delete(self):
+        
+        session["customer_id"] = None
+        return {}, 204
+
+
+api.add_resource(Customers, "/customers", endpoint="customer_list")
+api.add_resource(CustomerById, "/customers/<int:id>", endpoint="customer")
+api.add_resource(Addresses, "/addresses", endpoint="address_list")
+api.add_resource(AddressById, "/addresses/<int:id>", endpoint="address")
+api.add_resource(Items, "/items", endpoint="item_list")
+api.add_resource(ItemById, "/items/<int:id>", endpoint="item")
+api.add_resource(Orders, "/orders", endpoint="order_list")
+api.add_resource(OrderById, "/orders/<int:id>", endpoint="order")
+api.add_resource(OrderItems, "/order_items", endpoint="order_items_list")
+api.add_resource(OrderItemById, "/order_items/<int:id>", endpoint="order_item")
+api.add_resource(CheckSession, "/check_session", endpoint="check_session")
+api.add_resource(Login, "/login", endpoint="login")
+api.add_resource(Logout, "/logout", endpoint="logout")
+
+
+# @app.route('/sessions/<string:key>', methods=['GET'])
+# def show_session(key):
+
+#     session["hello"] = session.get("hello") or "World"
+#     session["goodnight"] = session.get("goodnight") or "Moon"
+
+#     response = make_response(jsonify({
+#         'session': {
+#             'session_key': key,
+#             'session_value': session[key],
+#             'session_accessed': session.accessed,
+#         },
+#         'cookies': [{cookie: request.cookies[cookie]}
+#             for cookie in request.cookies],
+#     }), 200)
+
+#     response.set_cookie('mouse', 'Cookie')
+
+#     return response
 
 @app.route('/')
 def index():

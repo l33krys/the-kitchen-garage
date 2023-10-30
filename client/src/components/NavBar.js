@@ -1,21 +1,51 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ loggedInUser, setLoggedInUser }) {
+
+    function handleLogOutClick() {
+        fetch("/logout", {
+            method: "DELETE",
+        })
+        .then((r) => {
+            if (r.ok) {
+                setLoggedInUser(null)
+            }
+        })
+    }
+
 
     return (
 
-        <div style={{ backgroundColor: "#576F72"}}>
-        <div style={{ paddingTop: "10px", paddingBottom: "20px", marginLeft: "50px"}}>
-            <NavLink to="/" exact><h1 style={{color: "#F0EBE3"}}>The Kitchen Garage</h1></NavLink>
-            <p style={{color: "#F0EBE3"}}>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>
-            <h3>
-            <NavLink style={{ marginRight: "20px", color: "#F0EBE3"}} to="/appliances">Appliances</NavLink>
-            <NavLink style={{ marginRight: "20px", color: "#F0EBE3"}} to="/tools">Tools</NavLink>
-            <NavLink style={{ marginRight: "20px", color: "#F0EBE3"}} to="/accessories">Accessories</NavLink>
-            <NavLink style={{ marginRight: "20px", color: "#F0EBE3"}} to="/login">Customer Login</NavLink>
-            </h3>
-        </div>
+        <div>
+            <div style={{ textAlign: "right", paddingTop: "10px", marginLeft: "50px"}}>
+                {loggedInUser !== null ? 
+                (<>
+                    {/* <p style={{ marginRight: "20px" }}>Hi, {loggedInUser.first_name}</p> */}
+                    <NavLink style={{ marginRight: "20px" }} to="/myaccount">My Account</NavLink>
+                    <NavLink style={{ marginRight: "20px" }} onClick={handleLogOutClick} to="/">Log Out</NavLink>
+                </>)
+                :
+                (<NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>)
+                }
+                <NavLink style={{ marginRight: "20px" }} to="/cart">Cart</NavLink>
+            </div>
+            <div>
+                {/* <div style={{ float: "right", paddingTop: "40px", marginLeft: "50px", marginRight: "20px"}}>
+                    <NavLink to="/login">Search</NavLink>
+                </div> */}
+                <div style={{ paddingTop: "10px", paddingBottom: "20px", marginLeft: "50px"}}>
+                    <NavLink to="/" exact><h1 style={{ color: "black" }}>The Kitchen Garage</h1></NavLink>
+                    <p>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>
+                </div>
+            </div>
+            <div style={{ textAlign: "center", paddingTop: "10px", paddingBottom: "10px", backgroundColor: "#576F72"}}>
+                <h5>
+                <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} to="/appliances">Appliances</NavLink>
+                <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} to="/tools">Tools</NavLink>
+                <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} to="/accessories">Accessories</NavLink>
+                </h5>
+            </div>
         </div>
     )
 }

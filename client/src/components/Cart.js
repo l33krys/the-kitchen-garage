@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
 import { Card } from 'semantic-ui-react'
 import { useFetchItemsQuery } from '../store';
+import CartList from "./CartList";
 
-function ItemList({ items }) {
+function Cart({ }) {
 
     const { data, error, isLoading } = useFetchItemsQuery();
 
     return (
 
-        <div>
-            <Card.Group>
-                {isLoading ? "Loading..." : data.map((item, key) => (
-                <ItemCard key={key} item={item} />))}
-            </Card.Group>
+        <div style={{ margin: "30px"}}>
+            <h3>Shopping Cart</h3>
+            <CartList />
         </div>
     )
 }
 
-export default ItemList;
+export default Cart;
