@@ -416,7 +416,10 @@ class OrderById(Resource):
 class OrderItems(Resource):
 
     def get(self):
-        orderitems = OrderItem.query.all()
+
+        order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+        orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
+        
         response = make_response(
             order_items_schema.dump(orderitems), 200
         )
@@ -429,10 +432,13 @@ class OrderItems(Resource):
         order_id = request.get_json()["order_id"]
         
         try:
+            order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+            # exists = OrderItem.query.filter(OrderItem.item_id == item_id).first()
+
             order_item = OrderItem(
                 item_id=item_id,
                 quantity=quantity,
-                order_id=order_id
+                order_id=1
             )
 
             db.session.add(order_item)

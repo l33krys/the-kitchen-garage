@@ -1,13 +1,33 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 
-function NavBar() {
+function NavBar({ loggedInUser, setLoggedInUser }) {
+
+    function handleLogOutClick() {
+        fetch("/logout", {
+            method: "DELETE",
+        })
+        .then((r) => {
+            if (r.ok) {
+                setLoggedInUser(null)
+            }
+        })
+    }
+
 
     return (
 
         <div>
             <div style={{ textAlign: "right", paddingTop: "10px", marginLeft: "50px"}}>
-                <NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>
+                {loggedInUser !== null ? 
+                (<>
+                    {/* <p style={{ marginRight: "20px" }}>Hi, {loggedInUser.first_name}</p> */}
+                    <NavLink style={{ marginRight: "20px" }} to="/myaccount">My Account</NavLink>
+                    <NavLink style={{ marginRight: "20px" }} onClick={handleLogOutClick} to="/">Log Out</NavLink>
+                </>)
+                :
+                (<NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>)
+                }
                 <NavLink style={{ marginRight: "20px" }} to="/cart">Cart</NavLink>
             </div>
             <div>

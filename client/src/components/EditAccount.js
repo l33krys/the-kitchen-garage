@@ -3,39 +3,23 @@ import { useHistory } from "react-router";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, Form, Message, Grid, Segment } from 'semantic-ui-react'
-import { useAddCustomerMutation } from "../store";
 
-export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
-    const [addCustomer, results] = useAddCustomerMutation();
+export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
     const history = useHistory();
-
-    const [showSignUpSuccess, setShowSignUpSuccess] = useState(false)
-    const [showError, setShowError] = useState(false)
 
   const formSchema = yup.object().shape({
     first_name: yup.string().required("First name is required"),
     last_name: yup.string().required("Last name is required"),
     email: yup.string().required("Must enter a valid email"),
-    password: yup.string().required("Must enter a password with 8 characters and include at least 1 letter and 1 number"),
-    confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match')
+    phone_number: yup.string().required("Must use format XXX-XXX-XXXX"),
   });
-
-  useEffect(() => {
-    if (showSignUpSuccess) {
-      const timer = setTimeout(() => {
-        setShowSignUpSuccess(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showSignUpSuccess]);
 
   const formik = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      confirm_password: ""
+      first_name: loggedInUser.first_name,
+      last_name: loggedInUser.last_name,
+      email: loggedInUser.email,
+      phone_number: loggedInUser.phone_number ? loggedInUser.phone_number : ""
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
@@ -43,31 +27,31 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
                     first_name: values.first_name,
                     last_name: values.last_name,
                     email: values.email,
-                    password: values.password
+                    phone_number: values.phone_number
                   }
-      addCustomer(customer)
-      fetch("/login", {
-        method: "POST",
+        console.log(customer)
+      fetch(`/customers/${loggedInUser.id}`, {
+        method: "PATCH",
         mode: "cors",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+            first_name: values.first_name,
+            last_name: values.last_name,
             email: values.email,
-            password: values.password
+            phone_number: values.phone_number
           }, null, 2),
       })
       .then((r) => {
         if (r.ok) {
-          history.push("/")
+          history.push("/myaccount")
           r.json()
           .then((user) => {
             setLoggedInUser(user)         
           }) 
           }
       })
-
-
     },
   });
 
@@ -81,7 +65,7 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
       }}
     >
       <h3 style={{ margin: "30px", color: "#F6F1F1", textAlign: "center" }}>
-        Create an Account
+        Edit My Account
       </h3>
 
       <Form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
@@ -109,89 +93,38 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
               />
               <p style={{ color: "white" }}> {formik.errors.last_name}</p>
             </Form.Field>
-
             <Form.Field>
               <label htmlFor="email" style={{ color: "#F6F1F1" }}>
                 Email
               </label>
               <input
-                id="email-signup"
+                id="email-edit-account"
                 name="email"
                 onChange={formik.handleChange}
                 value={formik.values.email}
-                // style={{ position: "absolute", left: "50px",  width: "520px", marginBottom: "0px" }}
               />
               <p style={{ color: "white" }}> {formik.errors.email}</p>
             </Form.Field>
             <Form.Field>
-              <label htmlFor="password" style={{ color: "#F6F1F1" }}>
-                Password
+              <label htmlFor="phone_number" style={{ color: "#F6F1F1" }}>
+                Phone Number
               </label>
-              <Form.Input
-                id="password-signup"
-                type="password"
-                name="password"
+              <input
+                id="phone_number"
+                name="phone_number"
                 onChange={formik.handleChange}
-                value={formik.values.password}
-                icon='lock'
-                iconPosition='left'
+                value={formik.values.phone_number}
               />
-
-              <p style={{ color: "white" }}> {formik.errors.password}</p>
-            </Form.Field>
-            <Form.Field>
-              <label htmlFor="confirm_password" style={{ color: "#F6F1F1" }}>
-                Confirm Password
-              </label>
-              <Form.Input
-                id="confirm_password"
-                type="password"
-                name="confirm_password"
-                onChange={formik.handleChange}
-                value={formik.values.confirm_password}
-                icon='lock'
-                iconPosition='left'
-              />
-              <p style={{ color: "white" }}>
-                {" "}
-                {formik.errors.confirm_password}
-              </p>
+              <p style={{ color: "white" }}> {formik.errors.phone_number}</p>
             </Form.Field>
         <br/>
         <br/>
         <Button style={{ background: "white" }} type="submit">
-          Create Account
-        </Button>
-        {showError ? (
-          <Message
-            style={{
-              margin: "auto",
-              width: "350px",
-              marginTop: "20px",
-              color: "#E06469",
-            }}
-            header="Attention Required"
-            content="Input(s) Invalid"
-          ></Message>
-        ) : (
-          ""
-        )}
-        {showSignUpSuccess ? (
-          <Message
-            style={{
-              margin: "auto",
-              width: "350px",
-              marginTop: "20px",
-              color: "#19A7CE",
-            }}
-            header="Success: You're now logged in"
-          />
-        ) : (
-          ""
-        )}
+          Save Changes
+        </Button>        
       </Form>
     </div>
   );
 };
 
-export default SignUp;
+export default EditAccount;

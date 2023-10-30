@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
 import { Link, Redirect } from 'react-router-dom'
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, Form, Message } from 'semantic-ui-react'
 import SignUp from "./SignUp";
 
-export const Login = ({ setUserLoggedIn, userLoggedIn }) => {
+export const Login = ({ loggedInUser, setLoggedInUser }) => {
   const [showLoginSuccess, setShowLoginSuccess] = useState(false)
   const [showErrorMessage, setShowErrorMessage] = useState(false)
+  const [errors, setErrors] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const history = useHistory();
 
   const formSchema = yup.object().shape({
     email: yup.string().required("Must enter a valid email"),
@@ -29,7 +33,7 @@ export const Login = ({ setUserLoggedIn, userLoggedIn }) => {
       password: ""
     },
     validationSchema: formSchema,
-    onSubmit: (values, { resetForm }) => {
+    onSubmit: (values) => {
       fetch("/login", {
         method: "POST",
         mode: "cors",
@@ -41,24 +45,26 @@ export const Login = ({ setUserLoggedIn, userLoggedIn }) => {
             password: values.password
           }, null, 2),
       })
-      .then((res) => {
-        if (res.status == 200) {
-          setShowErrorMessage(false)
-          setShowLoginSuccess(!showLoginSuccess)
-          resetForm();
-        }
-        if (res.status === 401){
-          setShowErrorMessage(true)
-          setShowLoginSuccess(false)
-        }
+      .then((r) => {
+        setIsLoading(false)
+        if (r.ok) {
+          history.push("/")
+          r.json()
+          .then((user) => {
+            setLoggedInUser(user)
+            setShowErrorMessage(false)           
+          }) 
+          } else {
+            r.json().then((err) => {
+              setErrors(err.errors)
+              setShowErrorMessage(true)
+            })
+            
+          }
       })
     },
   });
 
-  if (showLoginSuccess){
-    return <Redirect replace to="/"/>;
-    setShowLoginSuccess(false)
-  }
 
   return (
     <div style={{ backgroundColor: "#576F72", margin: "30px", paddingTop: "15px", paddingBottom: "15px" }}>
@@ -91,7 +97,7 @@ export const Login = ({ setUserLoggedIn, userLoggedIn }) => {
         {/* <p style={{ color: "white" }}> {formik.errors.password}</p> */}
         </Form.Field>
         <Button style={{ background: "white" }} type="submit">Login</Button>
-        {showErrorMessage ? <Message style={{ margin: "auto", width: "350px", marginTop: "20px", color: '#E06469'}} header="Attention Required" content="Input(s) Invalid"></Message> : ""}
+        {showErrorMessage ? <Message style={{ margin: "auto", width: "350px", marginTop: "20px", color: '#E06469'}} header="Attention Required" content="Please check email and password"></Message> : ""}
         {showLoginSuccess ? <Message
         style={{ margin: "auto", width: "350px", marginTop: "20px", color: '#19A7CE'}}
                         header="Success: You're now logged in"

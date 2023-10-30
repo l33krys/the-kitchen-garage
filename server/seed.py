@@ -17,7 +17,7 @@ def create_address():
         a = Address(
             street = fake.street_address(),
             city = fake.city(),
-            state = fake.state(),
+            state = fake.state_abbr(),
             zip_code = fake.postcode()
         )
         addresses.append(a)
@@ -37,6 +37,7 @@ def create_customer():
             billing_address_id = rc(addresses).id,
             shipping_address_id = rc(addresses).id
         )
+        c.password_hash = c.first_name + "pass"
         customers.append(c)
     return customers
 
