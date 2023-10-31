@@ -76,7 +76,7 @@ class OrderSchema(ma.SQLAlchemySchema):
     customer_id = ma.auto_field()
     customer = fields.Nested(CustomerSchema(only=("email",)))
     shipping = ma.auto_field()
-    total = ma.auto_field()
+    # total = ma.auto_field()
 
 order_schema = OrderSchema()
 orders_schema = OrderSchema(many=True)
@@ -433,13 +433,14 @@ class OrderItems(Resource):
         order_id = request.get_json()["order_id"]
         
         try:
-            order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+            customer_id = session['customer_id']
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
             # exists = OrderItem.query.filter(OrderItem.item_id == item_id).first()
 
             order_item = OrderItem(
                 item_id=item_id,
                 quantity=quantity,
-                order_id=order.id
+                order_id=saved_order.id
             )
 
             db.session.add(order_item)
@@ -558,7 +559,7 @@ class OrderItemsbyOrder(Resource):
     def get(self):
         customer_id = session['customer_id']
         if customer_id:
-            saved_order = Order.query.filter(Order.customer_id == customer_id).first()
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
             order_items = OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()
             return make_response(
                 order_items_schema.dump(order_items), 200
@@ -568,6 +569,76 @@ class OrderItemsbyOrder(Resource):
         return {}, 401
 
 api.add_resource(OrderItemsbyOrder, "/order_items_by_order")
+
+class OrderTotal(Resource):
+
+    def get(self):
+        customer_id = session['customer_id']
+        if customer_id:
+            order = Order.query.filter(Order.customer_id == customer_id).first()
+            order_items = [row.to_dict(only=("item_id", )) for row in OrderItem.query.filter(OrderItem.order_id == order.id).all()]
+            items = [item.to_dict(only=("item_id", "order_id", "quantity" )) for item in order_items]
+
+            # total = func.sum(order_items.price)
+
+            return make_response(
+                order_items
+                # order_items_schema.dump(order_items), 200
+                # saved_order.to_dict(only=("customer_id", "id"))
+                # {"order id" : saved_order.id}
+            )
+        return {}, 401
+
+api.add_resource(OrderTotal, "/order_total")
+
+class SubmitOrder(Resource):
+
+    def get(self):
+        customer_id = session['customer_id']
+        if customer_id:
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+
+            # Update inventory
+
+            if saved_order:
+                setattr(saved_order, "status", "submitted")
+                db.session.commit()
+            
+                # Create new blank order
+                new_order = Order(
+                    status="saved",
+                    customer_id=customer_id,
+                    shipping=4.99,
+                    total=4.99
+                )
+                db.session.add(new_order)
+                db.session.commit()
+
+                return make_response(order_schema.dump(saved_order), 203)
+        
+        return make_response(
+            {"error": "There are no orders assigned to this customer"}, 400
+        )
+
+api.add_resource(SubmitOrder, "/submit_order")
+
+# class DeleteOrder(Resource):
+
+#     def get(self):
+#         customer_id = session['customer_id']
+#         if customer_id:
+#             saved_order = Order.query.filter(Order.customer_id == customer_id).first()
+            
+#         setattr(saved_order, "status", "submitted")
+#         db.session.commit()
+
+#         return make_response(
+
+#             order_schema.dump(saved_order)
+#             # {"message": "Order submitted"}, 203
+#             )
+
+# api.add_resource(DeleteOrder, "/delete_order")
 
 
 

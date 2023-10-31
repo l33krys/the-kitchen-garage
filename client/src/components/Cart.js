@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
-import { Card } from 'semantic-ui-react'
+import { Button, Card } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
@@ -16,11 +16,22 @@ function Cart({ loggedInUser, setLoggedInUser }) {
 
     }, [])
 
+    function handleCheckOut() {
+        console.log('i want to place my order')
+        fetch(`/submit_order`)
+        .then((r) => {
+            if (r.status === 203) {
+                console.log("Order submitted")
+            } else {
+                console.log("No order was found")
+            }
+        })
+    }
 
 
     return (
 
-        <div style={{ margin: "30px"}}>
+        <div style={{ marginTop: "5%", marginLeft: "30%"}}>
             <h3>Shopping Cart</h3>
             <CartList 
                 loggedInUser={loggedInUser} 
@@ -28,6 +39,7 @@ function Cart({ loggedInUser, setLoggedInUser }) {
                 customerOrderItems={customerOrderItems}
                 setCustomerOrderItems={setCustomerOrderItems}
                  />
+            <Button onClick={handleCheckOut}>Checkout</Button>
         </div>
     )
 }
