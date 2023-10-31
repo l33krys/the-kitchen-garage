@@ -73,6 +73,7 @@ class OrderSchema(ma.SQLAlchemySchema):
 
     id = ma.auto_field()
     status = ma.auto_field()
+    customer_id = ma.auto_field()
     customer = fields.Nested(CustomerSchema(only=("email",)))
     shipping = ma.auto_field()
     total = ma.auto_field()
@@ -98,7 +99,7 @@ class Customers(Resource):
 
     def get(self):
         customers = Customer.query.all()
-        billings = [customer.billing_address for customer in Customer.query.all()]
+        # billings = [customer.billing_address for customer in Customer.query.all()]
 
         response = make_response(
             customers_schema.dump(customers), 200
@@ -438,7 +439,7 @@ class OrderItems(Resource):
             order_item = OrderItem(
                 item_id=item_id,
                 quantity=quantity,
-                order_id=1
+                order_id=order.id
             )
 
             db.session.add(order_item)
@@ -550,6 +551,24 @@ api.add_resource(OrderItemById, "/order_items/<int:id>", endpoint="order_item")
 api.add_resource(CheckSession, "/check_session", endpoint="check_session")
 api.add_resource(Login, "/login", endpoint="login")
 api.add_resource(Logout, "/logout", endpoint="logout")
+
+
+class OrderItemsbyOrder(Resource):
+
+    def get(self):
+        customer_id = session['customer_id']
+        if customer_id:
+            saved_order = Order.query.filter(Order.customer_id == customer_id).first()
+            order_items = OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()
+            return make_response(
+                order_items_schema.dump(order_items), 200
+                # saved_order.to_dict(only=("customer_id", "id"))
+                # {"order id" : saved_order.id}
+            )
+        return {}, 401
+
+api.add_resource(OrderItemsbyOrder, "/order_items_by_order")
+
 
 
 # @app.route('/sessions/<string:key>', methods=['GET'])

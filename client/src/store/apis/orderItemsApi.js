@@ -49,10 +49,12 @@ const orderItemsApi = createApi({
                 providesTags: (result, error, orderItem) => {
                     return [{ type: "OrderItem" }]
                 },
-                query: () => {
+                query: (order) => {
                     return {
                         url: "/order_items",
-                        params: {},
+                        params: {
+                            order_id: order.id
+                        },
                         method: "GET",
 
                     };

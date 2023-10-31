@@ -2,18 +2,12 @@ import React from 'react'
 import { Header, Image, Table, Button } from 'semantic-ui-react'
 import { useDeleteCustomerMutation } from "../store";
 
-function CartItem({ order_item }) {
+function CartItem({ order_item, handleOrderItemDelete }) {
     const [deleteOrderItem, results] = useDeleteCustomerMutation();
 
-    function handleOrderItemDelete(delOrderItem) {
-        // OrderItem Id
-        console.log(delOrderItem)
-        deleteOrderItem(delOrderItem)
-    }
-    
+   
     return (
-
-        
+       
       <Table.Row>
         <Table.Cell>
           <Header as='h4' image>

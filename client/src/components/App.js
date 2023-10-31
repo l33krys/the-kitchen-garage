@@ -81,7 +81,9 @@ console.log(loggedInUser)
         <SignUp />
       </Route>
       <Route path="/cart">
-        <Cart />
+        <Cart 
+          setLoggedInUser={setLoggedInUser}
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/login_signup">
         <CustomerFormLayout

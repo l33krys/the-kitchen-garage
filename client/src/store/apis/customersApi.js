@@ -41,9 +41,9 @@ const customersApi = createApi({
             fetchCustomer: builder.query({
                 query: (customer) => {
                     return {
-                        url: "/customers",
+                        url: `/customers/${customer.id}`,
                         params: {
-                            customerId: customer.id,
+                            // customerId: customer.id,
                         },
                         method: "GET",
 
