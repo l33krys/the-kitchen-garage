@@ -2,9 +2,8 @@ import React from 'react'
 import { Header, Image, Table, Button } from 'semantic-ui-react'
 import { useDeleteCustomerMutation } from "../store";
 
-function CartItem({ order_item, handleOrderItemDelete }) {
+function CartItem({ order_item, handleOrderItemDelete, loggedInUser }) {
     const [deleteOrderItem, results] = useDeleteCustomerMutation();
-
    
     return (
        
@@ -21,7 +20,7 @@ function CartItem({ order_item, handleOrderItemDelete }) {
         <Table.Cell>1</Table.Cell>
         <Table.Cell>${order_item.items.price}</Table.Cell>
         <Table.Cell>
-            <Button onClick={(e) => handleOrderItemDelete(order_item.id)}>Delete</Button>
+           <Button onClick={(e) => handleOrderItemDelete(order_item.id)}>Delete</Button>
         </Table.Cell>
        </Table.Row>
 

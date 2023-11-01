@@ -3,7 +3,7 @@ import ItemCard from "./ItemCard";
 import { Card } from 'semantic-ui-react'
 import { useFetchItemsQuery } from '../store';
 
-function ItemList({ items }) {
+function ItemList({ items, loggedInUser }) {
 
     const { data, error, isLoading } = useFetchItemsQuery();
 
@@ -12,7 +12,7 @@ function ItemList({ items }) {
         <div>
             <Card.Group>
                 {isLoading ? "Loading..." : data.map((item, key) => (
-                <ItemCard key={key} item={item} />))}
+                <ItemCard key={key} item={item} loggedInUser={loggedInUser}/>))}
             </Card.Group>
         </div>
     )

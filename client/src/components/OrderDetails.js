@@ -10,11 +10,12 @@ function OrderDetails({ loggedInUser, setLoggedInUser, orderHistoryDetails }) {
 
     return (
 
-             <Table.Row>
-                <Table.Cell>Update Date</Table.Cell>
-                <Table.Cell>Order #</Table.Cell>
-                <Table.Cell>Status</Table.Cell>
-            </Table.Row>
+        <></>
+            //  <Table.Row>
+            //     <Table.Cell>Update Date</Table.Cell>
+            //     <Table.Cell>Order #</Table.Cell>
+            //     <Table.Cell>Status</Table.Cell>
+            // </Table.Row>
 
 
     )

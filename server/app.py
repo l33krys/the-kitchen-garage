@@ -704,6 +704,20 @@ class OrderHistory(Resource):
 
 api.add_resource(OrderHistory, "/order_history")
 
+class CheckInventory(Resource):
+
+    def get(self):
+
+        inventory = Item.query.filter(Item.id == 1).first()
+
+        return make_response(
+            inventory.to_dict(only=("name", "inventory",)), 200
+        )
+
+api.add_resource(CheckInventory, "/check_inventory")
+
+
+
 # class DeleteOrder(Resource):
 
 #     def get(self):
@@ -722,27 +736,6 @@ api.add_resource(OrderHistory, "/order_history")
 
 # api.add_resource(DeleteOrder, "/delete_order")
 
-
-
-# @app.route('/sessions/<string:key>', methods=['GET'])
-# def show_session(key):
-
-#     session["hello"] = session.get("hello") or "World"
-#     session["goodnight"] = session.get("goodnight") or "Moon"
-
-#     response = make_response(jsonify({
-#         'session': {
-#             'session_key': key,
-#             'session_value': session[key],
-#             'session_accessed': session.accessed,
-#         },
-#         'cookies': [{cookie: request.cookies[cookie]}
-#             for cookie in request.cookies],
-#     }), 200)
-
-#     response.set_cookie('mouse', 'Cookie')
-
-#     return response
 
 @app.route('/')
 def index():

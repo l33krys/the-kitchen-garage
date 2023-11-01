@@ -14,7 +14,7 @@ import EditAddress from "./EditAddress";
 import SignUp from "./SignUp";
 import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
-import ItemDetails from "./ItemDetails";
+// import ItemDetails from "./ItemDetails";
 
 function App() {
 
@@ -42,7 +42,8 @@ console.log(loggedInUser)
         <Home />
       </Route>
       <Route path="/appliances">
-        <Appliances />
+        <Appliances 
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/login">
         <Login />
@@ -85,10 +86,10 @@ console.log(loggedInUser)
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
-      <Route path="/items/:itemId">
+      {/*<Route path="/items/:itemId">
         <ItemDetails />
       </Route>
-      {/* <Route path="/tools">
+       <Route path="/tools">
         <Tools />
       </Route>
       <Route path="/accessories">
