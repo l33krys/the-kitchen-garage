@@ -11,17 +11,26 @@ function Cart({ loggedInUser, setLoggedInUser }) {
     
     useEffect(() => {
         fetch("/order_items_by_order")
-        .then((r) => r.json())
+        .then((r) => {
+            if (r.status === 201) {
+                // Order was created, no items yet
+                setCustomerOrderItems([])
+            } else {
+                return r.json()
+            }
+        })
         .then((data) => setCustomerOrderItems(data))
 
     }, [])
 
+    console.log(customerOrderItems)
+
     function handleCheckOut() {
-        console.log('i want to place my order')
         fetch(`/submit_order`)
         .then((r) => {
             if (r.status === 203) {
                 console.log("Order submitted")
+                setCustomerOrderItems([])
             } else {
                 console.log("No order was found")
             }

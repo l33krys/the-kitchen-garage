@@ -436,18 +436,42 @@ class OrderItems(Resource):
             customer_id = session['customer_id']
             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
             # exists = OrderItem.query.filter(OrderItem.item_id == item_id).first()
+            if saved_order:
+                order_item = OrderItem(
+                    item_id=item_id,
+                    quantity=quantity,
+                    order_id=saved_order.id
+                )
 
-            order_item = OrderItem(
-                item_id=item_id,
-                quantity=quantity,
-                order_id=saved_order.id
-            )
+                db.session.add(order_item)
+                db.session.commit()
+                return make_response(
+                    customer_schema.dump(order_item), 201
+                )
+            else:
+                # If no saved order, create new one
+                new_order = Order(
+                    status="saved",
+                    customer_id=customer_id,
+                    shipping=4.99,
+                    total=4.99
+                )
+                db.session.add(new_order)
+                db.session.commit()
 
-            db.session.add(order_item)
-            db.session.commit()
-            return make_response(
-                customer_schema.dump(order_item), 201
-            )
+                saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+                order_item = OrderItem(
+                    item_id=item_id,
+                    quantity=quantity,
+                    order_id=saved_order.id
+                )
+
+                db.session.add(order_item)
+                db.session.commit()
+                return make_response(
+                    customer_schema.dump(order_item), 201
+                )
+            
         except ValueError:
             return make_response(
                 {"errors": ["validation errors"]}, 400
@@ -512,6 +536,24 @@ class CheckSession(Resource):
             )
         return {}, 401
 
+# class Login(Resource):
+#     def post(self):
+        
+#         email = request.get_json()['email']
+#         password = request.get_json()['password']
+#         customer = Customer.query.filter(Customer.email == email).first()    
+
+#         if customer:
+
+#             if customer.authenticate(password):
+#                 session["customer_id"] = customer.id
+#                 # return customer.to_dict(), 200
+#                 res = make_response(customer_schema.dump(customer), 200)
+#                 res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
+#                 return res
+           
+#         return {"error": "401 Unauthorized"}, 401    
+
 class Login(Resource):
     def post(self):
         
@@ -524,13 +566,24 @@ class Login(Resource):
             if customer.authenticate(password):
                 session["customer_id"] = customer.id
                 # return customer.to_dict(), 200
+
+                customer_id = session['customer_id']
+                saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+                # If no saved order, create new one
+                new_order = Order(
+                    status="saved",
+                    customer_id=customer_id,
+                    shipping=4.99,
+                    total=4.99
+                )
+                db.session.add(new_order)
+                db.session.commit()
+
                 res = make_response(customer_schema.dump(customer), 200)
                 res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
                 return res
            
-        return {"error": "401 Unauthorized"}, 401
-    
-
+        return {"error": "401 Unauthorized"}, 401    
 
 class Logout(Resource):
     def delete(self):
@@ -559,37 +612,51 @@ class OrderItemsbyOrder(Resource):
     def get(self):
         customer_id = session['customer_id']
         if customer_id:
-            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-            order_items = OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()
-            return make_response(
-                order_items_schema.dump(order_items), 200
-                # saved_order.to_dict(only=("customer_id", "id"))
-                # {"order id" : saved_order.id}
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.
+            status == "saved").first()
+            if saved_order:
+                order_items = OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()
+                return make_response(
+                    order_items_schema.dump(order_items), 200
+                    # saved_order.to_dict(only=("customer_id", "id"))
+                    # {"order id" : saved_order.id}
+                )
+        else:
+            # If no saved order, create new one
+            new_order = Order(
+                status="saved",
+                customer_id=customer_id,
+                shipping=4.99,
+                total=4.99
             )
+            db.session.add(new_order)
+            db.session.commit()
+            return make_response({}, 201)
+
         return {}, 401
 
 api.add_resource(OrderItemsbyOrder, "/order_items_by_order")
 
-class OrderTotal(Resource):
+class OrderHistoryDetails(Resource):
 
     def get(self):
+       
         customer_id = session['customer_id']
         if customer_id:
-            order = Order.query.filter(Order.customer_id == customer_id).first()
-            order_items = [row.to_dict(only=("item_id", )) for row in OrderItem.query.filter(OrderItem.order_id == order.id).all()]
-            items = [item.to_dict(only=("item_id", "order_id", "quantity" )) for item in order_items]
+            order_ids = [order.id for order in Order.query.filter(Order.customer_id == customer_id).all()]
+            line_items = []
+            for order_num in order_ids:
+                line_item = [row.to_dict(only=("orders.customer.id", "orders.updated_at", "orders.status", "order_id", "quantity", "items.name", "items.price",)) for row in OrderItem.query.filter(OrderItem.order_id == order_num).all()]
+                line_items.append(line_item)
+            return line_items
 
-            # total = func.sum(order_items.price)
+        return make_response(
+            line_items, 200
 
-            return make_response(
-                order_items
-                # order_items_schema.dump(order_items), 200
-                # saved_order.to_dict(only=("customer_id", "id"))
-                # {"order id" : saved_order.id}
-            )
+        )
         return {}, 401
 
-api.add_resource(OrderTotal, "/order_total")
+api.add_resource(OrderHistoryDetails, "/order_history_details")
 
 class SubmitOrder(Resource):
 
@@ -621,6 +688,18 @@ class SubmitOrder(Resource):
         )
 
 api.add_resource(SubmitOrder, "/submit_order")
+
+class OrderHistory(Resource):
+
+    def get(self):
+        customer_id = session['customer_id']
+        customer_orders = [order.to_dict(only=("id", "status", "updated_at")) for order in Order.query.filter(Order.customer_id == customer_id).all()]
+
+        return make_response(
+            customer_orders, 200
+        )
+
+api.add_resource(OrderHistory, "/order_history")
 
 # class DeleteOrder(Resource):
 

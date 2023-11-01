@@ -45,7 +45,7 @@ def create_order():
     orders = []
     for _ in range(8):
         o = Order(
-            status = "saved",
+            status = "submitted",
             customer_id = rc(customers).id,
             shipping = 4.99,
             total = 4.99

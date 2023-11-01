@@ -7,6 +7,7 @@ import Appliances from "./Appliances";
 import Login from "./Login";
 import CustomerAcctLayout from "./CustomerAcctLayout"
 import MyAccount from "./MyAccount";
+import OrderHistory from "./OrderHistory";
 import EditAccount from "./EditAccount";
 import EditShippingAddress from "./EditShippingAddress";
 import EditAddress from "./EditAddress";
@@ -17,7 +18,7 @@ import ItemDetails from "./ItemDetails";
 
 function App() {
 
-  const [loggedInUser, setLoggedInUser] = useState({})
+  const [loggedInUser, setLoggedInUser] = useState(null)
 
   useEffect(() => {
     fetch("/check_session")
@@ -59,6 +60,11 @@ console.log(loggedInUser)
       </Route>
       <Route path="/myaccount">
         <CustomerAcctLayout 
+          setLoggedInUser={setLoggedInUser}
+          loggedInUser={loggedInUser} />
+      </Route>
+      <Route path="/order_history">
+        <OrderHistory
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
