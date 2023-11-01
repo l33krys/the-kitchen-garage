@@ -17,7 +17,7 @@ function CartItem({ order_item, handleOrderItemDelete, loggedInUser }) {
             </Header.Content>
           </Header>
         </Table.Cell>
-        <Table.Cell>1</Table.Cell>
+        <Table.Cell>{order_item.quantity}</Table.Cell>
         <Table.Cell>${order_item.items.price}</Table.Cell>
         <Table.Cell>
            <Button onClick={(e) => handleOrderItemDelete(order_item.id)}>Delete</Button>

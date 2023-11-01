@@ -428,6 +428,23 @@ class OrderItems(Resource):
             order_items_schema.dump(orderitems), 200
         )
         return response
+
+    def get(self):
+
+        customer_id = session['customer_id']
+        saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+
+        if saved_order:
+            order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == 1).first()
+            if order_item_exists:
+                setattr(order_item_exists, "quantity", order_item_exists.quantity + 5)
+                db.session.commit()
+                response = make_response(
+                    order_item_exists.to_dict(only=("quantity", )), 200
+                )
+                return response
+            else:
+                return make_response({"message": "order item doesn't exits"})  
     
     def post(self):
 
@@ -438,19 +455,30 @@ class OrderItems(Resource):
         try:
             customer_id = session['customer_id']
             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-            # exists = OrderItem.query.filter(OrderItem.item_id == item_id).first()
+
             if saved_order:
-                order_item = OrderItem(
-                    item_id=item_id,
-                    quantity=quantity,
-                    order_id=saved_order.id
+                order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == item_id).first()
+                if order_item_exists:
+                    setattr(order_item_exists, "quantity", order_item_exists.quantity + 1)
+                    db.session.commit()
+                    return make_response(
+                        {"message": "order item exists and quantities updated"}, 200
                 )
 
-                db.session.add(order_item)
-                db.session.commit()
-                return make_response(
-                    customer_schema.dump(order_item), 201
-                )
+                else:
+                    order_item = OrderItem(
+                            item_id=item_id,
+                            quantity=quantity,
+                            order_id=saved_order.id
+                        )
+
+                    db.session.add(order_item)
+                    db.session.commit()
+
+                    return make_response(
+                        {"message": "order item was created"}, 200
+                    )
+                
             else:
                 # If no saved order, create new one
                 new_order = Order(
@@ -573,14 +601,15 @@ class Login(Resource):
                 customer_id = session['customer_id']
                 saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
                 # If no saved order, create new one
-                new_order = Order(
-                    status="saved",
-                    customer_id=customer_id,
-                    shipping=4.99,
-                    total=4.99
-                )
-                db.session.add(new_order)
-                db.session.commit()
+                if not saved_order:
+                    new_order = Order(
+                        status="saved",
+                        customer_id=customer_id,
+                        shipping=4.99,
+                        total=4.99
+                    )
+                    db.session.add(new_order)
+                    db.session.commit()
 
                 res = make_response(customer_schema.dump(customer), 200)
                 res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
@@ -663,6 +692,11 @@ api.add_resource(OrderHistoryDetails, "/order_history_details")
 
 class SubmitOrder(Resource):
 
+    # customer_id = session['customer_id'] # Get logged in customer
+    # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first() # Check if they have an order started
+    # check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
+    # in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
+
     def get(self):
         customer_id = session['customer_id']
         if customer_id:
@@ -671,24 +705,76 @@ class SubmitOrder(Resource):
             # Update inventory
 
             if saved_order:
-                setattr(saved_order, "status", "submitted")
-                db.session.commit()
-            
-                # Create new blank order
-                new_order = Order(
-                    status="saved",
-                    customer_id=customer_id,
-                    shipping=4.99,
-                    total=4.99
-                )
-                db.session.add(new_order)
-                db.session.commit()
+                order_items = [row.to_dict(only=("quantity", "item_id",)) for row in OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()]
 
-                return make_response(order_schema.dump(saved_order), 203)
+                check_inventory_list = []
+                for product in order_items:
+                    check_inventory = Item.query.filter(Item.id == product["item_id"]).first() 
+                    check_inventory_list.append(product["quantity"] <= check_inventory.inventory)
+                # return check_inventory_list
+
+                all_in_stock = any(check_inventory_list) # Return list of booleans if in stock
+
+                # return make_response(
+                #     {"all in stock": str(all_in_stock)}, 200
+                # )
+
+                if all_in_stock:
+                    for product in order_items:
+                        get_item = Item.query.filter(Item.id == product["item_id"]).first() 
+                        updated_inventory = get_item.inventory - product["quantity"]
+                        setattr(get_item, "inventory", updated_inventory)
+
+
+                    setattr(saved_order, "status", "submitted") # Change order status to submitted
+                    db.session.commit()
+
+
+
+            
+                    # Create new blank order
+                    new_order = Order(
+                        status="saved",
+                        customer_id=customer_id,
+                        shipping=4.99,
+                        total=4.99
+                    )
+                    db.session.add(new_order)
+                    db.session.commit()
+
+                    return make_response(order_schema.dump(saved_order), 203)
         
         return make_response(
             {"error": "There are no orders assigned to this customer"}, 400
         )
+    
+    # Working code below
+    # def get(self):
+    #     customer_id = session['customer_id']
+    #     if customer_id:
+    #         saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+
+    #         # Update inventory
+
+    #         if saved_order:
+    #             setattr(saved_order, "status", "submitted")
+    #             db.session.commit()
+            
+    #             # Create new blank order
+    #             new_order = Order(
+    #                 status="saved",
+    #                 customer_id=customer_id,
+    #                 shipping=4.99,
+    #                 total=4.99
+    #             )
+    #             db.session.add(new_order)
+    #             db.session.commit()
+
+    #             return make_response(order_schema.dump(saved_order), 203)
+        
+    #     return make_response(
+    #         {"error": "There are no orders assigned to this customer"}, 400
+    #     )
 
 api.add_resource(SubmitOrder, "/submit_order")
 
@@ -744,4 +830,11 @@ def index():
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+
+
+# For later use:
+# customer_id = session['customer_id'] # Get logged in customer
+# saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first() # Check if they have an order started
+# check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
+# in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
 
