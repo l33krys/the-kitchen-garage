@@ -14,21 +14,22 @@ function NavBar({ loggedInUser, setLoggedInUser }) {
         })
     }
 
-
     return (
 
         <div>
             <div style={{ textAlign: "right", paddingTop: "10px", marginLeft: "50px"}}>
                 {loggedInUser !== null ? 
                 (<>
-                    {/* <p style={{ marginRight: "20px" }}>Hi, {loggedInUser.first_name}</p> */}
+                    <p style={{ marginRight: "20px" }}>Hi, {loggedInUser.first_name}</p>
                     <NavLink style={{ marginRight: "20px" }} to="/myaccount">My Account</NavLink>
+                    <NavLink style={{ marginRight: "20px" }} to="/order_history">Order History</NavLink>
                     <NavLink style={{ marginRight: "20px" }} onClick={handleLogOutClick} to="/">Log Out</NavLink>
+                    <NavLink style={{ marginRight: "20px" }} to="/cart">Cart</NavLink>
                 </>)
                 :
                 (<NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>)
                 }
-                <NavLink style={{ marginRight: "20px" }} to="/cart">Cart</NavLink>
+                
             </div>
             <div>
                 {/* <div style={{ float: "right", paddingTop: "40px", marginLeft: "50px", marginRight: "20px"}}>

@@ -17,10 +17,10 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
 
   const formik = useFormik({
     initialValues: {
-        street: loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.street,
-        city: loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.city,
-        state: loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.state,
-        zip_code: loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.zip_code,
+        street: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.street,
+        city: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.city,
+        state: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.state,
+        zip_code: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.zip_code,
       },
     validationSchema: formSchema,
     onSubmit: (values) => {
@@ -47,6 +47,8 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
       })
       .then((r) => r.json())
       .then((address) => {
+        console.log(address.id)
+        console.log(loggedInUser.id)
         fetch(`/customers/${loggedInUser.id}`, {
             method: "PATCH",
             mode: "cors",
@@ -67,6 +69,8 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
   });
 
   return (
+    <>
+    {loggedInUser ?
     <div
       style={{
         backgroundColor: "#576F72",
@@ -76,7 +80,7 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
       }}
     >
       <h3 style={{ margin: "30px", color: "#F6F1F1", textAlign: "center" }}>
-        Edit My Addresses
+        Edit Billing Address
       </h3>
 
       <Form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
@@ -135,6 +139,9 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
         </Button>
       </Form>
     </div>
+    :
+    "Loading..."}
+    </>
   );
 };
 

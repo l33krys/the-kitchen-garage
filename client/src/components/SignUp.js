@@ -45,29 +45,40 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
                     email: values.email,
                     password: values.password
                   }
-      addCustomer(customer)
-      fetch("/login", {
+      // using Redux; need response back to auto-login
+      // addCustomer(customer)
+      
+      fetch("/customers", {
         method: "POST",
         mode: "cors",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-            email: values.email,
-            password: values.password
-          }, null, 2),
+        body: JSON.stringify(customer, null, 2),
       })
-      .then((r) => {
-        if (r.ok) {
-          history.push("/")
-          r.json()
-          .then((user) => {
-            setLoggedInUser(user)         
-          }) 
-          }
+      .then((r) => r.json())
+      .then((customer) => {
+        fetch("/login", {
+          method: "POST",
+          mode: "cors",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+              email: values.email,
+              password: values.password
+            }, null, 2),
+        })
+        .then((r) => {
+          if (r.ok) {
+            history.push("/")
+            r.json()
+            .then((user) => {
+              setLoggedInUser(user)         
+            }) 
+            }
+        })
       })
-
-
     },
   });
 

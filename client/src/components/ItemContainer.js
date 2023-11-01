@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ItemList from "./ItemList";
 
-function ItemContainer({ }) {
+function ItemContainer({ loggedInUser }) {
 
 
     return (
 
         <div>
-            <ItemList />
+            <ItemList loggedInUser={loggedInUser} />
         </div>
     )
 }

@@ -7,17 +7,18 @@ import Appliances from "./Appliances";
 import Login from "./Login";
 import CustomerAcctLayout from "./CustomerAcctLayout"
 import MyAccount from "./MyAccount";
+import OrderHistory from "./OrderHistory";
 import EditAccount from "./EditAccount";
 import EditShippingAddress from "./EditShippingAddress";
 import EditAddress from "./EditAddress";
 import SignUp from "./SignUp";
 import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
-import ItemDetails from "./ItemDetails";
+// import ItemDetails from "./ItemDetails";
 
 function App() {
 
-  const [loggedInUser, setLoggedInUser] = useState({})
+  const [loggedInUser, setLoggedInUser] = useState(null)
 
   useEffect(() => {
     fetch("/check_session")
@@ -28,17 +29,6 @@ function App() {
       }
     })
   }, [])
-
-//   function handleLogOutClick() {
-//     fetch("/logout", {
-//         method: "DELETE",
-//     })
-//     .then((r) => {
-//         if (r.ok) {
-//             setLoggedInUser(null)
-//         }
-//     })
-// }
 
 console.log(loggedInUser)
 
@@ -52,13 +42,19 @@ console.log(loggedInUser)
         <Home />
       </Route>
       <Route path="/appliances">
-        <Appliances />
+        <Appliances 
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/login">
         <Login />
       </Route>
       <Route path="/myaccount">
         <CustomerAcctLayout 
+          setLoggedInUser={setLoggedInUser}
+          loggedInUser={loggedInUser} />
+      </Route>
+      <Route path="/order_history">
+        <OrderHistory
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
@@ -70,28 +66,30 @@ console.log(loggedInUser)
       <Route path="/edit_shipping_address">
         <EditShippingAddress
           setLoggedInUser={setLoggedInUser}
-          loggedInUser={loggedInUser}  />
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/edit_address" exact>
         <EditAddress
           setLoggedInUser={setLoggedInUser}
-          loggedInUser={loggedInUser}  />
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/signup">
         <SignUp />
       </Route>
       <Route path="/cart">
-        <Cart />
+        <Cart 
+          setLoggedInUser={setLoggedInUser}
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/login_signup">
         <CustomerFormLayout
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
-      <Route path="/items/:itemId">
+      {/*<Route path="/items/:itemId">
         <ItemDetails />
       </Route>
-      {/* <Route path="/tools">
+       <Route path="/tools">
         <Tools />
       </Route>
       <Route path="/accessories">

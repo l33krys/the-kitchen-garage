@@ -266,7 +266,7 @@ class OrderItem(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     # Relationships
-    items = db.relationship("Item", back_populates="order_items", cascade="all")
+    items = db.relationship("Item", back_populates="order_items")
     orders = db.relationship("Order", back_populates="order_items")
 
     # Validations
