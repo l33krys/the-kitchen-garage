@@ -152,9 +152,10 @@ class CustomerById(Resource):
                 for key in data:
                     if hasattr(customer, key):
                         setattr(customer, key, data[key])
-                    password = request.get_json()["password"]
-                    if password != "****":
-                        customer.password_hash = password
+                    if data.get("password"):
+                        password = request.get_json()["password"]
+                        if password != "****":
+                            customer.password_hash = password
                 db.session.commit()
 
                 return make_response(
@@ -567,24 +568,6 @@ class CheckSession(Resource):
             )
         return {}, 401
 
-# class Login(Resource):
-#     def post(self):
-        
-#         email = request.get_json()['email']
-#         password = request.get_json()['password']
-#         customer = Customer.query.filter(Customer.email == email).first()    
-
-#         if customer:
-
-#             if customer.authenticate(password):
-#                 session["customer_id"] = customer.id
-#                 # return customer.to_dict(), 200
-#                 res = make_response(customer_schema.dump(customer), 200)
-#                 res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
-#                 return res
-           
-#         return {"error": "401 Unauthorized"}, 401    
-
 class Login(Resource):
     def post(self):
         
@@ -728,9 +711,6 @@ class SubmitOrder(Resource):
 
                     setattr(saved_order, "status", "submitted") # Change order status to submitted
                     db.session.commit()
-
-
-
             
                     # Create new blank order
                     new_order = Order(
@@ -747,34 +727,6 @@ class SubmitOrder(Resource):
         return make_response(
             {"error": "There are no orders assigned to this customer"}, 400
         )
-    
-    # Working code below
-    # def get(self):
-    #     customer_id = session['customer_id']
-    #     if customer_id:
-    #         saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-
-    #         # Update inventory
-
-    #         if saved_order:
-    #             setattr(saved_order, "status", "submitted")
-    #             db.session.commit()
-            
-    #             # Create new blank order
-    #             new_order = Order(
-    #                 status="saved",
-    #                 customer_id=customer_id,
-    #                 shipping=4.99,
-    #                 total=4.99
-    #             )
-    #             db.session.add(new_order)
-    #             db.session.commit()
-
-    #             return make_response(order_schema.dump(saved_order), 203)
-        
-    #     return make_response(
-    #         {"error": "There are no orders assigned to this customer"}, 400
-    #     )
 
 api.add_resource(SubmitOrder, "/submit_order")
 
@@ -802,25 +754,34 @@ class CheckInventory(Resource):
 
 api.add_resource(CheckInventory, "/check_inventory")
 
-
-
-# class DeleteOrder(Resource):
+# class ClearCart(Resource):
 
 #     def get(self):
 #         customer_id = session['customer_id']
 #         if customer_id:
-#             saved_order = Order.query.filter(Order.customer_id == customer_id).first()
+#             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
             
-#         setattr(saved_order, "status", "submitted")
-#         db.session.commit()
+#             db.session.delete(saved_order)
+#             db.session.commit()
 
-#         return make_response(
-
-#             order_schema.dump(saved_order)
-#             # {"message": "Order submitted"}, 203
+#             # Create new blank order
+#             new_order = Order(
+#                 status="saved",
+#                 customer_id=customer_id,
+#                 shipping=4.99,
+#                 total=4.99
+#             )
+#             db.session.add(new_order)
+#             db.session.commit()
+#             return make_response(
+#                 {}, 201
+#             )
+#         else:
+#             return make_response(
+#                 {"error": "Order does not exist"}, 404
 #             )
 
-# api.add_resource(DeleteOrder, "/delete_order")
+# api.add_resource(ClearCart, "/clear_order")
 
 
 @app.route('/')

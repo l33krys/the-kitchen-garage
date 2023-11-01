@@ -47,6 +47,8 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
       })
       .then((r) => r.json())
       .then((address) => {
+        console.log(address.id)
+        console.log(loggedInUser.id)
         fetch(`/customers/${loggedInUser.id}`, {
             method: "PATCH",
             mode: "cors",

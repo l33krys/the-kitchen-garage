@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import ItemCard from "./ItemCard";
-import { Button, Card } from 'semantic-ui-react'
+import { Button, Card, Message } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
 function Cart({ loggedInUser, setLoggedInUser }) {
 
     const [customerOrderItems, setCustomerOrderItems] = useState([])
+    const [orderSubmitted, setOrderSubmitted] = useState(false)
     const { data, error, isLoading } = useFetchOrdersQuery();
     
     useEffect(() => {
@@ -23,6 +24,16 @@ function Cart({ loggedInUser, setLoggedInUser }) {
 
     }, [])
 
+    useEffect(() => {
+        if (orderSubmitted) {
+          const timer = setTimeout(() => {
+            setOrderSubmitted(false);
+          }, 2000);
+          return () => clearTimeout(timer);
+        }
+      }, [orderSubmitted]);
+
+
     function handleCheckOut() {
         if (customerOrderItems.length > 0) {
             fetch(`/submit_order`)
@@ -30,7 +41,7 @@ function Cart({ loggedInUser, setLoggedInUser }) {
                 if (r.status === 203) {
                     console.log("Order submitted")
                     setCustomerOrderItems([])
-                    
+                    setOrderSubmitted(true)                   
                 } else {
                     console.log("No order was found")
                 }
@@ -38,7 +49,6 @@ function Cart({ loggedInUser, setLoggedInUser }) {
         }
     }
 
-    console.log(customerOrderItems)
 
     return (
 
@@ -51,6 +61,12 @@ function Cart({ loggedInUser, setLoggedInUser }) {
                 setCustomerOrderItems={setCustomerOrderItems}
                  />
             <Button onClick={handleCheckOut}>Checkout</Button>
+             {orderSubmitted ?
+            <Message
+                style={{ width: "350px"}}
+                header="Order submitted"
+                content="Thanks for ordering with The Kitchen Garage" />
+            : null}
         </div>
     )
 }
