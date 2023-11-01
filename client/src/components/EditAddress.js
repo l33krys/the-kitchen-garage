@@ -17,10 +17,10 @@ export const EditAddress = ({ loggedInUser, setLoggedInUser }) => {
 
   const formik = useFormik({
     initialValues: {
-        street: loggedInUser ? loggedInUser.billing_address.street : "",
-        city: loggedInUser ? loggedInUser.billing_address.city : "",
-        state: loggedInUser ? loggedInUser.billing_address.state : "",
-        zip_code: loggedInUser ? loggedInUser.billing_address.zip_code : "",
+        street: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.street,
+        city: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.city,
+        state: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.state,
+        zip_code: loggedInUser == null || loggedInUser.billing_address == null ? "" : loggedInUser.billing_address.zip_code,
       },
     validationSchema: formSchema,
     onSubmit: (values) => {

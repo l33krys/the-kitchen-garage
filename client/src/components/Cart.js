@@ -23,20 +23,22 @@ function Cart({ loggedInUser, setLoggedInUser }) {
 
     }, [])
 
-    console.log(customerOrderItems)
-
     function handleCheckOut() {
-        fetch(`/submit_order`)
-        .then((r) => {
-            if (r.status === 203) {
-                console.log("Order submitted")
-                setCustomerOrderItems([])
-            } else {
-                console.log("No order was found")
-            }
-        })
+        if (customerOrderItems.length > 0) {
+            fetch(`/submit_order`)
+            .then((r) => {
+                if (r.status === 203) {
+                    console.log("Order submitted")
+                    setCustomerOrderItems([])
+                    
+                } else {
+                    console.log("No order was found")
+                }
+            })
+        }
     }
 
+    console.log(customerOrderItems)
 
     return (
 

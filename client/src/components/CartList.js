@@ -38,7 +38,6 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
 
     const subtotals = itemSubtotal(prices, quantities)
     const total = subtotals.reduce((a, b) => a + b, 0)
-    console.log(total)
 
     return (
         <Table basic='very' celled collapsing>
