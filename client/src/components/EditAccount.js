@@ -12,14 +12,17 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
     last_name: yup.string().required("Last name is required"),
     email: yup.string().required("Must enter a valid email"),
     phone_number: yup.string().required("Must use format XXX-XXX-XXXX"),
+    password: yup.string().required("Must enter a password with 8 characters and include at least 1 letter and 1 number"),
+    confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match')
   });
 
   const formik = useFormik({
     initialValues: {
-      first_name: loggedInUser.first_name,
-      last_name: loggedInUser.last_name,
-      email: loggedInUser.email,
-      phone_number: loggedInUser.phone_number ? loggedInUser.phone_number : ""
+      first_name: loggedInUser ? loggedInUser.first_name: "",
+      last_name: loggedInUser ? loggedInUser.last_name : "",
+      email: loggedInUser ? loggedInUser.email : "",
+      phone_number: loggedInUser ? loggedInUser.phone_number : "",
+      password: "****"
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
@@ -27,7 +30,8 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
                     first_name: values.first_name,
                     last_name: values.last_name,
                     email: values.email,
-                    phone_number: values.phone_number
+                    phone_number: values.phone_number,
+                    password_hash: values.password
                   }
         console.log(customer)
       fetch(`/customers/${loggedInUser.id}`, {
@@ -40,7 +44,8 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
             first_name: values.first_name,
             last_name: values.last_name,
             email: values.email,
-            phone_number: values.phone_number
+            phone_number: values.phone_number,
+            password: values.password
           }, null, 2),
       })
       .then((r) => {
@@ -56,6 +61,8 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
   });
 
   return (
+    <>
+    {loggedInUser ?
     <div
       style={{
         backgroundColor: "#576F72",
@@ -117,6 +124,32 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
               />
               <p style={{ color: "white" }}> {formik.errors.phone_number}</p>
             </Form.Field>
+            <Form.Field>
+              <label htmlFor="password" style={{ color: "#F6F1F1" }}>
+                Password
+              </label>
+              <input
+                id="password-edit"
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+              <p style={{ color: "white" }}> {formik.errors.password}</p>
+            </Form.Field>
+            <Form.Field>
+              <label htmlFor="password" style={{ color: "#F6F1F1" }}>
+                Password
+              </label>
+              <input
+                id="password-edit-confirm"
+                name="password"
+                type="password"
+                onChange={formik.handleChange}
+                value={formik.values.password}
+              />
+              <p style={{ color: "white" }}> {formik.errors.password}</p>
+            </Form.Field>
         <br/>
         <br/>
         <Button style={{ background: "white" }} type="submit">
@@ -124,6 +157,9 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser }) => {
         </Button>        
       </Form>
     </div>
+    :
+    "Loading..."}
+    </>
   );
 };
 

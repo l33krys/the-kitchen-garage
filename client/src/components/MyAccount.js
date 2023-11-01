@@ -8,7 +8,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
 
     function handleEditInfo() {
         history.push("/edit_account")
-    }
+    } 
 
     function handleDeleteAccount() {
         console.log(loggedInUser.id)
@@ -24,6 +24,8 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
     }
 
     return (
+      <>
+      {loggedInUser ?
         <Table style={{ margin: "30px", paddingTop: "15px", paddingBottom: "15px" }} basic='very' celled collapsing>
         <Table.Header>
           <Table.Row>
@@ -75,6 +77,16 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
+              <Header as='h4' image>
+                <Header.Content>
+                  Password
+                </Header.Content>
+              </Header>
+            </Table.Cell>
+            <Table.Cell>****</Table.Cell>
+          </Table.Row>
+          <Table.Row>
+            <Table.Cell>
             </Table.Cell>
             <Table.Cell>
             <Button onClick={handleDeleteAccount}>Delete Account</Button>
@@ -82,7 +94,9 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
         </Table.Body>
       </Table>
-    
+      :
+      "Loading..."}
+  </>
     )
 }
 

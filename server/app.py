@@ -152,6 +152,9 @@ class CustomerById(Resource):
                 for key in data:
                     if hasattr(customer, key):
                         setattr(customer, key, data[key])
+                    password = request.get_json()["password"]
+                    if password != "****":
+                        customer.password_hash = password
                 db.session.commit()
 
                 return make_response(

@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as yup from "yup";
 import { Button, Form, Message, Grid, Segment } from 'semantic-ui-react'
 
-export const EditShippingAddress = ({ loggedInUser, setLoggedInUser }) => {
+export const EditShippingAddress = ({ loggedInUser, setLoggedInUser, handleCancelChange }) => {
 
     const history = useHistory();
 
@@ -17,10 +17,10 @@ export const EditShippingAddress = ({ loggedInUser, setLoggedInUser }) => {
 
   const formik = useFormik({
     initialValues: {
-        street: loggedInUser.shipping_address == null ? "" : loggedInUser.shipping_address.street,
-        city: loggedInUser.shipping_address == null ? "" : loggedInUser.shipping_address.city,
-        state: loggedInUser.shipping_address == null ? "" : loggedInUser.shipping_address.state,
-        zip_code: loggedInUser.shipping_address == null ? "" : loggedInUser.shipping_address.zip_code,
+        street: loggedInUser == null ? "" : loggedInUser.shipping_address.street,
+        city: loggedInUser == null ? "" : loggedInUser.shipping_address.city,
+        state: loggedInUser == null ? "" : loggedInUser.shipping_address.state,
+        zip_code: loggedInUser == null ? "" : loggedInUser.shipping_address.zip_code,
       },
     validationSchema: formSchema,
     onSubmit: (values) => {
@@ -67,6 +67,8 @@ export const EditShippingAddress = ({ loggedInUser, setLoggedInUser }) => {
   });
 
   return (
+    <>
+    {loggedInUser ?
     <div
       style={{
         backgroundColor: "#576F72",
@@ -136,6 +138,9 @@ export const EditShippingAddress = ({ loggedInUser, setLoggedInUser }) => {
         </Button>
       </Form>
     </div>
+    :
+    "Loading..."}
+    </>
   );
 };
 

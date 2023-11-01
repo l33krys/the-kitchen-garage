@@ -15,6 +15,9 @@ function CustomerAddress({ loggedInUser, setLoggedInUser }) {
     }
 
     return (
+
+      <>
+      {loggedInUser ?
         <Table style={{ margin: "30px", paddingTop: "15px", paddingBottom: "15px" }} basic='very' celled collapsing>
         <Table.Header>
           <Table.Row>
@@ -60,7 +63,9 @@ function CustomerAddress({ loggedInUser, setLoggedInUser }) {
           </Table.Row>
         </Table.Body>
       </Table>
-    
+      :
+      "Loading..."}
+      </>
     )
 }
 

@@ -30,17 +30,6 @@ function App() {
     })
   }, [])
 
-//   function handleLogOutClick() {
-//     fetch("/logout", {
-//         method: "DELETE",
-//     })
-//     .then((r) => {
-//         if (r.ok) {
-//             setLoggedInUser(null)
-//         }
-//     })
-// }
-
 console.log(loggedInUser)
 
   return (
@@ -76,12 +65,12 @@ console.log(loggedInUser)
       <Route path="/edit_shipping_address">
         <EditShippingAddress
           setLoggedInUser={setLoggedInUser}
-          loggedInUser={loggedInUser}  />
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/edit_address" exact>
         <EditAddress
           setLoggedInUser={setLoggedInUser}
-          loggedInUser={loggedInUser}  />
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/signup">
         <SignUp />
