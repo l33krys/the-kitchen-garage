@@ -734,7 +734,8 @@ class OrderHistory(Resource):
 
     def get(self):
         customer_id = session['customer_id']
-        customer_orders = [order.to_dict(only=("id", "status", "updated_at")) for order in Order.query.filter(Order.customer_id == customer_id).all()]
+        # Submitted orders only
+        customer_orders = [order.to_dict(only=("id", "status", "updated_at")) for order in Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").all()]
 
         return make_response(
             customer_orders, 200

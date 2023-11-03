@@ -1,16 +1,24 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory } from "react-router";
 import { Header, Image, Table, Button } from 'semantic-ui-react'
+import EditBillingAddress from './EditBillingAddress';
+import EditShippingAddress from './EditShippingAddress';
 
 function CustomerAddress({ loggedInUser, setLoggedInUser }) {
 
+    const [showEditBilling, setShowEditBilling] = useState(false)
+    const [showEditShipping, setShowEditShipping] = useState(false)
     const history = useHistory();
 
     function handleEditAddress(type) {
         if (type === "billing") {
-            history.push("/edit_address")
+            // history.push("/edit_billing_address")
+            setShowEditBilling(!showEditBilling)
+            setShowEditShipping(false)
         } else if (type === "shipping") {
-            history.push("/edit_shipping_address")
+            // history.push("/edit_shipping_address")
+            setShowEditShipping(!showEditShipping)
+            setShowEditBilling(false)
         }
     }
 
@@ -29,7 +37,7 @@ function CustomerAddress({ loggedInUser, setLoggedInUser }) {
         <Table.Body>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Billing Address
                 </Header.Content>
@@ -42,11 +50,24 @@ function CustomerAddress({ loggedInUser, setLoggedInUser }) {
             </Table.Cell>
             <Table.Cell>
                 <Button onClick={(e) => handleEditAddress("billing")}>Edit</Button>
+                 
             </Table.Cell>
           </Table.Row>
+          {showEditBilling ?
+          <Table.Row>
+            <Table.Cell colSpan="3">
+            <EditBillingAddress 
+              loggedInUser={loggedInUser} 
+              setLoggedInUser={setLoggedInUser}
+              showEditBilling={showEditBilling}
+              setShowEditBilling={setShowEditBilling} />
+            </Table.Cell>
+          </Table.Row>
+          : null}
+          
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Shipping Address
                 </Header.Content>
@@ -61,6 +82,17 @@ function CustomerAddress({ loggedInUser, setLoggedInUser }) {
                 <Button onClick={(e) => handleEditAddress("shipping")}>Edit</Button>
             </Table.Cell>
           </Table.Row>
+          {showEditShipping ?
+          <Table.Row>
+            <Table.Cell colSpan="3">
+            <EditShippingAddress 
+              loggedInUser={loggedInUser} 
+              setLoggedInUser={setLoggedInUser}
+              showEditShipping={showEditShipping}
+              setShowEditShipping={setShowEditShipping} />
+            </Table.Cell>
+          </Table.Row>
+          : null}
         </Table.Body>
       </Table>
       :

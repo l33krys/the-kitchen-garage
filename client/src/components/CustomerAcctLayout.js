@@ -10,12 +10,12 @@ function CustomerAcctLayout({ loggedInUser, setLoggedInUser }) {
   return (
     <Segment placeholder>
       <Grid columns={2} relaxed='very' stackable>
-        <Grid.Column>
+        <Grid.Column verticalAlign="top">
           <MyAccount 
               setLoggedInUser={setLoggedInUser}
               loggedInUser={loggedInUser} />
         </Grid.Column>
-        <Grid.Column verticalAlign='middle'>
+        <Grid.Column verticalAlign='top'>
         <CustomerAddress 
               setLoggedInUser={setLoggedInUser}
               loggedInUser={loggedInUser} />

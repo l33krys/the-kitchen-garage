@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ItemContainer from "./ItemContainer";
 
-function Appliances({ loggedInUser }) {
+function Appliances({ loggedInUser, customerOrderItems }) {
 
   // useEffect(() => {
   //   fetch("http://localhost:5555/items")
@@ -13,7 +13,7 @@ function Appliances({ loggedInUser }) {
     
     <div  style={{ marginTop: "20px", marginLeft: "100px"}}>
       <h1>Appliances</h1>
-      <ItemContainer loggedInUser={loggedInUser} />
+      <ItemContainer loggedInUser={loggedInUser} customerOrderItems={customerOrderItems} />
     </div>
     
   )

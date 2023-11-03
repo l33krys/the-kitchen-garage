@@ -46,8 +46,8 @@ const orderItemsApi = createApi({
                 }
             }),
             fetchOrderItems: builder.query({
-                providesTags: (result, error, orderItem) => {
-                    return [{ type: "OrderItem" }]
+                providesTags: (result, error, order) => {
+                    return [{ type: "OrderItem", order: order.id }]
                 },
                 query: (order) => {
                     return {
@@ -59,7 +59,22 @@ const orderItemsApi = createApi({
 
                     };
                 }
-            })
+            }),
+            // fetchOrderItems: builder.query({
+            //     providesTags: (result, error, orderItem) => {
+            //         return [{ type: "OrderItem" }]
+            //     },
+            //     query: (order) => {
+            //         return {
+            //             url: "/order_items",
+            //             params: {
+            //                 order_id: order.id
+            //             },
+            //             method: "GET",
+
+            //         };
+            //     }
+            // })
         };
     }
 })

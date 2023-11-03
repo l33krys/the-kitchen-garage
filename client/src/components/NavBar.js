@@ -1,7 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import { Icon } from 'semantic-ui-react'
 
-function NavBar({ loggedInUser, setLoggedInUser }) {
+function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems }) {
 
     function handleLogOutClick() {
         fetch("/logout", {
@@ -13,6 +14,12 @@ function NavBar({ loggedInUser, setLoggedInUser }) {
             }
         })
     }
+    console.log(customerOrderItems)
+    const itemsInCart = customerOrderItems.map((order_item, key) => (
+      order_item.quantity
+    ))
+    const totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
+    console.log(totalInCart)
 
     return (
 
@@ -24,7 +31,7 @@ function NavBar({ loggedInUser, setLoggedInUser }) {
                     <NavLink style={{ marginRight: "20px" }} to="/myaccount">My Account</NavLink>
                     <NavLink style={{ marginRight: "20px" }} to="/order_history">Order History</NavLink>
                     <NavLink style={{ marginRight: "20px" }} onClick={handleLogOutClick} to="/">Log Out</NavLink>
-                    <NavLink style={{ marginRight: "20px" }} to="/cart">Cart</NavLink>
+                    <NavLink style={{ marginRight: "20px" }} to="/cart"><Icon name="cart"/> ({totalInCart})</NavLink>
                 </>)
                 :
                 (<NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>)

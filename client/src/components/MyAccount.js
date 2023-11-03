@@ -1,13 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory } from "react-router";
-import { Header, Image, Table, Button } from 'semantic-ui-react'
+import { Header, Image, Table, Button } from 'semantic-ui-react';
+import EditAccount from './EditAccount';
 
 function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
 
+    const [showEditAccount, setShowEditAccount] = useState(false)
     const history = useHistory();
 
     function handleEditInfo() {
-        history.push("/edit_account")
+        // history.push("/edit_account")
+        setShowEditAccount(!showEditAccount)
     } 
 
     function handleDeleteAccount() {
@@ -37,7 +40,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
         <Table.Body>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   First Name
                 </Header.Content>
@@ -47,7 +50,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Last Name
                 </Header.Content>
@@ -57,7 +60,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Email
                 </Header.Content>
@@ -67,7 +70,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Phone Number
                 </Header.Content>
@@ -77,7 +80,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Password
                 </Header.Content>
@@ -92,6 +95,17 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
             <Button onClick={handleDeleteAccount}>Delete Account</Button>
             </Table.Cell>
           </Table.Row>
+          {showEditAccount ?
+          <Table.Row>
+            <Table.Cell colSpan="3">
+            <EditAccount
+              loggedInUser={loggedInUser} 
+              setLoggedInUser={setLoggedInUser}
+              showEditAccount={showEditAccount}
+              setShowEditAccount={setShowEditAccount} />
+            </Table.Cell>
+          </Table.Row>
+          : null}
         </Table.Body>
       </Table>
       :

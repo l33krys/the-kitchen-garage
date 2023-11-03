@@ -1,28 +1,30 @@
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router";
 import ItemCard from "./ItemCard";
 import { Button, Card, Message } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
-function Cart({ loggedInUser, setLoggedInUser }) {
+function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems }) {
 
-    const [customerOrderItems, setCustomerOrderItems] = useState([])
+    // const [customerOrderItems, setCustomerOrderItems] = useState([])
+    const history = useHistory();
     const [orderSubmitted, setOrderSubmitted] = useState(false)
     const { data, error, isLoading } = useFetchOrdersQuery();
     
-    useEffect(() => {
-        fetch("/order_items_by_order")
-        .then((r) => {
-            if (r.status === 201) {
-                // Order was created, no items yet
-                setCustomerOrderItems([])
-            } else {
-                return r.json()
-            }
-        })
-        .then((data) => setCustomerOrderItems(data))
+    // useEffect(() => {
+    //     fetch("/order_items_by_order")
+    //     .then((r) => {
+    //         if (r.status === 201) {
+    //             // Order was created, no items yet
+    //             setCustomerOrderItems([])
+    //         } else {
+    //             return r.json()
+    //         }
+    //     })
+    //     .then((data) => setCustomerOrderItems(data))
 
-    }, [])
+    // }, [])
 
     useEffect(() => {
         if (orderSubmitted) {
@@ -41,7 +43,8 @@ function Cart({ loggedInUser, setLoggedInUser }) {
                 if (r.status === 203) {
                     console.log("Order submitted")
                     setCustomerOrderItems([])
-                    setOrderSubmitted(true)                   
+                    setOrderSubmitted(true) 
+                    history.push("/")                  
                 } else {
                     console.log("No order was found")
                 }
