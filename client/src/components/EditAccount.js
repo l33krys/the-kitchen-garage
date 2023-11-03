@@ -22,7 +22,8 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
       last_name: loggedInUser ? loggedInUser.last_name : "",
       email: loggedInUser ? loggedInUser.email : "",
       phone_number: loggedInUser ? loggedInUser.phone_number : "",
-      password: "****"
+      // password: "****",
+      // confirm_password: "****"
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
@@ -140,6 +141,7 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
                 type="password"
                 onChange={formik.handleChange}
                 value={formik.values.password}
+                placeholder="********"
                 style={{width: "15em" }}
               />
               <p style={{ color: "white" }}> {formik.errors.password}</p>
@@ -153,10 +155,11 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
                 name="password"
                 type="password"
                 onChange={formik.handleChange}
-                value={formik.values.password}
+                value={formik.values.confirm_password}
+                placeholder="********"
                 style={{width: "15em" }}
               />
-              <p style={{ color: "white" }}> {formik.errors.password}</p>
+              <p style={{ color: "white" }}> {formik.errors.confirm_password}</p>
             </Form.Field>
             </Form.Group>
             <Form.Group inline style={{ margin: "auto" }}>
