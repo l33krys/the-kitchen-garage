@@ -1,17 +1,22 @@
 import React, { useState } from 'react'
 import { useHistory } from "react-router";
-import { Header, Image, Table, Button } from 'semantic-ui-react';
+import { Header, Image, Table, Button, Confirm } from 'semantic-ui-react';
 import EditAccount from './EditAccount';
 
 function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
 
     const [showEditAccount, setShowEditAccount] = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState(false)
     const history = useHistory();
 
     function handleEditInfo() {
         // history.push("/edit_account")
         setShowEditAccount(!showEditAccount)
     } 
+
+    function handleCancelDelete() {
+      setConfirmDelete(false)
+    }
 
     function handleDeleteAccount() {
         console.log(loggedInUser.id)
@@ -21,6 +26,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
         .then((r) => {
             if (true) {
                 setLoggedInUser(null)
+                // setConfirmDelete(false)
                 history.push("/")
             }
         })
@@ -92,7 +98,8 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
             <Table.Cell>
             </Table.Cell>
             <Table.Cell>
-            <Button onClick={handleDeleteAccount}>Delete Account</Button>
+            <Button onClick={(e) => setConfirmDelete(true)}>Delete Account</Button>
+            {/* <Button onClick={handleDeleteAccount}>Delete Account</Button> */}
             </Table.Cell>
           </Table.Row>
           {showEditAccount ?
@@ -110,6 +117,12 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
       </Table>
       :
       "Loading..."}
+        <Confirm
+          open={confirmDelete}
+          content="Are you sure you want to delete your account?"
+          onCancel={handleCancelDelete}
+          onConfirm={handleDeleteAccount}
+        />
   </>
     )
 }

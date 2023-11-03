@@ -44,7 +44,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
           open={showAddtoCartSuccess}
           onClose={() => setShowAddToCartSuccess(false)}
           onOpen={() => setShowAddToCartSuccess(true)}
-          trigger={<Button onClick={(e) => handleAddtoCart(item)} icon="add">Add to Cart</Button>}
+          trigger={<Button onClick={(e) => handleAddtoCart(item)}>Add to Cart</Button>}
         >
           <Modal.Header>Thank you!</Modal.Header>
           <Modal.Content>

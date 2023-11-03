@@ -680,7 +680,7 @@ class SubmitOrder(Resource):
     # check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
     # in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
 
-    def get(self):
+    def post(self):
         customer_id = session['customer_id']
         if customer_id:
             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()

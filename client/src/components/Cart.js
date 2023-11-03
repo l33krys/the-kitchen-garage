@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import ItemCard from "./ItemCard";
-import { Button, Card, Message } from 'semantic-ui-react'
+import { Button, Card, Message, Modal } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
@@ -38,15 +38,19 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
 
     function handleCheckOut() {
         if (customerOrderItems.length > 0) {
-            fetch(`/submit_order`)
+            fetch(`/submit_order`, {
+                method: "POST"
+            })
             .then((r) => {
                 if (r.status === 203) {
                     console.log("Order submitted")
                     setCustomerOrderItems([])
                     setOrderSubmitted(true) 
-                    history.push("/")                  
+                    // Transfer customer to order history after order submitted
+                    // Move code to useEffect timer if still want to transfer to order history page
+                    // history.push("/order_history")                  
                 } else {
-                    console.log("No order was found")
+                    console.log("No order was found or inventory too low")
                 }
             })
         }
@@ -64,12 +68,29 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 setCustomerOrderItems={setCustomerOrderItems}
                  />
             <Button onClick={handleCheckOut}>Checkout</Button>
-             {orderSubmitted ?
+             {/* {orderSubmitted ?
             <Message
                 style={{ width: "350px"}}
                 header="Order submitted"
                 content="Thanks for ordering with The Kitchen Garage" />
-            : null}
+            : null} */}
+            <Modal
+                centered={true}
+                open={orderSubmitted}
+                onClose={() => setOrderSubmitted(false)}
+                onOpen={() => setOrderSubmitted(true)}
+                
+                >
+                <Modal.Header>Order Submitted</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                    Thanks for shopping with The Kitchen Garage
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={() => setOrderSubmitted(false)}>OK</Button>
+                </Modal.Actions>
+            </Modal>
         </div>
     )
 }

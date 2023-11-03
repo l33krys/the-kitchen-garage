@@ -15,26 +15,37 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems }) {
         })
     }
     console.log(customerOrderItems)
-    const itemsInCart = customerOrderItems.map((order_item, key) => (
-      order_item.quantity
-    ))
-    const totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
+    let totalInCart = 0;
+    if (customerOrderItems.length > 0) {
+        const itemsInCart = customerOrderItems.map((order_item, key) => (
+            order_item.quantity
+            ))
+        totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
+        
+    }
     console.log(totalInCart)
+    // const itemsInCart = customerOrderItems.map((order_item, key) => (
+    //   order_item.quantity
+    // ))
+    // const totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
+    // console.log(totalInCart)
 
     return (
 
         <div>
-            <div style={{ textAlign: "right", paddingTop: "10px", marginLeft: "50px"}}>
+            <div style={{ textAlign: "right", paddingTop: "10px"}}>
                 {loggedInUser !== null ? 
                 (<>
-                    <p style={{ marginRight: "20px" }}>Hi, {loggedInUser.first_name}</p>
-                    <NavLink style={{ marginRight: "20px" }} to="/myaccount">My Account</NavLink>
-                    <NavLink style={{ marginRight: "20px" }} to="/order_history">Order History</NavLink>
-                    <NavLink style={{ marginRight: "20px" }} onClick={handleLogOutClick} to="/">Log Out</NavLink>
-                    <NavLink style={{ marginRight: "20px" }} to="/cart"><Icon name="cart"/> ({totalInCart})</NavLink>
+                <div id="promotion" style={{ textAlign: "center", paddingTop: "5px", paddingBottom: "5px", backgroundColor: "#000000", color: "white" }}>FREE SHIPPING ON $50+</div>
+                    <p style={{ marginRight: "20px", marginTop: "10px" }}>Hi, {loggedInUser.first_name}</p>
+                    <NavLink style={{ marginRight: "20px", color: "black" }} to="/myaccount"><Icon name="user"/>My Account</NavLink>
+                    <NavLink style={{ marginRight: "20px", color: "black" }} to="/order_history">Order History</NavLink>
+                    <NavLink style={{ marginRight: "20px", color: "black" }} onClick={handleLogOutClick} to="/">Log Out</NavLink>
+                    {/* <NavLink style={{ marginRight: "20px", color: "black" }} to="/cart"><Icon name="cart"/></NavLink> */}
+                    <NavLink style={{ marginRight: "20px", color: "black" }} to="/cart"><Icon name="cart"/> ({totalInCart})</NavLink>
                 </>)
                 :
-                (<NavLink style={{ marginRight: "20px" }} to="/login_signup">Customer Login / Sign Up</NavLink>)
+                (<NavLink style={{ marginRight: "20px", color: "black" }} to="/login_signup">Customer Login / Sign Up</NavLink>)
                 }
                 
             </div>
@@ -47,7 +58,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems }) {
                     <p>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>
                 </div>
             </div>
-            <div style={{ textAlign: "center", paddingTop: "10px", paddingBottom: "10px", backgroundColor: "#576F72"}}>
+            <div style={{ textAlign: "center", paddingTop: "15px", paddingBottom: "15px", backgroundColor: "#576F72"}}>
                 <h5>
                 <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} to="/appliances">Appliances</NavLink>
                 <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} to="/tools">Tools</NavLink>

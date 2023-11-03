@@ -14,7 +14,7 @@ function OrdersList({ loggedInUser, setLoggedInUser, order }) {
     <Table.Row>
         <Table.Cell>{order.updated_at}</Table.Cell>
         <Table.Cell>{order.id}</Table.Cell>
-        <Table.Cell>{order.status}</Table.Cell>
+        <Table.Cell>{order.status == "submitted" ? "Order Submitted" : ""}</Table.Cell>
     </Table.Row>
 
 
