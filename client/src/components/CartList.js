@@ -3,7 +3,7 @@ import { Header, Image, Table } from 'semantic-ui-react'
 import { useFetchOrderItemsQuery } from '../store';
 import CartItem from './CartItem';
 
-function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems }) {
+function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems, updateCustomerOrderItems }) {
 
     function handleOrderItemDelete(delOrderItem) {
 
@@ -22,10 +22,10 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
     })
   }
 
-    const prices = customerOrderItems.map((order_item, key) => (
+    const quantities = customerOrderItems.map((order_item, key) => (
         order_item.quantity
       ))
-    const quantities = customerOrderItems.map((order_item, key) => (
+    const prices = customerOrderItems.map((order_item, key) => (
       order_item.items.price
     ))
 
@@ -44,8 +44,9 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
             <Table.Header>
             <Table.Row>
                 <Table.HeaderCell>Item</Table.HeaderCell>
-                <Table.HeaderCell>Quantity</Table.HeaderCell>
                 <Table.HeaderCell>Price</Table.HeaderCell>
+                <Table.HeaderCell>Quantity</Table.HeaderCell>
+                <Table.HeaderCell>Total</Table.HeaderCell>
                 <Table.HeaderCell></Table.HeaderCell>
             </Table.Row>
             </Table.Header>
@@ -53,9 +54,10 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
             {/* {isLoading ? null : customerOrderItems.map((order_item, key) => (
                 <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} />))} */}
             {customerOrderItems.map((order_item, key) => (
-                <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} handleOrderItemDelete={handleOrderItemDelete} />))}
+                <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} handleOrderItemDelete={handleOrderItemDelete} updateCustomerOrderItems={updateCustomerOrderItems} />))}
             <Table.Row>
-                <Table.Cell>Total</Table.Cell>
+              <Table.HeaderCell>Total</Table.HeaderCell>
+                <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell>${total}</Table.Cell>
                 <Table.Cell></Table.Cell>

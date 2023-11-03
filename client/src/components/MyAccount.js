@@ -118,6 +118,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
       :
       "Loading..."}
         <Confirm
+          size={"tiny"}
           open={confirmDelete}
           content="Are you sure you want to delete your account?"
           onCancel={handleCancelDelete}

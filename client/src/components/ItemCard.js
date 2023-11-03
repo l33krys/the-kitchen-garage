@@ -23,6 +23,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
       order_id: 1
     }
     console.log(order_item)
+    // No response with redux yet; total won't update automatically
     addOrderItem(order_item)
   
   }
@@ -40,11 +41,12 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
         <Card.Content extra>
           {loggedInUser !== null ?
           <Modal
+          size={"tiny"}
           centered={true}
           open={showAddtoCartSuccess}
           onClose={() => setShowAddToCartSuccess(false)}
           onOpen={() => setShowAddToCartSuccess(true)}
-          trigger={<Button onClick={(e) => handleAddtoCart(item)}>Add to Cart</Button>}
+          trigger={<Button onClick={(e) => handleAddtoCart(item)}><Icon name="add"/>Add to Cart</Button>}
         >
           <Modal.Header>Thank you!</Modal.Header>
           <Modal.Content>

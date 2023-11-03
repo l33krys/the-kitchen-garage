@@ -523,26 +523,44 @@ class OrderItemById(Resource):
             )
     
     def patch(self, id):
-        data = request.get_json()
-        order_item = OrderItem.query.filter_by(id=id).first()
-        if order_item:
-            try:
-                for key in data:
-                    if hasattr(order_item, key):
-                        setattr(order_item, key, data[key])
-                db.session.commit()
 
-                return make_response(
-                    order_item_schema.dump(order_item), 200
-                )
-            except ValueError:
-                return make_response(
-                    {"errors": ["validation errors"]}, 400
-                )
-        else:
+        order_item_id = request.get_json()["id"]
+        # Patch method set up to update quantity only
+        try:
+            order_item = OrderItem.query.filter(OrderItem.id == order_item_id).first()
+            setattr(order_item, "quantity", request.get_json()["quantity"])
+            db.session.commit()
+
             return make_response(
-                {"error": "Order Item does not exist"}, 404
+                order_item_schema.dump(order_item), 203
             )
+        except:
+            return make_response(
+                {"error": "Unable to update quantity"}
+            )
+
+
+    # def patch(self, id):
+    #     data = request.get_json()
+    #     order_item = OrderItem.query.filter_by(id=id).first()
+    #     if order_item:
+    #         try:
+    #             for key in data:
+    #                 if hasattr(order_item, key):
+    #                     setattr(order_item, key, data[key])
+    #             db.session.commit()
+
+    #             return make_response(
+    #                 order_item_schema.dump(order_item), 200
+    #             )
+    #         except ValueError:
+    #             return make_response(
+    #                 {"errors": ["validation errors"]}, 400
+    #             )
+    #     else:
+    #         return make_response(
+    #             {"error": "Order Item does not exist"}, 404
+    #         )
 
     def delete(self, id):
         order_item = OrderItem.query.filter_by(id=id).first()
@@ -693,7 +711,7 @@ class SubmitOrder(Resource):
                 check_inventory_list = []
                 for product in order_items:
                     check_inventory = Item.query.filter(Item.id == product["item_id"]).first() 
-                    check_inventory_list.append(product["quantity"] <= check_inventory.inventory)
+                    check_inventory_list.append(product["quantity"] < check_inventory.inventory) # Inventory validation set to min 1
                 # return check_inventory_list
 
                 all_in_stock = any(check_inventory_list) # Return list of booleans if in stock
@@ -723,10 +741,14 @@ class SubmitOrder(Resource):
                     db.session.commit()
 
                     return make_response(order_schema.dump(saved_order), 203)
+                else:
+                    return make_response(
+                        {"error": "Inventory too low. Please adjust quantities."}, 401
+                    )
         
-        return make_response(
-            {"error": "There are no orders assigned to this customer"}, 400
-        )
+            return make_response(
+                {"error": "There are no orders assigned to this customer"}, 400
+            )
 
 api.add_resource(SubmitOrder, "/submit_order")
 

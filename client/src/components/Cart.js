@@ -5,11 +5,12 @@ import { Button, Card, Message, Modal } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
-function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems }) {
+function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems, updateCustomerOrderItems }) {
 
     // const [customerOrderItems, setCustomerOrderItems] = useState([])
     const history = useHistory();
     const [orderSubmitted, setOrderSubmitted] = useState(false)
+    const [invetoryTooLow, setInventoryTooLow] = useState(false)
     const { data, error, isLoading } = useFetchOrdersQuery();
     
     // useEffect(() => {
@@ -46,11 +47,16 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                     console.log("Order submitted")
                     setCustomerOrderItems([])
                     setOrderSubmitted(true) 
+                    
                     // Transfer customer to order history after order submitted
                     // Move code to useEffect timer if still want to transfer to order history page
                     // history.push("/order_history")                  
+                } else if (r.status === 401) {
+                    console.log("Inventory too low")
+                    setInventoryTooLow(true)
                 } else {
-                    console.log("No order was found or inventory too low")
+                    console.log("No order was found")
+                    setInventoryTooLow(true)
                 }
             })
         }
@@ -66,6 +72,7 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 setLoggedInUser={setLoggedInUser}
                 customerOrderItems={customerOrderItems}
                 setCustomerOrderItems={setCustomerOrderItems}
+                updateCustomerOrderItems={updateCustomerOrderItems}
                  />
             <Button onClick={handleCheckOut}>Checkout</Button>
              {/* {orderSubmitted ?
@@ -79,7 +86,7 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 open={orderSubmitted}
                 onClose={() => setOrderSubmitted(false)}
                 onOpen={() => setOrderSubmitted(true)}
-                
+                size={"tiny"}
                 >
                 <Modal.Header>Order Submitted</Modal.Header>
                 <Modal.Content>
@@ -89,6 +96,23 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 </Modal.Content>
                 <Modal.Actions>
                     <Button onClick={() => setOrderSubmitted(false)}>OK</Button>
+                </Modal.Actions>
+            </Modal>
+            <Modal
+                centered={true}
+                open={invetoryTooLow}
+                onClose={() => setInventoryTooLow(false)}
+                onOpen={() => setInventoryTooLow(true)}
+                size={"tiny"}
+                >
+                <Modal.Header>Order Not Submitted</Modal.Header>
+                <Modal.Content>
+                    <Modal.Description>
+                    Not enough inventory. Please lower your quantities.
+                    </Modal.Description>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={() => setInventoryTooLow(false)}>OK</Button>
                 </Modal.Actions>
             </Modal>
         </div>

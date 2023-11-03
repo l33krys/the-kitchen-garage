@@ -13,7 +13,10 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
     email: yup.string().required("Must enter a valid email"),
     phone_number: yup.string().required("Must use format XXX-XXX-XXXX"),
     password: yup.string().required("Must enter a password with 8 characters and include at least 1 letter and 1 number"),
-    confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match')
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match')
+    // confirmPassword: yup.string().when('password', (password, field) =>
+    // password ? field.required().oneOf([yup.ref('password')]) : field
+  //  )
   });
 
   const formik = useFormik({
@@ -22,8 +25,8 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
       last_name: loggedInUser ? loggedInUser.last_name : "",
       email: loggedInUser ? loggedInUser.email : "",
       phone_number: loggedInUser ? loggedInUser.phone_number : "",
-      // password: "****",
-      // confirm_password: "****"
+      // password: "******",
+      // confirmPassword: "******"
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
@@ -152,14 +155,14 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
               </label>
               <input
                 id="password-edit-confirm"
-                name="password"
+                name="password-confirm"
                 type="password"
                 onChange={formik.handleChange}
-                value={formik.values.confirm_password}
+                value={formik.values.confirmPassword}
                 placeholder="********"
                 style={{width: "15em" }}
               />
-              <p style={{ color: "white" }}> {formik.errors.confirm_password}</p>
+              <p style={{ color: "white" }}> {formik.errors.confirmPassword}</p>
             </Form.Field>
             </Form.Group>
             <Form.Group inline style={{ margin: "auto" }}>

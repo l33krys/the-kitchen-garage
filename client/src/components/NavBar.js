@@ -36,7 +36,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems }) {
             <div style={{ textAlign: "right", paddingTop: "10px"}}>
                 {loggedInUser !== null ? 
                 (<>
-                <div id="promotion" style={{ textAlign: "center", paddingTop: "5px", paddingBottom: "5px", backgroundColor: "#000000", color: "white" }}>FREE SHIPPING ON $50+</div>
+                <div id="promotion" style={{ textAlign: "center", paddingTop: "5px", paddingBottom: "5px", backgroundColor: "#000000", color: "white" }}>FREE SHIPPING ON ALL ORDERS</div>
                     <p style={{ marginRight: "20px", marginTop: "10px" }}>Hi, {loggedInUser.first_name}</p>
                     <NavLink style={{ marginRight: "20px", color: "black" }} to="/myaccount"><Icon name="user"/>My Account</NavLink>
                     <NavLink style={{ marginRight: "20px", color: "black" }} to="/order_history">Order History</NavLink>

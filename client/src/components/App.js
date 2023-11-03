@@ -46,7 +46,15 @@ function App() {
 
 }, [])
 
+  function updateCustomerOrderItems(updatedItem) {
+    const updatedOrderItems = customerOrderItems.map((item) => 
+      item.id === updatedItem.id ? updatedItem : item
+    )
+    setCustomerOrderItems(updatedOrderItems)
+  }
+
 console.log(loggedInUser)
+console.log(customerOrderItems)
 
   return (
     <Router>
@@ -99,7 +107,8 @@ console.log(loggedInUser)
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser}
           customerOrderItems={customerOrderItems}
-          setCustomerOrderItems={setCustomerOrderItems} />
+          setCustomerOrderItems={setCustomerOrderItems}
+          updateCustomerOrderItems={updateCustomerOrderItems} />
       </Route>
       <Route path="/login_signup">
         <CustomerFormLayout
