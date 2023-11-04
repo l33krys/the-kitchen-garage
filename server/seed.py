@@ -10,6 +10,7 @@ fake = Faker()
 # Local imports
 from app import app
 from models import db, Customer, Address, Item, OrderItem, Order
+from products import *
 
 # def create_address():
 #     addresses = []
@@ -255,8 +256,28 @@ if __name__ == '__main__':
         # To use file images
         # image="assets/applianceImages/vecteezy_coffe-style-illustration-ai-generated_21946989_918.jpg"
         item_list = [item1, item2, item3, item4]
+        additional_items = [
+            item5, 
+            item6,
+            item7,
+            item8,
+            item9,
+            item10,
+            item11,
+            item12,
+            item13,
+            item14,
+            item15,
+            item16,
+            item17,
+            item18,
+            item19,
+            item20,
+            item21,
+            ]
         
         db.session.add_all(item_list)
+        db.session.add_all(additional_items)
         db.session.commit()
 
         print("Seeding orders...")

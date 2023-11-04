@@ -10,15 +10,17 @@ import MyAccount from "./MyAccount";
 import OrderHistory from "./OrderHistory";
 import EditAccount from "./EditAccount";
 import EditShippingAddress from "./EditShippingAddress";
-import EditAddress from "./EditAddress";
+import EditAddress from "./EditBillingAddress";
 import SignUp from "./SignUp";
 import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
+import OrderDetails from "./OrderDetails";
 // import ItemDetails from "./ItemDetails";
 
 function App() {
 
   const [loggedInUser, setLoggedInUser] = useState(null)
+  const [customerOrderItems, setCustomerOrderItems] = useState([])
 
   useEffect(() => {
     fetch("/check_session")
@@ -30,20 +32,45 @@ function App() {
     })
   }, [])
 
+  // Move back to Cart component to auto update when click on Cart
+  useEffect(() => {
+    fetch("/order_items_by_order")
+    .then((r) => {
+        if (r.status === 201) {
+            // Order was created, no items yet
+            setCustomerOrderItems([])
+        } else {
+            return r.json()
+        }
+    })
+    .then((data) => setCustomerOrderItems(data))
+
+}, [])
+
+  function updateCustomerOrderItems(updatedItem) {
+    const updatedOrderItems = customerOrderItems.map((item) => 
+      item.id === updatedItem.id ? updatedItem : item
+    )
+    setCustomerOrderItems(updatedOrderItems)
+  }
+
 console.log(loggedInUser)
+console.log(customerOrderItems)
 
   return (
     <Router>
       <NavBar 
         setLoggedInUser={setLoggedInUser}
-        loggedInUser={loggedInUser} />
+        loggedInUser={loggedInUser}
+        customerOrderItems={customerOrderItems} />
     <Switch>
       <Route path="/" exact>
         <Home />
       </Route>
       <Route path="/appliances">
         <Appliances 
-          loggedInUser={loggedInUser} />
+          loggedInUser={loggedInUser}
+          customerOrderItems={customerOrderItems} />
       </Route>
       <Route path="/login">
         <Login />
@@ -68,8 +95,8 @@ console.log(loggedInUser)
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
-      <Route path="/edit_address" exact>
-        <EditAddress
+      <Route path="/edit_billing_address" exact>
+        <EditShippingAddress
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
@@ -79,12 +106,24 @@ console.log(loggedInUser)
       <Route path="/cart">
         <Cart 
           setLoggedInUser={setLoggedInUser}
-          loggedInUser={loggedInUser} />
+          loggedInUser={loggedInUser}
+          customerOrderItems={customerOrderItems}
+          setCustomerOrderItems={setCustomerOrderItems}
+          updateCustomerOrderItems={updateCustomerOrderItems} />
       </Route>
       <Route path="/login_signup">
         <CustomerFormLayout
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
+      </Route>
+      <Route path="/orders/:orderId">
+        {({ match }) => (
+          <OrderDetails
+            setLoggedInUser={setLoggedInUser}
+            loggedInUser={loggedInUser}
+            orderId={match.params.orderId}
+          />
+        )}
       </Route>
       {/*<Route path="/items/:itemId">
         <ItemDetails />

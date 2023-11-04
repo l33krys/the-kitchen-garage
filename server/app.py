@@ -74,7 +74,7 @@ class OrderSchema(ma.SQLAlchemySchema):
     id = ma.auto_field()
     status = ma.auto_field()
     customer_id = ma.auto_field()
-    customer = fields.Nested(CustomerSchema(only=("email",)))
+    customer = fields.Nested(CustomerSchema(only=("email", "shipping_address")))
     shipping = ma.auto_field()
     # total = ma.auto_field()
 
@@ -154,7 +154,7 @@ class CustomerById(Resource):
                         setattr(customer, key, data[key])
                     if data.get("password"):
                         password = request.get_json()["password"]
-                        if password != "****":
+                        if password != "******":
                             customer.password_hash = password
                 db.session.commit()
 
@@ -226,6 +226,7 @@ class AddressById(Resource):
     
     def patch(self, id):
         data = request.get_json()
+        customer_id = session['customer_id']
         address = Address.query.filter_by(id=id).first()
         if address:
             try:
@@ -420,15 +421,15 @@ class OrderById(Resource):
 
 class OrderItems(Resource):
 
-    def get(self):
+    # def get(self):
 
-        order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
-        orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
+    #     order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+    #     orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
         
-        response = make_response(
-            order_items_schema.dump(orderitems), 200
-        )
-        return response
+    #     response = make_response(
+    #         order_items_schema.dump(orderitems), 200
+    #     )
+    #     return response
 
     def get(self):
 
@@ -523,26 +524,44 @@ class OrderItemById(Resource):
             )
     
     def patch(self, id):
-        data = request.get_json()
-        order_item = OrderItem.query.filter_by(id=id).first()
-        if order_item:
-            try:
-                for key in data:
-                    if hasattr(order_item, key):
-                        setattr(order_item, key, data[key])
-                db.session.commit()
 
-                return make_response(
-                    order_item_schema.dump(order_item), 200
-                )
-            except ValueError:
-                return make_response(
-                    {"errors": ["validation errors"]}, 400
-                )
-        else:
+        order_item_id = request.get_json()["id"]
+        # Patch method set up to update quantity only
+        try:
+            order_item = OrderItem.query.filter(OrderItem.id == order_item_id).first()
+            setattr(order_item, "quantity", request.get_json()["quantity"])
+            db.session.commit()
+
             return make_response(
-                {"error": "Order Item does not exist"}, 404
+                order_item_schema.dump(order_item), 203
             )
+        except:
+            return make_response(
+                {"error": "Unable to update quantity"}
+            )
+
+
+    # def patch(self, id):
+    #     data = request.get_json()
+    #     order_item = OrderItem.query.filter_by(id=id).first()
+    #     if order_item:
+    #         try:
+    #             for key in data:
+    #                 if hasattr(order_item, key):
+    #                     setattr(order_item, key, data[key])
+    #             db.session.commit()
+
+    #             return make_response(
+    #                 order_item_schema.dump(order_item), 200
+    #             )
+    #         except ValueError:
+    #             return make_response(
+    #                 {"errors": ["validation errors"]}, 400
+    #             )
+    #     else:
+    #         return make_response(
+    #             {"error": "Order Item does not exist"}, 404
+    #         )
 
     def delete(self, id):
         order_item = OrderItem.query.filter_by(id=id).first()
@@ -652,26 +671,41 @@ class OrderItemsbyOrder(Resource):
 
 api.add_resource(OrderItemsbyOrder, "/order_items_by_order")
 
-class OrderHistoryDetails(Resource):
+class OrderDetails(Resource):
 
-    def get(self):
-       
+    def get(self, id):
+
+        # order_id = request.get_json()['id']
         customer_id = session['customer_id']
         if customer_id:
-            order_ids = [order.id for order in Order.query.filter(Order.customer_id == customer_id).all()]
-            line_items = []
-            for order_num in order_ids:
-                line_item = [row.to_dict(only=("orders.customer.id", "orders.updated_at", "orders.status", "order_id", "quantity", "items.name", "items.price",)) for row in OrderItem.query.filter(OrderItem.order_id == order_num).all()]
-                line_items.append(line_item)
-            return line_items
+            order_summary = Order.query.filter(Order.customer_id == customer_id, Order.id == id).first()
+            if order_summary:
+                order_items = OrderItem.query.filter(OrderItem.order_id == id).all()
+                return make_response(
+                    order_items_schema.dump(order_items), 200
+                    # order_items, 200
+                )
+        else:
+            return {"message": "No order found"}, 400
 
-        return make_response(
-            line_items, 200
+    # def get(self):
+       
+    #     customer_id = session['customer_id']
+    #     if customer_id:
+    #         order_ids = [order.id for order in Order.query.filter(Order.customer_id == customer_id).all()]
+    #         line_items = []
+    #         for order_num in order_ids:
+    #             line_item = [row.to_dict(only=("orders.customer.id", "orders.updated_at", "orders.status", "order_id", "quantity", "items.name", "items.price",)) for row in OrderItem.query.filter(OrderItem.order_id == order_num).all()]
+    #             line_items.append(line_item)
+    #         return line_items
 
-        )
-        return {}, 401
+    #     return make_response(
+    #         line_items, 200
 
-api.add_resource(OrderHistoryDetails, "/order_history_details")
+    #     )
+    #     return {}, 401
+
+api.add_resource(OrderDetails, "/order_details/<int:id>")
 
 class SubmitOrder(Resource):
 
@@ -680,7 +714,7 @@ class SubmitOrder(Resource):
     # check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
     # in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
 
-    def get(self):
+    def post(self):
         customer_id = session['customer_id']
         if customer_id:
             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
@@ -693,7 +727,7 @@ class SubmitOrder(Resource):
                 check_inventory_list = []
                 for product in order_items:
                     check_inventory = Item.query.filter(Item.id == product["item_id"]).first() 
-                    check_inventory_list.append(product["quantity"] <= check_inventory.inventory)
+                    check_inventory_list.append(product["quantity"] < check_inventory.inventory) # Inventory validation set to min 1
                 # return check_inventory_list
 
                 all_in_stock = any(check_inventory_list) # Return list of booleans if in stock
@@ -723,10 +757,14 @@ class SubmitOrder(Resource):
                     db.session.commit()
 
                     return make_response(order_schema.dump(saved_order), 203)
+                else:
+                    return make_response(
+                        {"error": "Inventory too low. Please adjust quantities."}, 401
+                    )
         
-        return make_response(
-            {"error": "There are no orders assigned to this customer"}, 400
-        )
+            return make_response(
+                {"error": "There are no orders assigned to this customer"}, 400
+            )
 
 api.add_resource(SubmitOrder, "/submit_order")
 
@@ -734,7 +772,8 @@ class OrderHistory(Resource):
 
     def get(self):
         customer_id = session['customer_id']
-        customer_orders = [order.to_dict(only=("id", "status", "updated_at")) for order in Order.query.filter(Order.customer_id == customer_id).all()]
+        # Submitted orders only
+        customer_orders = [order.to_dict(only=("id", "status", "updated_at")) for order in Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").all()]
 
         return make_response(
             customer_orders, 200

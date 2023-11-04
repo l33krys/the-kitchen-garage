@@ -1,14 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useHistory } from "react-router";
-import { Header, Image, Table, Button } from 'semantic-ui-react'
+import { Header, Image, Table, Button, Confirm } from 'semantic-ui-react';
+import EditAccount from './EditAccount';
 
 function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
 
+    const [showEditAccount, setShowEditAccount] = useState(false)
+    const [confirmDelete, setConfirmDelete] = useState(false)
     const history = useHistory();
 
     function handleEditInfo() {
-        history.push("/edit_account")
+        // history.push("/edit_account")
+        setShowEditAccount(!showEditAccount)
     } 
+
+    function handleCancelDelete() {
+      setConfirmDelete(false)
+    }
 
     function handleDeleteAccount() {
         console.log(loggedInUser.id)
@@ -18,6 +26,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
         .then((r) => {
             if (true) {
                 setLoggedInUser(null)
+                // setConfirmDelete(false)
                 history.push("/")
             }
         })
@@ -37,7 +46,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
         <Table.Body>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   First Name
                 </Header.Content>
@@ -47,7 +56,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Last Name
                 </Header.Content>
@@ -57,7 +66,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Email
                 </Header.Content>
@@ -67,7 +76,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Phone Number
                 </Header.Content>
@@ -77,25 +86,44 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
           </Table.Row>
           <Table.Row>
             <Table.Cell>
-              <Header as='h4' image>
+              <Header as='h4' >
                 <Header.Content>
                   Password
                 </Header.Content>
               </Header>
             </Table.Cell>
-            <Table.Cell>****</Table.Cell>
+            <Table.Cell>******</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>
             </Table.Cell>
             <Table.Cell>
-            <Button onClick={handleDeleteAccount}>Delete Account</Button>
+            <Button onClick={(e) => setConfirmDelete(true)}>Delete Account</Button>
+            {/* <Button onClick={handleDeleteAccount}>Delete Account</Button> */}
             </Table.Cell>
           </Table.Row>
+          {showEditAccount ?
+          <Table.Row>
+            <Table.Cell colSpan="3">
+            <EditAccount
+              loggedInUser={loggedInUser} 
+              setLoggedInUser={setLoggedInUser}
+              showEditAccount={showEditAccount}
+              setShowEditAccount={setShowEditAccount} />
+            </Table.Cell>
+          </Table.Row>
+          : null}
         </Table.Body>
       </Table>
       :
       "Loading..."}
+        <Confirm
+          size={"tiny"}
+          open={confirmDelete}
+          content="Are you sure you want to delete your account?"
+          onCancel={handleCancelDelete}
+          onConfirm={handleDeleteAccount}
+        />
   </>
     )
 }

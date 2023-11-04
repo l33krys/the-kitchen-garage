@@ -78,7 +78,7 @@ export const Login = ({ loggedInUser, setLoggedInUser }) => {
           name="email"
           onChange={formik.handleChange}
           value={formik.values.email}
-          style={{ width: "250px", textAlign: "center" }}
+          style={{ width: "250px" }}
         />
         {/* <p style={{ color: "white" }}> {formik.errors.email}</p> */}
         </Form.Field>
