@@ -670,26 +670,41 @@ class OrderItemsbyOrder(Resource):
 
 api.add_resource(OrderItemsbyOrder, "/order_items_by_order")
 
-class OrderHistoryDetails(Resource):
+class OrderDetails(Resource):
 
-    def get(self):
-       
+    def get(self, id):
+
+        # order_id = request.get_json()['id']
         customer_id = session['customer_id']
         if customer_id:
-            order_ids = [order.id for order in Order.query.filter(Order.customer_id == customer_id).all()]
-            line_items = []
-            for order_num in order_ids:
-                line_item = [row.to_dict(only=("orders.customer.id", "orders.updated_at", "orders.status", "order_id", "quantity", "items.name", "items.price",)) for row in OrderItem.query.filter(OrderItem.order_id == order_num).all()]
-                line_items.append(line_item)
-            return line_items
+            order_summary = Order.query.filter(Order.customer_id == customer_id, Order.id == id).first()
+            if order_summary:
+                order_items = OrderItem.query.filter(OrderItem.order_id == id).all()
+                return make_response(
+                    order_items_schema.dump(order_items), 200
+                    # order_items, 200
+                )
+        else:
+            return {"message": "No order found"}, 400
 
-        return make_response(
-            line_items, 200
+    # def get(self):
+       
+    #     customer_id = session['customer_id']
+    #     if customer_id:
+    #         order_ids = [order.id for order in Order.query.filter(Order.customer_id == customer_id).all()]
+    #         line_items = []
+    #         for order_num in order_ids:
+    #             line_item = [row.to_dict(only=("orders.customer.id", "orders.updated_at", "orders.status", "order_id", "quantity", "items.name", "items.price",)) for row in OrderItem.query.filter(OrderItem.order_id == order_num).all()]
+    #             line_items.append(line_item)
+    #         return line_items
 
-        )
-        return {}, 401
+    #     return make_response(
+    #         line_items, 200
 
-api.add_resource(OrderHistoryDetails, "/order_history_details")
+    #     )
+    #     return {}, 401
+
+api.add_resource(OrderDetails, "/order_details/<int:id>")
 
 class SubmitOrder(Resource):
 

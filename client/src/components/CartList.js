@@ -56,7 +56,7 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
             {customerOrderItems.map((order_item, key) => (
                 <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} handleOrderItemDelete={handleOrderItemDelete} updateCustomerOrderItems={updateCustomerOrderItems} />))}
             <Table.Row>
-              <Table.HeaderCell>Total</Table.HeaderCell>
+                <Table.Cell>Total</Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell>${total}</Table.Cell>

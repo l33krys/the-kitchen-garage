@@ -14,6 +14,7 @@ import EditAddress from "./EditBillingAddress";
 import SignUp from "./SignUp";
 import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
+import OrderDetails from "./OrderDetails";
 // import ItemDetails from "./ItemDetails";
 
 function App() {
@@ -114,6 +115,15 @@ console.log(customerOrderItems)
         <CustomerFormLayout
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
+      </Route>
+      <Route path="/orders/:orderId">
+        {({ match }) => (
+          <OrderDetails
+            setLoggedInUser={setLoggedInUser}
+            loggedInUser={loggedInUser}
+            orderId={match.params.orderId}
+          />
+        )}
       </Route>
       {/*<Route path="/items/:itemId">
         <ItemDetails />
