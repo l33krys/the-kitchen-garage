@@ -92,7 +92,7 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
                 </Header.Content>
               </Header>
             </Table.Cell>
-            <Table.Cell>****</Table.Cell>
+            <Table.Cell>******</Table.Cell>
           </Table.Row>
           <Table.Row>
             <Table.Cell>

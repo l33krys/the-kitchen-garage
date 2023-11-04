@@ -74,7 +74,7 @@ class OrderSchema(ma.SQLAlchemySchema):
     id = ma.auto_field()
     status = ma.auto_field()
     customer_id = ma.auto_field()
-    customer = fields.Nested(CustomerSchema(only=("email",)))
+    customer = fields.Nested(CustomerSchema(only=("email", "shipping_address")))
     shipping = ma.auto_field()
     # total = ma.auto_field()
 
@@ -154,7 +154,7 @@ class CustomerById(Resource):
                         setattr(customer, key, data[key])
                     if data.get("password"):
                         password = request.get_json()["password"]
-                        if password != "****":
+                        if password != "******":
                             customer.password_hash = password
                 db.session.commit()
 
@@ -226,6 +226,7 @@ class AddressById(Resource):
     
     def patch(self, id):
         data = request.get_json()
+        customer_id = session['customer_id']
         address = Address.query.filter_by(id=id).first()
         if address:
             try:
@@ -420,15 +421,15 @@ class OrderById(Resource):
 
 class OrderItems(Resource):
 
-    def get(self):
+    # def get(self):
 
-        order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
-        orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
+    #     order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+    #     orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
         
-        response = make_response(
-            order_items_schema.dump(orderitems), 200
-        )
-        return response
+    #     response = make_response(
+    #         order_items_schema.dump(orderitems), 200
+    #     )
+    #     return response
 
     def get(self):
 

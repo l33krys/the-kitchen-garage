@@ -25,8 +25,8 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
       last_name: loggedInUser ? loggedInUser.last_name : "",
       email: loggedInUser ? loggedInUser.email : "",
       phone_number: loggedInUser ? loggedInUser.phone_number : "",
-      // password: "******",
-      // confirmPassword: "******"
+      password: "******",
+      confirmPassword: "******"
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
