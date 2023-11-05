@@ -21,7 +21,7 @@ function CustomerAcctLayout({ loggedInUser, setLoggedInUser }) {
               loggedInUser={loggedInUser} />
         </Grid.Column>
       </Grid>
-      <Divider vertical></Divider>
+      <Divider vertical>and</Divider>
     </Segment>
   )
 

@@ -20,7 +20,7 @@ function CustomerFormLayout({ loggedInUser, setLoggedInUser }) {
               loggedInUser={loggedInUser}/>
           </Grid.Column>
         </Grid>
-        <Divider vertical></Divider>
+        <Divider vertical>or</Divider>
       </Segment>
     )
 }

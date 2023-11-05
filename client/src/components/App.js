@@ -19,6 +19,7 @@ import CustomerFormLayout from "./CustomerFormLayout";
 import OrderDetails from "./OrderDetails";
 // import ItemDetails from "./ItemDetails";
 import { useFetchItemsQuery } from '../store';
+import Footer from "./Footer";
 
 function App() {
 
@@ -166,6 +167,7 @@ console.log(customerOrderItems)
       </Route> */}
     </Switch>
     {/* <Footer /> */}
+    <Footer />
   </Router>
 );
 }

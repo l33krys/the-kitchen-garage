@@ -1,6 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Icon } from 'semantic-ui-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faWarehouse } from '@fortawesome/free-solid-svg-icons'
 
 function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPage, setCategoryPage }) {
 
@@ -54,7 +56,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
                     <NavLink to="/login">Search</NavLink>
                 </div> */}
                 <div style={{ paddingTop: "10px", paddingBottom: "20px", marginLeft: "50px"}}>
-                    <NavLink to="/" exact><h1 style={{ color: "black" }}>The Kitchen Garage</h1></NavLink>
+                    <NavLink to="/" exact><h1 style={{ color: "black" }}><FontAwesomeIcon icon={faWarehouse} style={{color: "#576f72", paddingRight: "10px"}} />The Kitchen Garage</h1></NavLink>
                     <p>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>
                 </div>
             </div>
