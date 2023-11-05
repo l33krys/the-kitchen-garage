@@ -4,6 +4,8 @@ import ItemContainer from "./ItemContainer";
 import NavBar from "./NavBar";
 import Home from "./Home";
 import Appliances from "./Appliances";
+import Tools from "./Tools";
+import Accessories from "./Accessories";
 import Login from "./Login";
 import CustomerAcctLayout from "./CustomerAcctLayout"
 import MyAccount from "./MyAccount";
@@ -16,6 +18,7 @@ import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
 import OrderDetails from "./OrderDetails";
 // import ItemDetails from "./ItemDetails";
+import { useFetchItemsQuery } from '../store';
 
 function App() {
 
@@ -57,6 +60,20 @@ function App() {
 console.log(loggedInUser)
 console.log(customerOrderItems)
 
+  const { data, error, isLoading } = useFetchItemsQuery();
+
+  const itemAppliances = data ? data.filter((item) => {
+      return item.category === "appliances"
+  }) : null
+
+    const itemTools = data ? data.filter((item) => {
+      return item.category === "tools"
+  }) : null
+
+  const itemAccessories = data ? data.filter((item) => {
+    return item.category === "accessories"
+  }) : null
+
   return (
     <Router>
       <NavBar 
@@ -70,7 +87,20 @@ console.log(customerOrderItems)
       <Route path="/appliances">
         <Appliances 
           loggedInUser={loggedInUser}
-          customerOrderItems={customerOrderItems} />
+          customerOrderItems={customerOrderItems}
+          categoryData={itemAppliances} />
+      </Route>
+      <Route path="/tools">
+        <Tools 
+          loggedInUser={loggedInUser}
+          customerOrderItems={customerOrderItems}
+          categoryData={itemTools} />
+      </Route>
+      <Route path="/accessories">
+        <Accessories 
+          loggedInUser={loggedInUser}
+          customerOrderItems={customerOrderItems}
+          categoryData={itemAccessories} />
       </Route>
       <Route path="/login">
         <Login />

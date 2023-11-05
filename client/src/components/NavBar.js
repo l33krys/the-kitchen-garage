@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { Icon } from 'semantic-ui-react'
 
-function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems }) {
+function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPage, setCategoryPage }) {
 
     function handleLogOutClick() {
         fetch("/logout", {

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import ItemList from "./ItemList";
 
-function ItemContainer({ loggedInUser, customerOrderItems }) {
+function ItemContainer({ loggedInUser, customerOrderItems, categoryData }) {
 
 
     return (
 
         <div>
-            <ItemList loggedInUser={loggedInUser} customerOrderItems={customerOrderItems} />
+            <ItemList 
+                loggedInUser={loggedInUser} 
+                customerOrderItems={customerOrderItems} 
+                categoryData={categoryData} />
         </div>
     )
 }

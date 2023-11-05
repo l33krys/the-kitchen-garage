@@ -53,8 +53,9 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
             <Table.Body>
             {/* {isLoading ? null : customerOrderItems.map((order_item, key) => (
                 <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} />))} */}
-            {customerOrderItems.map((order_item, key) => (
-                <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} handleOrderItemDelete={handleOrderItemDelete} updateCustomerOrderItems={updateCustomerOrderItems} />))}
+            {customerOrderItems.length > 0 ? customerOrderItems.map((order_item, key) => (
+                <CartItem key={key} order_item={order_item} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} handleOrderItemDelete={handleOrderItemDelete} updateCustomerOrderItems={updateCustomerOrderItems} />))
+              : null}
             <Table.Row>
                 <Table.Cell>Total</Table.Cell>
                 <Table.Cell></Table.Cell>
