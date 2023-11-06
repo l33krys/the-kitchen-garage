@@ -54,7 +54,7 @@ function CartItem({ order_item, handleOrderItemDelete, loggedInUser, updateCusto
             <Header.Content style={{ paddingLeft: "30px", paddingRight: "30px" }}>
             {order_item.items.name} 
               <Header.Subheader style={{ color: "red"}} >
-                {order_item.items.inventory < 5 ? "Low Inventory" : null}
+                {(order_item.items.inventory - 1) < order_item.quantity ? "Reduce quantity" : null}
               </Header.Subheader>
             </Header.Content>
           </Header>

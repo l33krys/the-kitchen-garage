@@ -54,7 +54,7 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
       })
       .then((r) => {
         if (r.ok) {
-          // history.push("/myaccount")
+          // history.push("/account")
           setShowEditAccount(false)
           r.json()
           .then((user) => {
@@ -234,7 +234,7 @@ export default EditAccount;
 //     })
 //     .then((r) => {
 //       if (r.ok) {
-//         history.push("/myaccount")
+//         history.push("/account")
 //         r.json()
 //         .then((user) => {
 //           setLoggedInUser(user)         

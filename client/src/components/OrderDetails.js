@@ -25,7 +25,7 @@ function OrderDetails({ loggedInUser, setLoggedInUser, orderId }) {
     // console.log(orderId)
 
     function goToOrderHistory() {
-        history.push("/order_history")
+        history.push("/orders")
     }
 
 

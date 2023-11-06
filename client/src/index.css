@@ -40,3 +40,7 @@ input#search-bar {
   background-color: #fff;
   border: 1px solid #00000030;
 }
+
+a:hover {
+  color: "black"
+}

@@ -35,8 +35,10 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
         <Image src={item.image} wrapped ui={false} />
         <Card.Content>
           <Card.Header>{item.name}</Card.Header>
-          ${item.price}
+          <Card.Content>Item #{item.id}</Card.Content>
+          
           <Card.Description>{item.description}</Card.Description>
+          <br/> ${item.price}
         </Card.Content>
         <Card.Content extra>
           {loggedInUser !== null ?

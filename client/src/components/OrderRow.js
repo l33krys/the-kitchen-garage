@@ -10,10 +10,8 @@ function OrderRow({ loggedInUser, order_item }) {
         <Table.Cell>
           <Header as='h4' image>
             <Image src={order_item.items.image} rounded size='mini' />
-            <Header.Content style={{ paddingLeft: "30px", paddingRight: "30px" }}>
-            {order_item.items.name} 
-            </Header.Content>
           </Header>
+            {order_item.items.name} 
         </Table.Cell>
         <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price}</Table.Cell>
         <Table.Cell style={{ textAlign: "center" }}>

@@ -62,50 +62,53 @@ function App() {
 
 console.log(loggedInUser)
 console.log(customerOrderItems)
-
+ 
   const { data, error, isLoading } = useFetchItemsQuery();
+  
+  console.log(sortBy)
 
-  const searchedData = data ? data.filter((item) => 
-    item.name.toLowerCase().includes(search.toLowerCase())) : null
-
-  const itemAppliances = data ? searchedData.filter((item) => {
-      return item.category === "appliances"
-  }) : null
-
-    const itemTools = data ? searchedData.filter((item) => {
-      return item.category === "tools"
-  }) : null
-
-  const itemAccessories = data ? searchedData.filter((item) => {
-    return item.category === "accessories"
-  }) : null
-
-  function handleSortBy(sortBy) {
-    if (sortBy === "Best Match") {
-      const sortedItems = data ? [...data].sort((item1, item2) => 
-      item1.id - item2.id) : null
-      console.log(sortedItems)
-    } else if (sortBy === "Price: Low to High") {
-      const sortedItems = data ? [...data].sort((item1, item2) => 
-      item1.price - item2.price) : null
-      console.log(sortedItems)
-    } else if (sortBy === "Price: High to Low") {
-      const sortedItems = data ? [...data].sort((item1, item2) => 
-      item2.price - item1.price) : null
-      console.log(sortedItems)
-    }
+  let sortedItems
+  if (sortBy === "Best Match") {
+    sortedItems = data ? [...data].sort((item1, item2) => item1.id - item2.id) : [];
+  } else if (sortBy === "Price: Low to High") {
+    sortedItems = data ? [...data].sort((item1, item2) => item1.price - item2.price) : [];
+  } else if (sortBy === "Price: High to Low") {
+    sortedItems = data ? [...data].sort((item1, item2) => item2.price - item1.price) : [];
   }
-  console.log(data)
+
+  const searchedData = sortedItems ? sortedItems.filter((item) => 
+    item.name.toLowerCase().includes(search.toLowerCase())) : []
+
+  const itemAppliances = searchedData ? searchedData.filter((item) => {
+      return item.category === "appliances"
+  }) : []
+
+    const itemTools = searchedData ? searchedData.filter((item) => {
+      return item.category === "tools"
+  }) : []
+
+  const itemAccessories = searchedData ? searchedData.filter((item) => {
+    return item.category === "accessories"
+  }) : []
 
   return (
     <Router>
       <NavBar 
         setLoggedInUser={setLoggedInUser}
         loggedInUser={loggedInUser}
-        customerOrderItems={customerOrderItems} />
+        customerOrderItems={customerOrderItems}
+        search={search}
+        setSearch={setSearch}
+        sortBy={sortBy}
+        setSortBy={setSortBy} />
     <Switch>
       <Route path="/" exact>
         <Home />
+      </Route>
+      <Route path="/login">
+        <CustomerFormLayout
+          setLoggedInUser={setLoggedInUser}
+          loggedInUser={loggedInUser} />
       </Route>
       <Route path="/appliances">
         <Appliances 
@@ -116,7 +119,7 @@ console.log(customerOrderItems)
           setSearch={setSearch}
           sortBy={sortBy}
           setSortBy={setSortBy}
-          handleSortBy={handleSortBy} />
+           />
       </Route>
       <Route path="/tools">
         <Tools 
@@ -127,7 +130,7 @@ console.log(customerOrderItems)
           setSearch={setSearch}
           sortBy={sortBy}
           setSortBy={setSortBy}
-          handleSortBy={handleSortBy}  />
+           />
       </Route>
       <Route path="/accessories">
         <Accessories 
@@ -138,17 +141,24 @@ console.log(customerOrderItems)
           setSearch={setSearch}
           sortBy={sortBy}
           setSortBy={setSortBy}
-          handleSortBy={handleSortBy}  />
+           />
       </Route>
-      <Route path="/login">
-        <Login />
-      </Route>
-      <Route path="/myaccount">
+
+      <Route path="/account">
         <CustomerAcctLayout 
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
-      <Route path="/order_history">
+      <Route path="/orders/:orderId">
+        {({ match }) => (
+          <OrderDetails
+            setLoggedInUser={setLoggedInUser}
+            loggedInUser={loggedInUser}
+            orderId={match.params.orderId}
+          />
+        )}
+      </Route>
+      <Route path="/orders">
         <OrderHistory
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
@@ -168,9 +178,6 @@ console.log(customerOrderItems)
           setLoggedInUser={setLoggedInUser}
           loggedInUser={loggedInUser} />
       </Route>
-      <Route path="/signup">
-        <SignUp />
-      </Route>
       <Route path="/cart">
         <Cart 
           setLoggedInUser={setLoggedInUser}
@@ -179,31 +186,13 @@ console.log(customerOrderItems)
           setCustomerOrderItems={setCustomerOrderItems}
           updateCustomerOrderItems={updateCustomerOrderItems} />
       </Route>
-      <Route path="/login_signup">
-        <CustomerFormLayout
-          setLoggedInUser={setLoggedInUser}
-          loggedInUser={loggedInUser} />
-      </Route>
-      <Route path="/orders/:orderId">
-        {({ match }) => (
-          <OrderDetails
-            setLoggedInUser={setLoggedInUser}
-            loggedInUser={loggedInUser}
-            orderId={match.params.orderId}
-          />
-        )}
-      </Route>
-      {/*<Route path="/items/:itemId">
-        <ItemDetails />
-      </Route>
-       <Route path="/tools">
-        <Tools />
-      </Route>
-      <Route path="/accessories">
-        <Accessories />
+      {/* <Route path="/login">
+        <Login />
+      </Route> */}
+      {/* <Route path="/signup">
+        <SignUp />
       </Route> */}
     </Switch>
-    {/* <Footer /> */}
     <Footer />
   </Router>
 );

@@ -30,8 +30,6 @@ function Appliances({ loggedInUser, customerOrderItems, categoryData, search, se
             </Grid.Column>
         </Grid.Row>
       </Grid>
-
-
       <ItemContainer 
         loggedInUser={loggedInUser} 
         customerOrderItems={customerOrderItems}

@@ -60,7 +60,7 @@ export const EditShippingAddress = ({ loggedInUser, setLoggedInUser, showEditShi
         .then((r) => r.json())
         .then((customer) => {
             setLoggedInUser(customer)
-            // history.push("/myaccount")
+            // history.push("/account")
             setShowEditShipping(false)
       })
       })
@@ -214,7 +214,7 @@ export default EditShippingAddress;
 //       .then((r) => r.json())
 //       .then((customer) => {
 //           setLoggedInUser(customer)
-//           history.push("/myaccount")
+//           history.push("/account")
 //     })
 //     })
 //   },
