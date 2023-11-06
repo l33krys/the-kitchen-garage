@@ -249,10 +249,10 @@ if __name__ == '__main__':
         db.session.commit()
 
         print("Seeding items...")
-        item1 = Item(name="Stand Mixer", image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliances", description="Help make mixing easier.", inventory=10, price=200.00)
-        item2 = Item(name="Blender", image="https://images.pexels.com/photos/7460165/pexels-photo-7460165.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Create smoothies effortlessly.", inventory=5, price=50.00)
-        item3 = Item(name="Single Cup Coffee Machine", image="https://images.pexels.com/photos/10078423/pexels-photo-10078423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Brew coffee in seconds.", inventory=15, price=99.00)
-        item4 = Item(name="Toaster", image="https://images.pexels.com/photos/7936638/pexels-photo-7936638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Toast two slices of bread at once.", inventory=15, price=39.00)
+        item1 = Item(name="Stand Mixer", image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", category="appliances", description="Help make mixing easier", inventory=10, price=200.00)
+        item2 = Item(name="Blender", image="https://images.pexels.com/photos/7460165/pexels-photo-7460165.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Create smoothies effortlessly", inventory=5, price=50.00)
+        item3 = Item(name="Single Cup Coffee Machine", image="https://images.pexels.com/photos/10078423/pexels-photo-10078423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Brew coffee in seconds", inventory=15, price=99.00)
+        item4 = Item(name="Toaster", image="https://images.pexels.com/photos/7936638/pexels-photo-7936638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", category="appliances", description="Toast two slices of bread at once", inventory=15, price=39.00)
         # To use file images
         # image="assets/applianceImages/vecteezy_coffe-style-illustration-ai-generated_21946989_918.jpg"
         item_list = [item1, item2, item3, item4]

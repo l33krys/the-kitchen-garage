@@ -25,6 +25,8 @@ function App() {
 
   const [loggedInUser, setLoggedInUser] = useState(null)
   const [customerOrderItems, setCustomerOrderItems] = useState([])
+  const [search, setSearch] = useState("")
+  const [sortBy, setSortBy] = useState("Best Match")
 
   useEffect(() => {
     fetch("/check_session")
@@ -63,17 +65,37 @@ console.log(customerOrderItems)
 
   const { data, error, isLoading } = useFetchItemsQuery();
 
-  const itemAppliances = data ? data.filter((item) => {
+  const searchedData = data ? data.filter((item) => 
+    item.name.toLowerCase().includes(search.toLowerCase())) : null
+
+  const itemAppliances = data ? searchedData.filter((item) => {
       return item.category === "appliances"
   }) : null
 
-    const itemTools = data ? data.filter((item) => {
+    const itemTools = data ? searchedData.filter((item) => {
       return item.category === "tools"
   }) : null
 
-  const itemAccessories = data ? data.filter((item) => {
+  const itemAccessories = data ? searchedData.filter((item) => {
     return item.category === "accessories"
   }) : null
+
+  function handleSortBy(sortBy) {
+    if (sortBy === "Best Match") {
+      const sortedItems = data ? [...data].sort((item1, item2) => 
+      item1.id - item2.id) : null
+      console.log(sortedItems)
+    } else if (sortBy === "Price: Low to High") {
+      const sortedItems = data ? [...data].sort((item1, item2) => 
+      item1.price - item2.price) : null
+      console.log(sortedItems)
+    } else if (sortBy === "Price: High to Low") {
+      const sortedItems = data ? [...data].sort((item1, item2) => 
+      item2.price - item1.price) : null
+      console.log(sortedItems)
+    }
+  }
+  console.log(data)
 
   return (
     <Router>
@@ -89,19 +111,34 @@ console.log(customerOrderItems)
         <Appliances 
           loggedInUser={loggedInUser}
           customerOrderItems={customerOrderItems}
-          categoryData={itemAppliances} />
+          categoryData={itemAppliances}
+          search={search}
+          setSearch={setSearch}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          handleSortBy={handleSortBy} />
       </Route>
       <Route path="/tools">
         <Tools 
           loggedInUser={loggedInUser}
           customerOrderItems={customerOrderItems}
-          categoryData={itemTools} />
+          categoryData={itemTools}
+          search={search}
+          setSearch={setSearch}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          handleSortBy={handleSortBy}  />
       </Route>
       <Route path="/accessories">
         <Accessories 
           loggedInUser={loggedInUser}
           customerOrderItems={customerOrderItems}
-          categoryData={itemAccessories} />
+          categoryData={itemAccessories}
+          search={search}
+          setSearch={setSearch}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          handleSortBy={handleSortBy}  />
       </Route>
       <Route path="/login">
         <Login />

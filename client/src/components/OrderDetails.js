@@ -19,9 +19,9 @@ function OrderDetails({ loggedInUser, setLoggedInUser, orderId }) {
         })
     }, [])
 
-    console.log(orderDetails)
-    const shipping_address = orderDetails.length > 0 ? orderDetails[0].orders.customer.shipping_address : null
-    console.log(shipping_address)
+    // console.log(orderDetails)
+    // const shipping_address = orderDetails.length > 0 ? orderDetails[0].orders.customer.shipping_address : null
+    // console.log(shipping_address)
     // console.log(orderId)
 
     function goToOrderHistory() {

@@ -100,7 +100,7 @@ item15 = Item(
     )
 
 item16 = Item(
-    name="Kitchen Towel Set", 
+    name="Starter Tools Set", 
     image="https://images.unsplash.com/photo-1589983006655-4ef9a756ebe3?auto=format&fit=crop&q=80&w=2895&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="tools", 
     description="", 

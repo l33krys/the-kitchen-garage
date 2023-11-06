@@ -139,7 +139,7 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
                 Password
               </label>
               <input
-                id="password-edit"
+                id="password"
                 name="password"
                 type="password"
                 onChange={formik.handleChange}
@@ -150,12 +150,12 @@ export const EditAccount = ({ loggedInUser, setLoggedInUser, setShowEditAccount,
               <p style={{ color: "white" }}> {formik.errors.password}</p>
             </Form.Field>
             <Form.Field>
-              <label htmlFor="password" style={{ color: "#F6F1F1" }}>
+              <label htmlFor="confirmPassword" style={{ color: "#F6F1F1" }}>
                 Confirm Password
               </label>
               <input
-                id="password-edit-confirm"
-                name="password-confirm"
+                id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 onChange={formik.handleChange}
                 value={formik.values.confirmPassword}

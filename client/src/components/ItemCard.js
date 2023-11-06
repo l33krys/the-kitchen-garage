@@ -51,6 +51,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
           <Modal.Header>Item Added</Modal.Header>
           <Modal.Content>
             <Modal.Description>
+              <Icon color="teal" name="check circle"/>
               {item.name} added to cart
             </Modal.Description>
           </Modal.Content>
