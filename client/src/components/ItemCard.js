@@ -36,8 +36,9 @@ function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }
     })
     .then((r) => r.json())
     .then((orderItem) => handleAddOrderItem(orderItem))
-  
   }
+
+  console.log(item.inventory)
 
     return (
 
@@ -78,6 +79,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }
                    
             {/* <Button as={Link} to="/items/{item.id}">View Details</Button> */}
             {/* <Link to={`/items/${item.id}`}>View Details</Link> */}
+            {item.inventory < 5 ? <span style={{ fontStyle: "italic", marginLeft: "10px", color: "#BB2525"}}>Only {item.inventory} left</span> : ""}
         </Card.Content>
         </Card>
       </>
