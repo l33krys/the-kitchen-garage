@@ -158,7 +158,7 @@ class Item(db.Model, SerializerMixin):
     category = db.Column(db.String)
     description = db.Column(db.String)
     inventory = db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    price = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     # Relationships
@@ -184,11 +184,11 @@ class Item(db.Model, SerializerMixin):
     
     @validates("inventory")
     def validate_inventory(self, key, inventory):
-        if not inventory:
-            raise ValueError("Inventory is required")
-        # elif not isinstance(inventory, int):
-        #     raise ValueError("Inventory must be a number")
-        elif inventory < 0:
+        # if not inventory:
+        #     raise ValueError("Inventory is required")
+        # # elif not isinstance(inventory, int):
+        # #     raise ValueError("Inventory must be a number")
+        if inventory < 0:
             raise ValueError("Inventory must be a positive integer")
         return inventory
     

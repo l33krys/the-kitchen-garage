@@ -71,7 +71,7 @@ function OrderDetails({ loggedInUser, setLoggedInUser, orderId }) {
                     <Table.Cell>Total</Table.Cell>
                     <Table.Cell></Table.Cell>
                     <Table.Cell></Table.Cell>
-                    <Table.Cell style={{ textAlign: "right" }}>${total}</Table.Cell>
+                    <Table.Cell style={{ textAlign: "right" }}>${total.toFixed(2)}</Table.Cell>
                     <Table.Cell></Table.Cell>
                 </Table.Row>
                 <Table.Row>

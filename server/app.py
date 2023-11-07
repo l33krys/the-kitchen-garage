@@ -421,32 +421,32 @@ class OrderById(Resource):
 
 class OrderItems(Resource):
 
-    # def get(self):
-
-    #     order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
-    #     orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
-        
-    #     response = make_response(
-    #         order_items_schema.dump(orderitems), 200
-    #     )
-    #     return response
-
     def get(self):
 
-        customer_id = session['customer_id']
-        saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+        order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+        orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
+        
+        response = make_response(
+            order_items_schema.dump(orderitems), 200
+        )
+        return response
 
-        if saved_order:
-            order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == 1).first()
-            if order_item_exists:
-                setattr(order_item_exists, "quantity", order_item_exists.quantity + 5)
-                db.session.commit()
-                response = make_response(
-                    order_item_exists.to_dict(only=("quantity", )), 200
-                )
-                return response
-            else:
-                return make_response({"message": "order item doesn't exits"})  
+    # def get(self):
+
+    #     customer_id = session['customer_id']
+    #     saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+
+    #     if saved_order:
+    #         order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == 1).first()
+    #         if order_item_exists:
+    #             setattr(order_item_exists, "quantity", order_item_exists.quantity + 5)
+    #             db.session.commit()
+    #             response = make_response(
+    #                 order_item_exists.to_dict(only=("quantity", )), 200
+    #             )
+    #             return response
+    #         else:
+    #             return make_response({"message": "order item doesn't exits"})  
     
     def post(self):
 
@@ -461,7 +461,8 @@ class OrderItems(Resource):
             if saved_order:
                 order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == item_id).first()
                 if order_item_exists:
-                    setattr(order_item_exists, "quantity", order_item_exists.quantity + 1)
+                    # setattr(order_item_exists, "quantity", order_item_exists.quantity + 1)
+                    setattr(order_item_exists, "quantity", order_item_exists.quantity)
                     db.session.commit()
                     return make_response(
                         # {"message": "order item exists and quantities updated"}, 200
@@ -729,7 +730,7 @@ class SubmitOrder(Resource):
                 check_inventory_list = []
                 for product in order_items:
                     check_inventory = Item.query.filter(Item.id == product["item_id"]).first() 
-                    check_inventory_list.append(product["quantity"] < check_inventory.inventory) # Inventory validation set to min 1
+                    check_inventory_list.append(product["quantity"] <= check_inventory.inventory) # Update inventory validation to have more than 0 in stock
                 # return check_inventory_list
 
                 all_in_stock = any(check_inventory_list) # Return list of booleans if in stock

@@ -60,7 +60,7 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
                 <Table.Cell>Total</Table.Cell>
                 <Table.Cell></Table.Cell>
                 <Table.Cell></Table.Cell>
-                <Table.Cell>${total}</Table.Cell>
+                <Table.Cell>${total.toFixed(2)}</Table.Cell>
                 <Table.Cell></Table.Cell>
             </Table.Row>
             </Table.Body>
