@@ -99,32 +99,32 @@ item15 = Item(
     price=19.99
     )
 
-item16 = Item(
-    name="Starter Tools Set", 
-    image="https://images.unsplash.com/photo-1589983006655-4ef9a756ebe3?auto=format&fit=crop&q=80&w=2895&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-    category="tools", 
-    description="", 
-    inventory=10, 
-    price=55.99
-    )
+# item16 = Item(
+#     name="Starter Tools Set", 
+#     image="https://images.unsplash.com/photo-1589983006655-4ef9a756ebe3?auto=format&fit=crop&q=80&w=2895&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+#     category="tools", 
+#     description="", 
+#     inventory=10, 
+#     price=55.99
+#     )
 
 item17 = Item(
-    name="Wood Cutting Boards", 
-    image="https://images.unsplash.com/photo-1673480695222-b93877dee185?auto=format&fit=crop&q=80&w=2864&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+    name="Wood Cutting Board", 
+    image="https://images.unsplash.com/photo-1582373778856-37fbec5f8529?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="tools", 
     description="", 
     inventory=10, 
     price=34.99
     )
 
-item18 = Item(
-    name="Cermaic Canister", 
-    image="https://images.unsplash.com/photo-1520981825232-ece5fae45120?auto=format&fit=crop&q=80&w=2864&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-    category="accessories", 
-    description="", 
-    inventory=10, 
-    price=34.99
-    )
+# item18 = Item(
+#     name="Cermaic Canister", 
+#     image="https://images.unsplash.com/photo-1520981825232-ece5fae45120?auto=format&fit=crop&q=80&w=2864&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+#     category="accessories", 
+#     description="", 
+#     inventory=10, 
+#     price=34.99
+#     )
 
 item19 = Item(
     name="Ipad Holder", 
@@ -157,6 +157,15 @@ item22 = Item(
     name="Mason Jar Containers", 
     image="https://images.unsplash.com/photo-1559837957-bab8edc53c85?auto=format&fit=crop&q=80&w=2787&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="accessories", 
+    description="", 
+    inventory=10, 
+    price=64.99
+    )
+
+item23 = Item(
+    name="Cast-Iron Skillet", 
+    image="https://images.unsplash.com/photo-1667980972010-884946d24318?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
+    category="tools", 
     description="", 
     inventory=10, 
     price=64.99

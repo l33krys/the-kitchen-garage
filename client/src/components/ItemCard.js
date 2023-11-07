@@ -10,11 +10,10 @@ function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }
 
   const [showAddtoCartSuccess, setShowAddToCartSuccess] = useState(false)
   const [addOrderItem, results] = useAddOrderItemMutation();
-  const [rStatus, setRStatus] = useState("")
   const history = useHistory();
 
   function goToSignupLogin() {
-    history.push("/login_signup")
+    history.push("/login")
   }
   
   function handleAddtoCart(item) {
@@ -38,8 +37,6 @@ function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }
     .then((orderItem) => handleAddOrderItem(orderItem))
   }
 
-  console.log(item.inventory)
-
     return (
 
       <>
@@ -50,7 +47,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }
           <Card.Content>Item #{item.id}</Card.Content>
           
           <Card.Description>{item.description}</Card.Description>
-          <br/> ${item.price}
+          <br/> ${item.price.toFixed(2)}
         </Card.Content>
         <Card.Content extra>
           {loggedInUser !== null ?
@@ -74,7 +71,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }
           </Modal.Actions>
         </Modal>
             : 
-            <Button onClick={goToSignupLogin}>Login or Signup to add to cart</Button>
+            <Button onClick={goToSignupLogin}>Login/Signup</Button>
           }
                    
             {/* <Button as={Link} to="/items/{item.id}">View Details</Button> */}

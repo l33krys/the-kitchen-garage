@@ -77,8 +77,13 @@ function App() {
 console.log(loggedInUser)
 console.log(customerOrderItems)
  
-  const { data, error, isLoading } = useFetchItemsQuery();
+  const { data, error, isLoading, refetch } = useFetchItemsQuery();
   
+  function refreshInventory() {
+    // refetching after order submitted to update inventory
+    refetch()
+
+  }
 
   let sortedItems
   if (sortBy === "Best Match") {
@@ -200,7 +205,8 @@ console.log(customerOrderItems)
           loggedInUser={loggedInUser}
           customerOrderItems={customerOrderItems}
           setCustomerOrderItems={setCustomerOrderItems}
-          updateCustomerOrderItems={updateCustomerOrderItems} />
+          updateCustomerOrderItems={updateCustomerOrderItems}
+          refreshInventory={refreshInventory} />
       </Route>
       <Route path ="/about">
         <About />

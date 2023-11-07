@@ -5,7 +5,7 @@ import { Button, Card, Message, Modal } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
-function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems, updateCustomerOrderItems }) {
+function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOrderItems, updateCustomerOrderItems, refreshInventory }) {
 
     // const [customerOrderItems, setCustomerOrderItems] = useState([])
     const history = useHistory();
@@ -47,6 +47,7 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                     console.log("Order submitted")
                     setCustomerOrderItems([])
                     setOrderSubmitted(true) 
+                    refreshInventory()
                     
                     // Transfer customer to order history after order submitted
                     // Move code to useEffect timer if still want to transfer to order history page

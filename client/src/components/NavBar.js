@@ -16,7 +16,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
             }
         })
     }
-    console.log(customerOrderItems)
+    // console.log(customerOrderItems)
     let totalInCart = 0;
     if (customerOrderItems.length > 0) {
         const itemsInCart = customerOrderItems.map((order_item, key) => (
@@ -25,7 +25,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
         totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
         
     }
-    console.log(totalInCart)
+    // console.log(totalInCart)
     // const itemsInCart = customerOrderItems.map((order_item, key) => (
     //   order_item.quantity
     // ))
