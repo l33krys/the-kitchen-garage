@@ -3,7 +3,7 @@ import { Grid } from 'semantic-ui-react'
 import ItemContainer from "./ItemContainer";
 import ItemSort from "./ItemSort";
 
-function Tools({ loggedInUser, customerOrderItems, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy }) {
+function Tools({ loggedInUser, customerOrderItems, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy, handleAddOrderItem }) {
 
 
 
@@ -33,7 +33,8 @@ function Tools({ loggedInUser, customerOrderItems, categoryData, search, setSear
         setSearch={setSearch}
         sortBy={sortBy}
         setSortBy={setSortBy}
-        handleSortBy={handleSortBy}  />
+        handleSortBy={handleSortBy}
+        handleAddOrderItem={handleAddOrderItem}  />
     </div>
     
   )

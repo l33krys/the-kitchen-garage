@@ -19,6 +19,7 @@ import CustomerFormLayout from "./CustomerFormLayout";
 import OrderDetails from "./OrderDetails";
 // import ItemDetails from "./ItemDetails";
 import { useFetchItemsQuery } from '../store';
+import About from "./About";
 import Footer from "./Footer";
 
 function App() {
@@ -53,6 +54,19 @@ function App() {
 
 }, [])
 
+  function handleAddOrderItem(newOrderItem) {
+    console.log(newOrderItem)
+    const exists = customerOrderItems.filter((item) => {
+      return item.id === newOrderItem.id
+    })
+    if (exists.length === 0) {
+      const addOrderItem = [...customerOrderItems, newOrderItem]
+      setCustomerOrderItems(addOrderItem)
+    } else if (exists.length > 0) {
+      updateCustomerOrderItems(newOrderItem)
+    }
+  }
+
   function updateCustomerOrderItems(updatedItem) {
     const updatedOrderItems = customerOrderItems.map((item) => 
       item.id === updatedItem.id ? updatedItem : item
@@ -65,7 +79,6 @@ console.log(customerOrderItems)
  
   const { data, error, isLoading } = useFetchItemsQuery();
   
-  console.log(sortBy)
 
   let sortedItems
   if (sortBy === "Best Match") {
@@ -119,6 +132,7 @@ console.log(customerOrderItems)
           setSearch={setSearch}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          handleAddOrderItem={handleAddOrderItem}
            />
       </Route>
       <Route path="/tools">
@@ -130,6 +144,7 @@ console.log(customerOrderItems)
           setSearch={setSearch}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          handleAddOrderItem={handleAddOrderItem}
            />
       </Route>
       <Route path="/accessories">
@@ -141,6 +156,7 @@ console.log(customerOrderItems)
           setSearch={setSearch}
           sortBy={sortBy}
           setSortBy={setSortBy}
+          handleAddOrderItem={handleAddOrderItem}
            />
       </Route>
 
@@ -185,6 +201,9 @@ console.log(customerOrderItems)
           customerOrderItems={customerOrderItems}
           setCustomerOrderItems={setCustomerOrderItems}
           updateCustomerOrderItems={updateCustomerOrderItems} />
+      </Route>
+      <Route path ="/about">
+        <About />
       </Route>
       {/* <Route path="/login">
         <Login />

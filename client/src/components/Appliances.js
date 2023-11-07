@@ -4,7 +4,7 @@ import ItemContainer from "./ItemContainer";
 import ItemSort from "./ItemSort";
 
 
-function Appliances({ loggedInUser, customerOrderItems, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy }) {
+function Appliances({ loggedInUser, customerOrderItems, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy, handleAddOrderItem }) {
 
   // useEffect(() => {
   //   fetch("http://localhost:5555/items")
@@ -38,7 +38,8 @@ function Appliances({ loggedInUser, customerOrderItems, categoryData, search, se
         setSearch={setSearch}
         sortBy={sortBy}
         setSortBy={setSortBy}
-        handleSortBy={handleSortBy}  />
+        handleSortBy={handleSortBy}
+        handleAddOrderItem={handleAddOrderItem} />
     </div>
     
   )

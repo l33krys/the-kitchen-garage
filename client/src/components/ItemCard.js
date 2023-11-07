@@ -6,10 +6,11 @@ import { useHistory } from "react-router";
 import { useAddOrderItemMutation } from '../store';
 
 
-function ItemCard({ item, loggedInUser, customerOrderItems }) {
+function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }) {
 
   const [showAddtoCartSuccess, setShowAddToCartSuccess] = useState(false)
   const [addOrderItem, results] = useAddOrderItemMutation();
+  const [rStatus, setRStatus] = useState("")
   const history = useHistory();
 
   function goToSignupLogin() {
@@ -24,7 +25,17 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
     }
     console.log(order_item)
     // No response with redux yet; total won't update automatically
-    addOrderItem(order_item)
+    // addOrderItem(order_item)
+    fetch("/order_items", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order_item)
+    })
+    .then((r) => r.json())
+    .then((orderItem) => handleAddOrderItem(orderItem))
   
   }
 

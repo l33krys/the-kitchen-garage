@@ -464,7 +464,8 @@ class OrderItems(Resource):
                     setattr(order_item_exists, "quantity", order_item_exists.quantity + 1)
                     db.session.commit()
                     return make_response(
-                        {"message": "order item exists and quantities updated"}, 200
+                        # {"message": "order item exists and quantities updated"}, 200
+                        order_item_schema.dump(order_item_exists), 203
                 )
 
                 else:
@@ -478,7 +479,8 @@ class OrderItems(Resource):
                     db.session.commit()
 
                     return make_response(
-                        {"message": "order item was created"}, 200
+                        # {"message": "order item was created"}, 200
+                        order_item_schema.dump(order_item), 201
                     )
                 
             else:

@@ -3,7 +3,7 @@ import ItemCard from "./ItemCard";
 import { Card } from 'semantic-ui-react'
 import { useFetchItemsQuery } from '../store';
 
-function ItemList({ items, loggedInUser, customerOrderItems, categoryPage, setCategoryPage, categoryData }) {
+function ItemList({ items, loggedInUser, customerOrderItems, categoryPage, setCategoryPage, categoryData, handleAddOrderItem }) {
 
     // const { data, error, isLoading } = useFetchItemsQuery();
 
@@ -14,7 +14,7 @@ function ItemList({ items, loggedInUser, customerOrderItems, categoryPage, setCa
     let productCards;
     if (categoryData) {
         productCards = categoryData.map((item, key) => 
-            <ItemCard key={key} item={item} loggedInUser={loggedInUser} customerOrderItems={customerOrderItems}/>)       
+            <ItemCard key={key} item={item} loggedInUser={loggedInUser} customerOrderItems={customerOrderItems} handleAddOrderItem={handleAddOrderItem} />)       
     } else (
         <div>"Loading..."</div>
     )

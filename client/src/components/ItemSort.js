@@ -13,7 +13,7 @@ function ItemSort({ items, loggedInUser, customerOrderItems, categoryPage, setCa
     return (
 
         <div style={{ textAlign: "right", marginRight: "140px"}}>
-            <Dropdown style={{ }} placeholder='Sort By' search selection options={sortOptions}
+            <Dropdown defaultValue={sortOptions[0].value} style={{ }} placeholder='Sort By' search selection options={sortOptions}
                 onChange={(e) => setSortBy(e.target.innerText)}
                 />
             <div id="search-container" >

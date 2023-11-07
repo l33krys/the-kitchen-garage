@@ -25,14 +25,15 @@
   padding: 1em;
   margin: 10px 0px 5px 0px;
   position: static;
-  height: 15px;
-  width: 250px;
+  height: 25px;
+  width: 195px;
   border-radius: 3px;
   /* box-shadow: 5px 5px 30px rgba(0, 0, 0, 0.2); */
 }
 
 input#search-bar {
   font-size: 14px;
+  height: 35px;
   /* background-image: url(https://cdn2.hubspot.net/hubfs/4004166/bioticresearch_website_assets/images/search_icon.png); */
   background-repeat: no-repeat;
   background-position: left center;

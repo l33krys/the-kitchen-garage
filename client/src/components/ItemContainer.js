@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import ItemList from "./ItemList";
 import ItemSort from "./ItemSort";
 
-function ItemContainer({ loggedInUser, customerOrderItems, categoryData }) {
+function ItemContainer({ loggedInUser, customerOrderItems, categoryData, handleAddOrderItem }) {
 
 
     return (
@@ -11,7 +11,8 @@ function ItemContainer({ loggedInUser, customerOrderItems, categoryData }) {
             <ItemList 
                 loggedInUser={loggedInUser} 
                 customerOrderItems={customerOrderItems} 
-                categoryData={categoryData} />
+                categoryData={categoryData}
+                handleAddOrderItem={handleAddOrderItem}/>
         </div>
     )
 }
