@@ -3,14 +3,7 @@ import { Grid } from 'semantic-ui-react'
 import ItemContainer from "./ItemContainer";
 import ItemSort from "./ItemSort";
 
-
-function Appliances({ loggedInUser, customerOrderItems, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy, handleAddOrderItem }) {
-
-  // useEffect(() => {
-  //   fetch("http://localhost:5555/items")
-  //   .then(r => r.json())
-  //   .then((data) => setItems(data))
-  // }, [])
+function Accessories({ loggedInUser, customerOrderItems, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy, handleAddOrderItem }) {
 
   return (
     
@@ -18,7 +11,7 @@ function Appliances({ loggedInUser, customerOrderItems, categoryData, search, se
       <Grid divided="vertically">
         <Grid.Row columns={2}>
           <Grid.Column>
-          <h1>Appliances</h1>
+          <h1>Accessories</h1>
           </Grid.Column>
           <Grid.Column>
             <ItemSort 
@@ -39,10 +32,10 @@ function Appliances({ loggedInUser, customerOrderItems, categoryData, search, se
         sortBy={sortBy}
         setSortBy={setSortBy}
         handleSortBy={handleSortBy}
-        handleAddOrderItem={handleAddOrderItem} />
+        handleAddOrderItem={handleAddOrderItem}  />
     </div>
     
   )
 }
 
-export default Appliances;
+export default Accessories;

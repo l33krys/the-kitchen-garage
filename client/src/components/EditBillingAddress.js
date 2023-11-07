@@ -62,7 +62,7 @@ export const EditBillingAddress = ({ loggedInUser, setLoggedInUser, showEditBill
         .then((r) => r.json())
         .then((customer) => {
             setLoggedInUser(customer)
-            // history.push("/myaccount")
+            // history.push("/account")
             setShowEditBilling(false)
       })
       })
@@ -224,7 +224,7 @@ export default EditBillingAddress;
 //         .then((r) => r.json())
 //         .then((customer) => {
 //             setLoggedInUser(customer)
-//             history.push("/myaccount")
+//             history.push("/account")
 //       })
 //       })
 //     },

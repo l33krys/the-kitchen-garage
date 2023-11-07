@@ -6,10 +6,11 @@ import { useHistory } from "react-router";
 import { useAddOrderItemMutation } from '../store';
 
 
-function ItemCard({ item, loggedInUser, customerOrderItems }) {
+function ItemCard({ item, loggedInUser, customerOrderItems, handleAddOrderItem }) {
 
   const [showAddtoCartSuccess, setShowAddToCartSuccess] = useState(false)
   const [addOrderItem, results] = useAddOrderItemMutation();
+  const [rStatus, setRStatus] = useState("")
   const history = useHistory();
 
   function goToSignupLogin() {
@@ -24,9 +25,20 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
     }
     console.log(order_item)
     // No response with redux yet; total won't update automatically
-    addOrderItem(order_item)
-  
+    // addOrderItem(order_item)
+    fetch("/order_items", {
+      method: "POST",
+      mode: "cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(order_item)
+    })
+    .then((r) => r.json())
+    .then((orderItem) => handleAddOrderItem(orderItem))
   }
+
+  console.log(item.inventory)
 
     return (
 
@@ -35,8 +47,10 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
         <Image src={item.image} wrapped ui={false} />
         <Card.Content>
           <Card.Header>{item.name}</Card.Header>
-          ${item.price}
+          <Card.Content>Item #{item.id}</Card.Content>
+          
           <Card.Description>{item.description}</Card.Description>
+          <br/> ${item.price}
         </Card.Content>
         <Card.Content extra>
           {loggedInUser !== null ?
@@ -51,6 +65,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
           <Modal.Header>Item Added</Modal.Header>
           <Modal.Content>
             <Modal.Description>
+              <Icon color="teal" name="check circle"/>
               {item.name} added to cart
             </Modal.Description>
           </Modal.Content>
@@ -64,6 +79,7 @@ function ItemCard({ item, loggedInUser, customerOrderItems }) {
                    
             {/* <Button as={Link} to="/items/{item.id}">View Details</Button> */}
             {/* <Link to={`/items/${item.id}`}>View Details</Link> */}
+            {item.inventory < 5 ? <span style={{ fontStyle: "italic", marginLeft: "10px", color: "#BB2525"}}>Only {item.inventory} left</span> : ""}
         </Card.Content>
         </Card>
       </>

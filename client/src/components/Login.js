@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import { Link, Redirect } from 'react-router-dom'
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Form, Message } from 'semantic-ui-react'
+import { Button, Form, Message, Icon } from 'semantic-ui-react'
 import SignUp from "./SignUp";
 
 export const Login = ({ loggedInUser, setLoggedInUser }) => {
@@ -73,12 +73,14 @@ export const Login = ({ loggedInUser, setLoggedInUser }) => {
       <Form onSubmit={formik.handleSubmit} style={{ margin: "30px" }}>
         <Form.Field>
         <label htmlFor="email"style={{color: "#F6F1F1"}}>Email</label>
-        <input
+        <Form.Input
           id="email-login"
           name="email"
           onChange={formik.handleChange}
           value={formik.values.email}
           style={{ width: "250px" }}
+          icon="mail"
+          iconPosition="left"
         />
         {/* <p style={{ color: "white" }}> {formik.errors.email}</p> */}
         </Form.Field>

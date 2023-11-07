@@ -26,7 +26,7 @@ function CustomerAddress({ loggedInUser, setLoggedInUser }) {
 
       <>
       {loggedInUser ?
-        <Table style={{ margin: "30px", paddingTop: "15px", paddingBottom: "15px" }} basic='very' celled collapsing>
+        <Table style={{ margin: "auto", paddingTop: "15px", paddingBottom: "15px" }} basic='very' celled collapsing>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell>My Addresses</Table.HeaderCell>

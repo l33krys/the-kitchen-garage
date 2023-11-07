@@ -50,7 +50,7 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                     
                     // Transfer customer to order history after order submitted
                     // Move code to useEffect timer if still want to transfer to order history page
-                    // history.push("/order_history")                  
+                    // history.push("/orders")                  
                 } else if (r.status === 401) {
                     console.log("Inventory too low")
                     setInventoryTooLow(true)

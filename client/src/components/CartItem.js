@@ -2,21 +2,26 @@ import React, { useState } from 'react'
 import { Header, Image, Table, Button, Icon } from 'semantic-ui-react'
 import { useDeleteCustomerMutation } from "../store";
 
-function CartItem({ order_item, handleOrderItemDelete, loggedInUser, updateCustomerOrderItems }) {
+function CartItem({ order_item, loggedInUser, updateCustomerOrderItems, setCustomerOrderItems, customerOrderItems }) {
     const [deleteOrderItem, results] = useDeleteCustomerMutation();
     const [isHover, setHover] = useState(false)
+
+    console.log(order_item.items.inventory)
+    console.log(order_item)
 
     function handleUpdateQuantity(addOrSubtract) {
       if (addOrSubtract === "increase") {
           order_item.quantity += 1
-      } else if (addOrSubtract === "decrease") {
+          patchToServer()
+      } else if (addOrSubtract === "decrease" && order_item.quantity > 1) {
         // Quantity can't go below 1 otherwise remove item from cart with button
-        if (order_item.quantity > 1) {
            order_item.quantity -= 1
-        } else {
+           patchToServer()
+      } else if (addOrSubtract === "decrease" && order_item.quantity === 1) {
           handleOrderItemDelete(order_item.id)
-        }
-        }
+      }}
+    
+    function patchToServer() {
       const updateObject = {
         id: order_item.id,
         item_id: order_item.items.id,
@@ -35,7 +40,19 @@ function CartItem({ order_item, handleOrderItemDelete, loggedInUser, updateCusto
       .then((updated) => updateCustomerOrderItems(updated))
     }
 
-    console.log(order_item.items.inventory)
+    function handleOrderItemDelete(delOrderItem) {
+      console.log("handle delete function", `${delOrderItem}`)
+      fetch(`/order_items/${delOrderItem}`, {
+        method: "DELETE"
+      })
+      .then(() => {
+        const updated = customerOrderItems.filter((item) => 
+          item.id !== delOrderItem
+        )
+      setCustomerOrderItems(updated)
+  })
+}
+console.log(customerOrderItems)
 
     // function handleMouseEvent(event) {
     //   if (event === "over") {
@@ -54,7 +71,7 @@ function CartItem({ order_item, handleOrderItemDelete, loggedInUser, updateCusto
             <Header.Content style={{ paddingLeft: "30px", paddingRight: "30px" }}>
             {order_item.items.name} 
               <Header.Subheader style={{ color: "red"}} >
-                {order_item.items.inventory < 5 ? "Low Inventory" : null}
+                {(order_item.items.inventory - 1) < order_item.quantity ? "Reduce quantity" : null}
               </Header.Subheader>
             </Header.Content>
           </Header>
