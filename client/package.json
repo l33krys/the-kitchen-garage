@@ -19,6 +19,7 @@
     "formik": "^2.2.9",
     "framer-motion": "*",
     "react": "^18.2.0",
+    "react-multi-carousel": "*",
     "react-dom": "^18.2.0",
     "react-redux": "8.0.4",
     "react-router-dom": "^5.2.0",

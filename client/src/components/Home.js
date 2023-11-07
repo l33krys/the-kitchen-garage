@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ItemContainer from "./ItemContainer";
+import Announcement from "./Announcements";
 
 function Home() {
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import ItemCard from "./ItemCard";
-import { Button, Card, Message, Modal } from 'semantic-ui-react'
+import { Button, Card, Message, Modal, Icon } from 'semantic-ui-react'
 import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
 import CartList from "./CartList";
 
@@ -89,7 +89,7 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 onOpen={() => setOrderSubmitted(true)}
                 size={"tiny"}
                 >
-                <Modal.Header>Order Submitted</Modal.Header>
+                <Modal.Header><Icon color="teal" name="check circle"/>Order Submitted</Modal.Header>
                 <Modal.Content>
                     <Modal.Description>
                     Thanks for shopping with The Kitchen Garage

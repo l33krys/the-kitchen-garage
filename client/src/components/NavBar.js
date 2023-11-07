@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { Icon } from 'semantic-ui-react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faWarehouse } from '@fortawesome/free-solid-svg-icons'
+import Announcement from "./Announcements";
 
 function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPage, setCategoryPage, search, setSearch, sortBy, setSortBy }) {
 
@@ -43,7 +44,8 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
             <div style={{ textAlign: "right", paddingTop: "10px"}}>
                 {loggedInUser !== null ? 
                 (<>
-                <div id="promotion" style={{ textAlign: "center", paddingTop: "5px", paddingBottom: "5px", backgroundColor: "#000000", color: "white" }}>FREE SHIPPING ON ALL ORDERS</div>
+                {/* <div id="promotion" style={{ textAlign: "center", paddingTop: "5px", paddingBottom: "5px", backgroundColor: "#000000", color: "white" }}>FREE SHIPPING ON ALL ORDERS</div> */}
+                <div id="promotion" style={{ textAlign: "center", paddingTop: "5px", paddingBottom: "5px", backgroundColor: "#000000", color: "white" }}><Announcement /></div>
                     <p style={{ marginRight: "20px", marginTop: "10px" }}>Hi, {loggedInUser.first_name}</p>
                     <NavLink style={{ marginRight: "20px", color: "black" }} to="/account"><Icon name="user"/>My Account</NavLink>
                     <NavLink style={{ marginRight: "20px", color: "black" }} to="/orders">Order History</NavLink>

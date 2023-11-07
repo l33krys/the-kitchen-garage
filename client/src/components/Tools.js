@@ -12,7 +12,7 @@ function Tools({ loggedInUser, customerOrderItems, categoryData, search, setSear
     <div  style={{ marginTop: "20px", marginLeft: "100px"}}>
       <Grid divided="vertically">
         <Grid.Row columns={2}>
-          <Grid.Column>
+          <Grid.Column verticalAlign="middle">
           <h1>Tools</h1>
           </Grid.Column>
           <Grid.Column>
