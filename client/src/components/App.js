@@ -21,6 +21,9 @@ import OrderDetails from "./OrderDetails";
 import { useFetchItemsQuery } from '../store';
 import About from "./About";
 import Footer from "./Footer";
+import Checkout from "./Checkout";
+import Success from "./Success";
+import Cancel from "./Cancel";
 
 function App() {
 
@@ -210,6 +213,17 @@ console.log(customerOrderItems)
       </Route>
       <Route path ="/about">
         <About />
+      </Route>
+      <Route path ="/checkout">
+        <Checkout />
+      </Route>
+      <Route path ="/success">
+        <Success 
+          setCustomerOrderItems={setCustomerOrderItems}
+          refreshInventory={refreshInventory} />
+      </Route>
+      <Route path ="/cancel">
+        <Cancel />
       </Route>
       {/* <Route path="/login">
         <Login />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useHistory } from "react-router";
 import ItemCard from "./ItemCard";
 import { Button, Card, Message, Modal, Icon } from 'semantic-ui-react'
@@ -12,6 +12,7 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
     const [orderSubmitted, setOrderSubmitted] = useState(false)
     const [invetoryTooLow, setInventoryTooLow] = useState(false)
     const { data, error, isLoading } = useFetchOrdersQuery();
+    const formRef = useRef()
     
     // useEffect(() => {
     //     fetch("/order_items_by_order")
@@ -46,9 +47,13 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 if (r.status === 203) {
                     console.log("Order submitted")
                     setCustomerOrderItems([])
-                    setOrderSubmitted(true) 
+                    // setOrderSubmitted(true) 
                     refreshInventory()
-                    
+                    handleFormSubmit()
+                    // fetch("/create-checkout-session", {
+                    //     method: "POST"
+                    // })
+
                     // Transfer customer to order history after order submitted
                     // Move code to useEffect timer if still want to transfer to order history page
                     // history.push("/orders")                  
@@ -63,6 +68,13 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
         }
     }
 
+    function handleFormSubmit() {
+        // fetch("/create-checkout-session", {
+        //     method: "POST"
+        // })
+        formRef.current.submit()
+    }
+
 
     return (
 
@@ -75,14 +87,39 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 setCustomerOrderItems={setCustomerOrderItems}
                 updateCustomerOrderItems={updateCustomerOrderItems}
                  />
-            <Button onClick={handleCheckOut}>Checkout</Button>
-             {/* {orderSubmitted ?
+                 <form        
+                    // ref={formRef}
+                    action="/create-checkout-session"
+                    method="POST"
+                    onSubmit={(e) => e.preventDefault()} 
+                    style={{ display: "none" }}
+                    >
+                    <Button onClick={handleCheckOut}>Checkout</Button>
+                </form>
+                <form        
+                    ref={formRef}
+                    action="/create-checkout-session"
+                    method="POST"
+                    onSubmit={(e) => e.preventDefault()} 
+                    style={{ display: "none" }}
+                    >
+                    <Button type="submit">Stripe</Button>
+                </form>
+                    <Button onClick={handleCheckOut}>Go To Payment</Button>
+                    {/* <Button onClick={handleFormSubmit}>Go To Payment</Button> */}
+        </div>
+    )
+}
+
+export default Cart;
+
+{/* {orderSubmitted ?
             <Message
                 style={{ width: "350px"}}
                 header="Order submitted"
                 content="Thanks for ordering with The Kitchen Garage" />
             : null} */}
-            <Modal
+            {/* <Modal
                 centered={true}
                 open={orderSubmitted}
                 onClose={() => setOrderSubmitted(false)}
@@ -115,9 +152,6 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                 <Modal.Actions>
                     <Button onClick={() => setInventoryTooLow(false)}>OK</Button>
                 </Modal.Actions>
-            </Modal>
-        </div>
-    )
-}
-
-export default Cart;
+            </Modal> */}
+            {/* <Button onClick={handlePayment}>Stripe</Button> */}
+            

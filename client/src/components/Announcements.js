@@ -43,9 +43,9 @@ return (
       itemClass="carousel-item-padding-40-px"
       
     >
-      {announcements.slice(0, 5).map(announcement => {
+      {announcements.slice(0, 5).map((announcement, index) => {
         return (
-        <p>{announcement}</p>
+        <p key={index}>{announcement}</p>
         );
       })}
     </Carousel>
