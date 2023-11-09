@@ -22,6 +22,7 @@ CORS(app)
 @app.before_request
 def check_if_logged_in():
     open_access_list = [
+        "item_list",
         'login',
         'logout',
         'check_session'
