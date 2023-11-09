@@ -16,8 +16,8 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
     first_name: yup.string().required("First name is required"),
     last_name: yup.string().required("Last name is required"),
     email: yup.string().required("Must enter a valid email"),
-    password: yup.string().required("Must enter a password with 6 characters and include at least 1 letter and 1 number"),
-    confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match')
+    password: yup.string().required("Must enter a password with at least 6 characters & include at least 1 letter and 1 number"),
+    confirm_password: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required("Must match password")
   });
 
   useEffect(() => {
