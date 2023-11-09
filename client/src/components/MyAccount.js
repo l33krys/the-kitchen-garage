@@ -25,9 +25,12 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
         })
         .then((r) => {
             if (true) {
-                setLoggedInUser(null)
-                // setConfirmDelete(false)
-                history.push("/")
+              fetch("/logout", {
+                method: "DELETE",
+              })
+              setLoggedInUser(null)
+              // setConfirmDelete(false)
+              history.push("/")
             }
         })
     }

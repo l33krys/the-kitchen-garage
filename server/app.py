@@ -303,6 +303,7 @@ class CustomerById(Resource):
         if customer:
             db.session.delete(customer)
             db.session.commit()
+            session["customer_id"] = None
             return make_response(
                 {}, 204
             )
@@ -310,7 +311,6 @@ class CustomerById(Resource):
             return make_response(
                 {"error": "Customer does not exist"}, 404
             )
-
 
 class Addresses(Resource):
 
