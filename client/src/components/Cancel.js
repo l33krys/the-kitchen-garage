@@ -27,7 +27,8 @@ function Cancel({ abortStripe, setAbortStripe}) {
   return (
     
     <div  style={{ textAlign: "center", marginTop: "50px", marginBottom: "50px", marginLeft: "auto", marginRight: "auto", display: "block", width: "60%", padding: "20px" }}>
-        <h2 style={{ color: "black", padding: "20px" }}>Please contact us for further assistance</h2>
+        <h2 style={{ color: "black", paddingTop: "20px" }}>Attention Required:</h2>
+        <h3 style={{ color: "black", paddingBottom: "20px" }}>Payment process did not complete.<br/>Please contact us if further assistance is needed.</h3>
         <Button><a href="mailto:kitchen_garage@tkg.com" style={{ color: "black", margin: "10px" }}><Icon name="mail" />Contact Us</a></Button>
         {/* <Button onClick={goToHome}>Return to Store</Button> */}
     </div>

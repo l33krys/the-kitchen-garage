@@ -13,7 +13,7 @@ function Tools({ loggedInUser, customerOrderItems, categoryData, search, setSear
       <Grid divided="vertically">
         <Grid.Row columns={2}>
           <Grid.Column verticalAlign="middle">
-          <h1>Tools</h1>
+          <h1 class="category-headers">Tools</h1>
           </Grid.Column>
           <Grid.Column>
             <ItemSort 
