@@ -226,7 +226,7 @@ if __name__ == '__main__':
         britney = Customer(
         first_name = "Britney",
         last_name = "Howe",
-        email = "britny@email.com",
+        email = "britney@email.com",
         phone_number = "123-456-7899",
         billing_address_id = 4,
         shipping_address_id = 4

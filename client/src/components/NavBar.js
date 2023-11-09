@@ -63,13 +63,13 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
                     <NavLink to="/login">Search</NavLink>
                 </div> */}
                 <div style={{ paddingTop: "10px", paddingBottom: "20px", marginLeft: "50px"}}>
-                    <NavLink to="/" exact><h1 style={{ color: "black" }}><FontAwesomeIcon icon={faWarehouse} style={{color: "#576f72", paddingRight: "10px"}} />The Kitchen Garage</h1></NavLink>
+                    <NavLink to="/" exact><h1 id="nav-title" style={{ color: "black" }}><FontAwesomeIcon icon={faWarehouse} style={{color: "#576f72", paddingRight: "10px"}} />The Kitchen Garage</h1></NavLink>
                     <p>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>
                 </div>
             </div>
             <div style={{ textAlign: "center", paddingTop: "15px", paddingBottom: "15px", backgroundColor: "#576F72"}}>
                 <h5>
-                <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/appliances">Appliances</NavLink>
+                <NavLink class="category-links" activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/appliances">Appliances</NavLink>
                 <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/tools">Tools</NavLink>
                 <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/accessories">Accessories</NavLink>
                 </h5>

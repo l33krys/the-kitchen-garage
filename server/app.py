@@ -5,7 +5,7 @@ import os
 import stripe
 
 # Remote library imports
-from flask import Flask, jsonify, redirect
+from flask import Flask, jsonify, redirect, render_template_string
 from flask import request, session, make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -18,6 +18,17 @@ from models import *
 
 # Views go here!
 CORS(app)
+
+@app.before_request
+def check_if_logged_in():
+    open_access_list = [
+        'login',
+        'logout',
+        'check_session'
+    ]
+
+    if (request.endpoint) not in open_access_list and (not session.get('customer_id')):
+        return {'error': '401 Unauthorized'}, 401
 
 # Stripe
 # stripe_keys = {
@@ -32,6 +43,7 @@ stripe.api_key = "sk_test_51O9tKbBlgS9ajDHxYF6nRuzr7k9QuYEODyFgqpD1Dz0peCbEF83QQ
 def create_checkout_session():
     order_total = 100 # Stripe amount at least .50
     customer_id = session['customer_id']
+    customer = Customer.query.filter(Customer.id == customer_id).first()
     if customer_id:
         submitted_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
 
@@ -57,11 +69,76 @@ def create_checkout_session():
                 'quantity': 1,
                 }],
                 mode='payment',
-                success_url='http://localhost:3000/success',
-                cancel_url='http://localhost:3000/cancel',
+                allow_promotion_codes="true",
+                # customer_email=customer.email,
+                # custom_text={
+                # "shipping_address": {
+                # "message":
+                # "Please note that items will ship and bill to address on file at The Kitchen Garage.",
+                # }},
+                # shipping_address_collection={"allowed_countries": ["US"]},
+                # success_url='http://localhost:3000/success',
+                success_url='http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url='http://localhost:3000/cancel?session_id={CHECKOUT_SESSION_ID}',
             )
 
             return redirect(session_stripe.url, code=303)
+
+@app.route('/order/success', methods=['GET'])
+def order_success():
+  session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+  customer = stripe.Customer.retrieve(session.customer)
+
+  return render_template_string('<html><body><h1>Thanks for your order, {{customer.name}}!</h1></body></html>', customer=customer)
+
+@app.route('/order/cancel', methods=['GET'])
+def order_cancel():
+  session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+  customer = stripe.Customer.retrieve(session.customer)
+
+  return render_template_string('<html><body><h1>Please contact us for further assistance, {{customer.name}}!</h1></body></html>', customer=customer)
+
+class AbortStripePayment(Resource):
+
+    def get(self):
+
+        customer_id = session['customer_id']
+        if customer_id:
+            last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            # db.session.delete(saved_order) # Delete new saved order due to reversing submitted order
+            # db.session.commit()
+
+            return make_response(saved_order.to_dict(only=("id", "status")), 200)
+                
+
+    def patch(self):
+
+        customer_id = session['customer_id']
+        if customer_id:
+            last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            db.session.delete(saved_order) # Delete new saved order due to reversing submitted order
+            db.session.commit()
+
+            # Update inventory
+
+            if last_submitted:
+                order_items = [row.to_dict(only=("quantity", "item_id",)) for row in OrderItem.query.filter(OrderItem.order_id == last_submitted.id).all()]
+
+                for product in order_items:
+                    get_item = Item.query.filter(Item.id == product["item_id"]).first()
+                    # Revert inventory back due to aborting payment
+                    updated_inventory = get_item.inventory + product["quantity"]
+                    setattr(get_item, "inventory", updated_inventory)
+                setattr(last_submitted, "status", "saved") # Change order status to back to submitted
+                db.session.commit()
+
+                return make_response(
+                    {"message": "Submitted order reversed"}, 203
+                )
+
+api.add_resource(AbortStripePayment, "/abort_stripe")
 
 class AddressSchema(ma.SQLAlchemySchema):
 

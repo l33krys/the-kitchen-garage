@@ -22,22 +22,22 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
   //   })
   // }
 
-    const quantities = customerOrderItems.map((order_item, key) => (
+    const quantities = customerOrderItems ? customerOrderItems.map((order_item, key) => (
         order_item.quantity
-      ))
-    const prices = customerOrderItems.map((order_item, key) => (
+      )) : []
+    const prices = customerOrderItems ? customerOrderItems.map((order_item, key) => (
       order_item.items.price
-    ))
+    )) : []
 
     function itemSubtotal(prices, quantities) {
-      if (prices.length !== quantities.length) {
+      if (prices.length !== quantities.length || quantities.length === 0 || prices.length === 0) {
         return 0
       }
       return prices.map((price, index) => price * quantities[index])
     }
 
     const subtotals = itemSubtotal(prices, quantities)
-    const total = subtotals.reduce((a, b) => a + b, 0)
+    const total = subtotals.length > 0 ? subtotals.reduce((a, b) => a + b, 0) : 0
 
     return (
         <Table basic='very' celled collapsing>

@@ -105,8 +105,25 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                     >
                     <Button type="submit">Stripe</Button>
                 </form>
-                    <Button onClick={handleCheckOut}>Go To Payment</Button>
+                    {customerOrderItems.length > 0 ? <Button onClick={handleCheckOut}>Go To Payment</Button> : null}
                     {/* <Button onClick={handleFormSubmit}>Go To Payment</Button> */}
+                <Modal
+                    centered={true}
+                    open={invetoryTooLow}
+                    onClose={() => setInventoryTooLow(false)}
+                    onOpen={() => setInventoryTooLow(true)}
+                    size={"tiny"}
+                    >
+                    <Modal.Header>Order Not Submitted</Modal.Header>
+                    <Modal.Content>
+                        <Modal.Description>
+                        Not enough inventory. Please lower your quantities.
+                        </Modal.Description>
+                    </Modal.Content>
+                    <Modal.Actions>
+                        <Button onClick={() => setInventoryTooLow(false)}>OK</Button>
+                    </Modal.Actions>
+                </Modal>
         </div>
     )
 }

@@ -31,6 +31,7 @@ function App() {
   const [customerOrderItems, setCustomerOrderItems] = useState([])
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("Best Match")
+  const [abortStripe, setAbortStripe] = useState(false)
 
   useEffect(() => {
     fetch("/check_session")
@@ -55,7 +56,7 @@ function App() {
     })
     .then((data) => setCustomerOrderItems(data))
 
-}, [])
+}, [loggedInUser, abortStripe])
 
   function handleAddOrderItem(newOrderItem) {
     console.log(newOrderItem)
@@ -223,7 +224,9 @@ console.log(customerOrderItems)
           refreshInventory={refreshInventory} />
       </Route>
       <Route path ="/cancel">
-        <Cancel />
+        <Cancel 
+          abortStripe={abortStripe} 
+          setAbortStripe={setAbortStripe} />
       </Route>
       {/* <Route path="/login">
         <Login />

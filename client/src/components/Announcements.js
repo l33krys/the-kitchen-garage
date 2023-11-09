@@ -21,7 +21,7 @@ function Announcement() {
   const announcements = [
     "FREE SHIPPING ON ALL ORDERS",
     "BLACK FRIDAY SALE COMING SOON",
-    "NEW CUSTOMERS GET 20% OFF WITH CODE: 'NEW'"
+    "NEW CUSTOMERS GET 20% OFF WITH CODE: 'FRIENDS20'"
   ]
 
 return (
@@ -31,11 +31,11 @@ return (
     //   keyBoardControl={true}
       infinite={true}
     //   Turn back on when finalizing
-    //   autoPlay={true}
-    //   autoPlaySpeed={8000}
-    // //   customTransition="all .5" // Changes and not scrolls
-    //   customTransition="transform 2000ms ease-in-out" // Scrolls
-    //   transitionDuration={1000}
+      autoPlay={true}
+      autoPlaySpeed={8000}
+    //   customTransition="all .5" // Changes and not scrolls
+      customTransition="transform 2000ms ease-in-out" // Scrolls
+      transitionDuration={1000}
       arrows={false}
       responsive={responsive}
       

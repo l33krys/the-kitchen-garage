@@ -2,13 +2,27 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import { Button, Icon } from 'semantic-ui-react'
 
-function Cancel() {
+function Cancel({ abortStripe, setAbortStripe}) {
 
     const history = useHistory()
 
     function goToHome() {
         history.push("/")
     }
+
+    useEffect(() => {
+      let location = window.location.href
+      const abortPayment = location.includes("session_id")
+      if (abortPayment) {
+        fetch("/abort_stripe", {
+          method: "PATCH"
+        })
+        .then((r) => r.json())
+        .then(r => setAbortStripe(!abortStripe))
+      }
+    }, [])
+ 
+
 
   return (
     
