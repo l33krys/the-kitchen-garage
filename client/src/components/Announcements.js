@@ -33,8 +33,8 @@ return (
     //   Turn back on when finalizing
       autoPlay={true}
       autoPlaySpeed={6000}
-    //   customTransition="all .5" // Changes and not scrolls
-      customTransition="transform 2000ms ease-in-out" // Scrolls
+      customTransition="all .5" // Changes and not scrolls
+      // customTransition="transform 2000ms ease-in-out" // Scrolls
       transitionDuration={1000}
       arrows={false}
       responsive={responsive}
