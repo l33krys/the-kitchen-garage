@@ -61,6 +61,7 @@ return (
   {images.map((image, index) => {
     return (
       <Image
+      key={index}
       draggable={false}
       style={{}}
       src={image}
