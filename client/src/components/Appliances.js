@@ -18,7 +18,7 @@ function Appliances({ loggedInUser, customerOrderItems, categoryData, search, se
       <Grid divided="vertically">
         <Grid.Row columns={2}>
           <Grid.Column verticalAlign="middle">
-          <h1 class="category-headers">Appliances</h1>
+          <h1 className="category-headers">Appliances</h1>
           </Grid.Column>
           <Grid.Column>
             <ItemSort 

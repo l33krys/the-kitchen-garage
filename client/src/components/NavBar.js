@@ -69,7 +69,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
             </div>
             <div style={{ textAlign: "center", paddingTop: "15px", paddingBottom: "15px", backgroundColor: "#576F72"}}>
                 <h5>
-                <NavLink class="category-links" activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/appliances">Appliances</NavLink>
+                <NavLink className="category-links" activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/appliances">Appliances</NavLink>
                 <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/tools">Tools</NavLink>
                 <NavLink activeClassName="nav-link" style={{ marginLeft: "75px", marginRight: "75px", color: "#F0EBE3" }} onClick={resetStates} to="/accessories">Accessories</NavLink>
                 </h5>

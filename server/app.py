@@ -22,6 +22,9 @@ CORS(app)
 @app.before_request
 def check_if_logged_in():
     open_access_list = [
+        "customer",
+        "customer_list",
+        "home",
         "item_list",
         'login',
         'logout',
@@ -247,6 +250,7 @@ class Customers(Resource):
 
             db.session.add(customer)
             db.session.commit()
+            session["customer_id"] = customer.id
             return make_response(
                 customer_schema.dump(customer), 201
             )
@@ -982,7 +986,7 @@ api.add_resource(CheckInventory, "/check_inventory")
 # api.add_resource(ClearCart, "/clear_order")
 
 
-@app.route('/')
+@app.route('/', endpoint="home")
 def index():
     return '<h1>The Kitchen Garage</h1>'
 
