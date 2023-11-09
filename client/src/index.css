@@ -45,3 +45,21 @@ input#search-bar {
 a:hover {
   color: "black"
 }
+
+@font-face {
+  font-family: "Family";   /*Can be any text*/
+  src: local("Family"),
+    url("./fonts/Family.ttf") format("truetype");
+}
+
+#success-thanks {
+  font-family: "Family";
+  font-size: 60px;
+}
+
+#nav-title {
+  font-family: "Family";
+  font-size: 40px;
+}
+
+

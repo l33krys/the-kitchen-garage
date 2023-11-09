@@ -71,12 +71,12 @@ console.log(customerOrderItems)
             <Header.Content style={{ paddingLeft: "30px", paddingRight: "30px" }}>
             {order_item.items.name} 
               <Header.Subheader style={{ color: "red"}} >
-                {(order_item.items.inventory - 1) < order_item.quantity ? "Reduce quantity" : null}
+                {order_item.quantity > order_item.items.inventory ? "Reduce quantity" : null}
               </Header.Subheader>
             </Header.Content>
           </Header>
         </Table.Cell>
-        <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price}</Table.Cell>
+        <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price.toFixed(2)}</Table.Cell>
         <Table.Cell style={{ textAlign: "right" }}>
           <Icon onClick={() => handleUpdateQuantity("increase")} name="angle up"/>
           {order_item.quantity}
@@ -87,7 +87,7 @@ console.log(customerOrderItems)
             onMouseOut={() => handleMouseEvent("out")} 
             onClick={() => handleUpdateQuantity("increase")} /> */}
         </Table.Cell>
-        <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price*order_item.quantity}</Table.Cell>
+        <Table.Cell style={{ textAlign: "right" }} >${(order_item.items.price*order_item.quantity).toFixed(2)}</Table.Cell>
         <Table.Cell>
            <Icon onClick={(e) => handleOrderItemDelete(order_item.id)} name="trash"/>
         </Table.Cell>

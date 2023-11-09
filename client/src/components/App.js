@@ -21,6 +21,9 @@ import OrderDetails from "./OrderDetails";
 import { useFetchItemsQuery } from '../store';
 import About from "./About";
 import Footer from "./Footer";
+import Checkout from "./Checkout";
+import Success from "./Success";
+import Cancel from "./Cancel";
 
 function App() {
 
@@ -28,6 +31,7 @@ function App() {
   const [customerOrderItems, setCustomerOrderItems] = useState([])
   const [search, setSearch] = useState("")
   const [sortBy, setSortBy] = useState("Best Match")
+  const [abortStripe, setAbortStripe] = useState(false)
 
   useEffect(() => {
     fetch("/check_session")
@@ -52,7 +56,7 @@ function App() {
     })
     .then((data) => setCustomerOrderItems(data))
 
-}, [])
+}, [loggedInUser, abortStripe])
 
   function handleAddOrderItem(newOrderItem) {
     console.log(newOrderItem)
@@ -77,8 +81,13 @@ function App() {
 console.log(loggedInUser)
 console.log(customerOrderItems)
  
-  const { data, error, isLoading } = useFetchItemsQuery();
+  const { data, error, isLoading, refetch } = useFetchItemsQuery();
   
+  function refreshInventory() {
+    // refetching after order submitted to update inventory
+    refetch()
+
+  }
 
   let sortedItems
   if (sortBy === "Best Match") {
@@ -200,10 +209,24 @@ console.log(customerOrderItems)
           loggedInUser={loggedInUser}
           customerOrderItems={customerOrderItems}
           setCustomerOrderItems={setCustomerOrderItems}
-          updateCustomerOrderItems={updateCustomerOrderItems} />
+          updateCustomerOrderItems={updateCustomerOrderItems}
+          refreshInventory={refreshInventory} />
       </Route>
       <Route path ="/about">
         <About />
+      </Route>
+      <Route path ="/checkout">
+        <Checkout />
+      </Route>
+      <Route path ="/success">
+        <Success 
+          setCustomerOrderItems={setCustomerOrderItems}
+          refreshInventory={refreshInventory} />
+      </Route>
+      <Route path ="/cancel">
+        <Cancel 
+          abortStripe={abortStripe} 
+          setAbortStripe={setAbortStripe} />
       </Route>
       {/* <Route path="/login">
         <Login />

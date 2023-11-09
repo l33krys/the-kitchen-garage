@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 
 # Standard library imports
+import os
+import stripe
 
 # Remote library imports
-from flask import jsonify
+from flask import Flask, jsonify, redirect, render_template_string
 from flask import request, session, make_response
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
@@ -16,6 +18,127 @@ from models import *
 
 # Views go here!
 CORS(app)
+
+@app.before_request
+def check_if_logged_in():
+    open_access_list = [
+        'login',
+        'logout',
+        'check_session'
+    ]
+
+    if (request.endpoint) not in open_access_list and (not session.get('customer_id')):
+        return {'error': '401 Unauthorized'}, 401
+
+# Stripe
+# stripe_keys = {
+#     "secret_key": os.environ["STRIPE_SECRET_KEY"],
+#     "publishable_key": os.environ["STRIPE_PUBLISHABLE_KEY"],
+# }
+
+
+stripe.api_key = "sk_test_51O9tKbBlgS9ajDHxYF6nRuzr7k9QuYEODyFgqpD1Dz0peCbEF83QQ8GVCwoWXPB15mPaZ21rDtqaJ5qq7plyQtvg00KRYP7epB"
+
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    order_total = 100 # Stripe amount at least .50
+    customer_id = session['customer_id']
+    customer = Customer.query.filter(Customer.id == customer_id).first()
+    if customer_id:
+        submitted_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+
+        if submitted_order:
+            order_items = [row.to_dict(only=("quantity", "item_id",)) for row in OrderItem.query.filter(OrderItem.order_id == submitted_order.id).all()]
+            
+            order_prices = []
+            for product in order_items:
+                get_item = Item.query.filter(Item.id == product["item_id"]).first()
+                item_subtotal = get_item.price * product["quantity"] * 100
+                order_prices.append(item_subtotal)
+            order_total = sum(order_prices)
+
+            session_stripe = stripe.checkout.Session.create(
+                line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                    'name': 'Order Total',
+                    },
+                    'unit_amount': int(order_total),
+                },
+                'quantity': 1,
+                }],
+                mode='payment',
+                allow_promotion_codes="true",
+                # customer_email=customer.email,
+                # custom_text={
+                # "shipping_address": {
+                # "message":
+                # "Please note that items will ship and bill to address on file at The Kitchen Garage.",
+                # }},
+                # shipping_address_collection={"allowed_countries": ["US"]},
+                # success_url='http://localhost:3000/success',
+                success_url='http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url='http://localhost:3000/cancel?session_id={CHECKOUT_SESSION_ID}',
+            )
+
+            return redirect(session_stripe.url, code=303)
+
+@app.route('/order/success', methods=['GET'])
+def order_success():
+  session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+  customer = stripe.Customer.retrieve(session.customer)
+
+  return render_template_string('<html><body><h1>Thanks for your order, {{customer.name}}!</h1></body></html>', customer=customer)
+
+@app.route('/order/cancel', methods=['GET'])
+def order_cancel():
+  session = stripe.checkout.Session.retrieve(request.args.get('session_id'))
+  customer = stripe.Customer.retrieve(session.customer)
+
+  return render_template_string('<html><body><h1>Please contact us for further assistance, {{customer.name}}!</h1></body></html>', customer=customer)
+
+class AbortStripePayment(Resource):
+
+    def get(self):
+
+        customer_id = session['customer_id']
+        if customer_id:
+            last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            # db.session.delete(saved_order) # Delete new saved order due to reversing submitted order
+            # db.session.commit()
+
+            return make_response(saved_order.to_dict(only=("id", "status")), 200)
+                
+
+    def patch(self):
+
+        customer_id = session['customer_id']
+        if customer_id:
+            last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            db.session.delete(saved_order) # Delete new saved order due to reversing submitted order
+            db.session.commit()
+
+            # Update inventory
+
+            if last_submitted:
+                order_items = [row.to_dict(only=("quantity", "item_id",)) for row in OrderItem.query.filter(OrderItem.order_id == last_submitted.id).all()]
+
+                for product in order_items:
+                    get_item = Item.query.filter(Item.id == product["item_id"]).first()
+                    # Revert inventory back due to aborting payment
+                    updated_inventory = get_item.inventory + product["quantity"]
+                    setattr(get_item, "inventory", updated_inventory)
+                setattr(last_submitted, "status", "saved") # Change order status to back to submitted
+                db.session.commit()
+
+                return make_response(
+                    {"message": "Submitted order reversed"}, 203
+                )
+
+api.add_resource(AbortStripePayment, "/abort_stripe")
 
 class AddressSchema(ma.SQLAlchemySchema):
 
@@ -421,32 +544,32 @@ class OrderById(Resource):
 
 class OrderItems(Resource):
 
-    # def get(self):
-
-    #     order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
-    #     orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
-        
-    #     response = make_response(
-    #         order_items_schema.dump(orderitems), 200
-    #     )
-    #     return response
-
     def get(self):
 
-        customer_id = session['customer_id']
-        saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+        order = Order.query.filter(Order.customer_id == session["customer_id"]).first()
+        orderitems = OrderItem.query.filter(OrderItem.order_id == order.id).all()
+        
+        response = make_response(
+            order_items_schema.dump(orderitems), 200
+        )
+        return response
 
-        if saved_order:
-            order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == 1).first()
-            if order_item_exists:
-                setattr(order_item_exists, "quantity", order_item_exists.quantity + 5)
-                db.session.commit()
-                response = make_response(
-                    order_item_exists.to_dict(only=("quantity", )), 200
-                )
-                return response
-            else:
-                return make_response({"message": "order item doesn't exits"})  
+    # def get(self):
+
+    #     customer_id = session['customer_id']
+    #     saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+
+    #     if saved_order:
+    #         order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == 1).first()
+    #         if order_item_exists:
+    #             setattr(order_item_exists, "quantity", order_item_exists.quantity + 5)
+    #             db.session.commit()
+    #             response = make_response(
+    #                 order_item_exists.to_dict(only=("quantity", )), 200
+    #             )
+    #             return response
+    #         else:
+    #             return make_response({"message": "order item doesn't exits"})  
     
     def post(self):
 
@@ -461,7 +584,7 @@ class OrderItems(Resource):
             if saved_order:
                 order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == item_id).first()
                 if order_item_exists:
-                    setattr(order_item_exists, "quantity", order_item_exists.quantity + 1)
+                    setattr(order_item_exists, "quantity", order_item_exists.quantity + 1) # Adding 1 to update quantity
                     db.session.commit()
                     return make_response(
                         # {"message": "order item exists and quantities updated"}, 200
@@ -709,6 +832,40 @@ class OrderDetails(Resource):
 
 api.add_resource(OrderDetails, "/order_details/<int:id>")
 
+def stripe_checkout(order_total):
+
+    session_stripe = stripe.checkout.Session.create(
+        line_items=[{
+        'price_data': {
+            'currency': 'usd',
+            'product_data': {
+            'name': 'Order Total',
+            },
+            'unit_amount': int(order_total),
+        },
+        'quantity': 1,
+        }],
+        mode='payment',
+        success_url='http://localhost:3000/success',
+        cancel_url='http://localhost:3000/cancel',
+    )
+
+    return redirect(session_stripe.url, code=303)
+
+class LastOrder(Resource):
+
+    def get(self):
+        customer_id = session['customer_id']
+        # Last submitted order by customer
+        order = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+
+
+        return make_response(
+            order_schema.dump(order), 200
+        )
+
+api.add_resource(LastOrder, "/last_order")
+
 class SubmitOrder(Resource):
 
     # customer_id = session['customer_id'] # Get logged in customer
@@ -729,7 +886,7 @@ class SubmitOrder(Resource):
                 check_inventory_list = []
                 for product in order_items:
                     check_inventory = Item.query.filter(Item.id == product["item_id"]).first() 
-                    check_inventory_list.append(product["quantity"] < check_inventory.inventory) # Inventory validation set to min 1
+                    check_inventory_list.append(product["quantity"] <= check_inventory.inventory) # Update inventory validation to have more than 0 in stock
                 # return check_inventory_list
 
                 all_in_stock = any(check_inventory_list) # Return list of booleans if in stock
@@ -743,11 +900,9 @@ class SubmitOrder(Resource):
                         get_item = Item.query.filter(Item.id == product["item_id"]).first() 
                         updated_inventory = get_item.inventory - product["quantity"]
                         setattr(get_item, "inventory", updated_inventory)
-
-
                     setattr(saved_order, "status", "submitted") # Change order status to submitted
                     db.session.commit()
-            
+
                     # Create new blank order
                     new_order = Order(
                         status="saved",
@@ -757,12 +912,13 @@ class SubmitOrder(Resource):
                     )
                     db.session.add(new_order)
                     db.session.commit()
-
+              
                     return make_response(order_schema.dump(saved_order), 203)
+                
                 else:
                     return make_response(
                         {"error": "Inventory too low. Please adjust quantities."}, 401
-                    )
+                    )                 
         
             return make_response(
                 {"error": "There are no orders assigned to this customer"}, 400
@@ -839,4 +995,5 @@ if __name__ == '__main__':
 # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first() # Check if they have an order started
 # check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
 # in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
+
 

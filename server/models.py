@@ -72,15 +72,14 @@ class Customer(db.Model, SerializerMixin):
                 raise ValueError("Address must be created before assigning to customer")
         return id
 
-    # @validates("_password_hash")
-    # def validate__password_hash(self, key, password):
-    #     if not pw and len(password) != 8:
-    #         raise ValueError("Password must be 8 characters long")
-    #     elif not re.search("[a-z]", password) or re.search("[A-Z]", pw) :
-    #         raise ValueError("Password must contain a letter")
-    #     elif not re.search("[0-9]", password):
-    #         raise ValueError("Password must contain a number")
-    #     return pw
+    @validates("_password_hash")
+    def validate__password_hash(self, key, password):
+        pw_regex = re.compile(r'(?=.*[a-zA-Z])(?=.*[0-9])')
+        if not password and len(password) < 6:
+            raise ValueError("Password must be at least 6 characters long")
+        elif not pw_regex.search(password):
+            raise ValueError("Password must container a number and letter")
+        return password
 
     @hybrid_property
     def password_hash(self):
@@ -158,7 +157,7 @@ class Item(db.Model, SerializerMixin):
     category = db.Column(db.String)
     description = db.Column(db.String)
     inventory = db.Column(db.Integer)
-    price = db.Column(db.Integer)
+    price = db.Column(db.Float)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     # Relationships
@@ -184,11 +183,11 @@ class Item(db.Model, SerializerMixin):
     
     @validates("inventory")
     def validate_inventory(self, key, inventory):
-        if not inventory:
-            raise ValueError("Inventory is required")
-        # elif not isinstance(inventory, int):
-        #     raise ValueError("Inventory must be a number")
-        elif inventory < 0:
+        # if not inventory:
+        #     raise ValueError("Inventory is required")
+        # # elif not isinstance(inventory, int):
+        # #     raise ValueError("Inventory must be a number")
+        if inventory < 0:
             raise ValueError("Inventory must be a positive integer")
         return inventory
     
@@ -217,7 +216,7 @@ class Order(db.Model, SerializerMixin):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     # Relationships
-    customer = db.relationship("Customer", back_populates="orders", cascade="all")
+    customer = db.relationship("Customer", back_populates="orders")
     order_items = db.relationship("OrderItem", back_populates="orders", cascade="all")
 
     # Validations

@@ -13,11 +13,11 @@ function OrderRow({ loggedInUser, order_item }) {
           </Header>
             {order_item.items.name} 
         </Table.Cell>
-        <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price}</Table.Cell>
+        <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price.toFixed(2)}</Table.Cell>
         <Table.Cell style={{ textAlign: "center" }}>
             {order_item.quantity}
         </Table.Cell>
-        <Table.Cell style={{ textAlign: "right" }} >${order_item.items.price*order_item.quantity}</Table.Cell>
+        <Table.Cell style={{ textAlign: "right" }} >${(order_item.items.price*order_item.quantity).toFixed(2)}</Table.Cell>
         <Table.Cell>
         </Table.Cell>
        </Table.Row>
