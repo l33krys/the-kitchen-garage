@@ -32,7 +32,7 @@ return (
       infinite={true}
     //   Turn back on when finalizing
       autoPlay={true}
-      autoPlaySpeed={8000}
+      autoPlaySpeed={6000}
     //   customTransition="all .5" // Changes and not scrolls
       customTransition="transform 2000ms ease-in-out" // Scrolls
       transitionDuration={1000}

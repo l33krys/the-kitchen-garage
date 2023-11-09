@@ -5,7 +5,7 @@ item5 = Item(
     image="https://images.unsplash.com/photo-1621538997326-08eb4e59886c?auto=format&fit=crop&q=80&w=2449&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="appliances", 
     description="Make wood-fired pizza in minutes", 
-    inventory=10, 
+    inventory=0, 
     price=200.00
     )
 
@@ -37,10 +37,10 @@ item8 = Item(
     )
 
 item9 = Item(
-    name="Coffeemaker", 
+    name="Pour-Over Coffeemaker", 
     image="https://images.unsplash.com/photo-1504627298434-2119d6928e93?auto=format&fit=crop&q=80&w=2787&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="appliances", 
-    description="", 
+    description="Brew coffee to your desired strength", 
     inventory=10, 
     price=59.99
     )

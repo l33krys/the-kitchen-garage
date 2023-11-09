@@ -11,7 +11,7 @@ function Accessories({ loggedInUser, customerOrderItems, categoryData, search, s
       <Grid divided="vertically">
         <Grid.Row columns={2}>
           <Grid.Column  verticalAlign="middle">
-          <h1>Accessories</h1>
+          <h1 class="category-headers">Accessories</h1>
           </Grid.Column>
           <Grid.Column>
             <ItemSort 
