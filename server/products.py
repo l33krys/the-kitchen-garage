@@ -55,7 +55,7 @@ item10 = Item(
     )
 
 item11 = Item(
-    name="Coffee cup and saucer", 
+    name="Coffee Cup & Saucer", 
     image="https://images.unsplash.com/photo-1517256064527-09c73fc73e38?auto=format&fit=crop&q=80&w=2787&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="accessories", 
     description="", 
@@ -154,7 +154,7 @@ item21 = Item(
     )
 
 item22 = Item(
-    name="Mason Jar Containers", 
+    name="Jar Containers", 
     image="https://images.unsplash.com/photo-1559837957-bab8edc53c85?auto=format&fit=crop&q=80&w=2787&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="accessories", 
     description="", 
