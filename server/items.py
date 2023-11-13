@@ -1,4 +1,35 @@
-from models import db, Customer, Address, Item, OrderItem, Order
+from models import Item
+
+item_list = []
+item1 = Item(
+    name="Stand Mixer", 
+    image="https://images.pexels.com/photos/1450907/pexels-photo-1450907.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2", 
+    category="appliances", 
+    description="Help make mixing easier", 
+    inventory=10, 
+    price=200.00
+    )
+item_list.append(item1)
+
+item3 = Item(
+    name="Espresso Machine", 
+    image="https://images.pexels.com/photos/10078423/pexels-photo-10078423.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", 
+    category="appliances", 
+    description="Brew coffee in seconds", 
+    inventory=15, 
+    price=99.00
+    )
+item_list.append(item3)
+
+item4 = Item(
+    name="Toaster", 
+    image="https://images.pexels.com/photos/7936638/pexels-photo-7936638.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1", 
+    category="appliances", 
+    description="Toast two slices of bread at once", 
+    inventory=3, 
+    price=39.00
+    )
+item_list.append(item4)
 
 item5 = Item(
     name="Pizza Oven", 
@@ -8,6 +39,7 @@ item5 = Item(
     inventory=0, 
     price=200.00
     )
+item_list.append(item5)
 
 item6 = Item(
     name="Pasta Maker", 
@@ -17,6 +49,7 @@ item6 = Item(
     inventory=10, 
     price=79.99
     )
+item_list.append(item6)
 
 item7 = Item(
     name="Plates", 
@@ -26,6 +59,7 @@ item7 = Item(
     inventory=10, 
     price=34.99
     )
+item_list.append(item7)
 
 item8 = Item(
     name="Pot", 
@@ -35,6 +69,7 @@ item8 = Item(
     inventory=10, 
     price=49.99
     )
+item_list.append(item8)
 
 item9 = Item(
     name="Pour-Over Coffeemaker", 
@@ -44,6 +79,7 @@ item9 = Item(
     inventory=10, 
     price=59.99
     )
+item_list.append(item9)
 
 item10 = Item(
     name="Dutch Oven", 
@@ -53,6 +89,7 @@ item10 = Item(
     inventory=10, 
     price=74.99
     )
+item_list.append(item10)
 
 item11 = Item(
     name="Coffee Cup & Saucer", 
@@ -62,6 +99,7 @@ item11 = Item(
     inventory=10, 
     price=8.99
     )
+item_list.append(item11)
 
 item12 = Item(
     name="Jam Jar Cups", 
@@ -71,6 +109,7 @@ item12 = Item(
     inventory=10, 
     price=5.50
     )
+item_list.append(item12)
 
 item13 = Item(
     name="Tall Glasses", 
@@ -80,6 +119,7 @@ item13 = Item(
     inventory=10, 
     price=3.99
     )
+item_list.append(item13)
 
 item14 = Item(
     name="Ceramic Bowls Set", 
@@ -89,6 +129,7 @@ item14 = Item(
     inventory=10, 
     price=24.99
     )
+item_list.append(item14)
 
 item15 = Item(
     name="Kitchen Towel Set", 
@@ -98,15 +139,7 @@ item15 = Item(
     inventory=10, 
     price=19.99
     )
-
-# item16 = Item(
-#     name="Starter Tools Set", 
-#     image="https://images.unsplash.com/photo-1589983006655-4ef9a756ebe3?auto=format&fit=crop&q=80&w=2895&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-#     category="tools", 
-#     description="", 
-#     inventory=10, 
-#     price=55.99
-#     )
+item_list.append(item15)
 
 item17 = Item(
     name="Wood Cutting Board", 
@@ -116,15 +149,7 @@ item17 = Item(
     inventory=10, 
     price=34.99
     )
-
-# item18 = Item(
-#     name="Cermaic Canister", 
-#     image="https://images.unsplash.com/photo-1520981825232-ece5fae45120?auto=format&fit=crop&q=80&w=2864&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
-#     category="accessories", 
-#     description="", 
-#     inventory=10, 
-#     price=34.99
-#     )
+item_list.append(item17)
 
 item19 = Item(
     name="iPad Holder", 
@@ -134,6 +159,7 @@ item19 = Item(
     inventory=10, 
     price=24.99
     )
+item_list.append(item19)
 
 item20 = Item(
     name="Airtight Glass Containers", 
@@ -143,8 +169,9 @@ item20 = Item(
     inventory=10, 
     price=19.99
     )
+item_list.append(item20)
 
-item21 = Item(
+item18 = Item(
     name="Wooden Spoon Set", 
     image="https://images.unsplash.com/photo-1582828462913-ff94884827ba?auto=format&fit=crop&q=80&w=2786&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="tools", 
@@ -152,8 +179,9 @@ item21 = Item(
     inventory=10, 
     price=79.99
     )
+item_list.append(item18)
 
-item22 = Item(
+item16 = Item(
     name="Jar Containers", 
     image="https://images.unsplash.com/photo-1559837957-bab8edc53c85?auto=format&fit=crop&q=80&w=2787&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="accessories", 
@@ -161,8 +189,9 @@ item22 = Item(
     inventory=10, 
     price=64.99
     )
+item_list.append(item16)
 
-item23 = Item(
+item2 = Item(
     name="Cast-Iron Skillet", 
     image="https://images.unsplash.com/photo-1667980972010-884946d24318?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", 
     category="tools", 
@@ -170,3 +199,4 @@ item23 = Item(
     inventory=10, 
     price=64.99
     )
+item_list.append(item2)

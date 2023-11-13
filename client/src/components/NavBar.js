@@ -62,7 +62,7 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, categoryPag
                 {/* <div style={{ float: "right", paddingTop: "40px", marginLeft: "50px", marginRight: "20px"}}>
                     <NavLink to="/login">Search</NavLink>
                 </div> */}
-                <div style={{ paddingTop: "0px", paddingBottom: "20px", marginLeft: "50px", width: "40%"}}>
+                <div style={{ paddingTop: "0px", paddingBottom: "20px", marginLeft: "50px", width: "60%"}}>
                     <NavLink to="/" exact><h1 id="nav-title" style={{ color: "black" }}><FontAwesomeIcon icon={faWarehouse} style={{color: "#576f72", paddingRight: "10px"}} />The Kitchen Garage</h1></NavLink>
                     <p>a play on appliance garage... where you can find more than just kitchen appliances but all things for the kitchen</p>
                 </div>
