@@ -34,13 +34,6 @@ def check_if_logged_in():
     if (request.endpoint) not in open_access_list and (not session.get('customer_id')):
         return {'error': '401 Unauthorized'}, 401
 
-# Stripe
-# stripe_keys = {
-#     "secret_key": os.environ["STRIPE_SECRET_KEY"],
-#     "publishable_key": os.environ["STRIPE_PUBLISHABLE_KEY"],
-# }
-
-
 stripe.api_key = "sk_test_51O9tKbBlgS9ajDHxYF6nRuzr7k9QuYEODyFgqpD1Dz0peCbEF83QQ8GVCwoWXPB15mPaZ21rDtqaJ5qq7plyQtvg00KRYP7epB"
 
 @app.route('/create-checkout-session', methods=['POST'])
@@ -74,14 +67,6 @@ def create_checkout_session():
                 }],
                 mode='payment',
                 allow_promotion_codes="true",
-                # customer_email=customer.email,
-                # custom_text={
-                # "shipping_address": {
-                # "message":
-                # "Please note that items will ship and bill to address on file at The Kitchen Garage.",
-                # }},
-                # shipping_address_collection={"allowed_countries": ["US"]},
-                # success_url='http://localhost:3000/success',
                 success_url='http://localhost:3000/success?session_id={CHECKOUT_SESSION_ID}',
                 cancel_url='http://localhost:3000/cancel?session_id={CHECKOUT_SESSION_ID}',
             )
@@ -110,8 +95,6 @@ class AbortStripePayment(Resource):
         if customer_id:
             last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-            # db.session.delete(saved_order) # Delete new saved order due to reversing submitted order
-            # db.session.commit()
 
             return make_response(saved_order.to_dict(only=("id", "status")), 200)
                 
@@ -558,23 +541,6 @@ class OrderItems(Resource):
             order_items_schema.dump(orderitems), 200
         )
         return response
-
-    # def get(self):
-
-    #     customer_id = session['customer_id']
-    #     saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-
-    #     if saved_order:
-    #         order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == 1).first()
-    #         if order_item_exists:
-    #             setattr(order_item_exists, "quantity", order_item_exists.quantity + 5)
-    #             db.session.commit()
-    #             response = make_response(
-    #                 order_item_exists.to_dict(only=("quantity", )), 200
-    #             )
-    #             return response
-    #         else:
-    #             return make_response({"message": "order item doesn't exits"})  
     
     def post(self):
 
@@ -592,7 +558,7 @@ class OrderItems(Resource):
                     setattr(order_item_exists, "quantity", order_item_exists.quantity + 1) # Adding 1 to update quantity
                     db.session.commit()
                     return make_response(
-                        # {"message": "order item exists and quantities updated"}, 200
+                        # {"message": "order item exists and quantities updated"}, 203
                         order_item_schema.dump(order_item_exists), 203
                 )
 
@@ -607,7 +573,7 @@ class OrderItems(Resource):
                     db.session.commit()
 
                     return make_response(
-                        # {"message": "order item was created"}, 200
+                        # {"message": "order item was created"}, 201
                         order_item_schema.dump(order_item), 201
                     )
                 
@@ -670,29 +636,6 @@ class OrderItemById(Resource):
                 {"error": "Unable to update quantity"}
             )
 
-
-    # def patch(self, id):
-    #     data = request.get_json()
-    #     order_item = OrderItem.query.filter_by(id=id).first()
-    #     if order_item:
-    #         try:
-    #             for key in data:
-    #                 if hasattr(order_item, key):
-    #                     setattr(order_item, key, data[key])
-    #             db.session.commit()
-
-    #             return make_response(
-    #                 order_item_schema.dump(order_item), 200
-    #             )
-    #         except ValueError:
-    #             return make_response(
-    #                 {"errors": ["validation errors"]}, 400
-    #             )
-    #     else:
-    #         return make_response(
-    #             {"error": "Order Item does not exist"}, 404
-    #         )
-
     def delete(self, id):
         order_item = OrderItem.query.filter_by(id=id).first()
         if order_item:
@@ -728,7 +671,6 @@ class Login(Resource):
 
             if customer.authenticate(password):
                 session["customer_id"] = customer.id
-                # return customer.to_dict(), 200
 
                 customer_id = session['customer_id']
                 saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
@@ -782,8 +724,6 @@ class OrderItemsbyOrder(Resource):
                 order_items = OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()
                 return make_response(
                     order_items_schema.dump(order_items), 200
-                    # saved_order.to_dict(only=("customer_id", "id"))
-                    # {"order id" : saved_order.id}
                 )
         else:
             # If no saved order, create new one
@@ -805,7 +745,6 @@ class OrderDetails(Resource):
 
     def get(self, id):
 
-        # order_id = request.get_json()['id']
         customer_id = session['customer_id']
         if customer_id:
             order_summary = Order.query.filter(Order.customer_id == customer_id, Order.id == id).first()
@@ -813,49 +752,11 @@ class OrderDetails(Resource):
                 order_items = OrderItem.query.filter(OrderItem.order_id == id).all()
                 return make_response(
                     order_items_schema.dump(order_items), 200
-                    # order_items, 200
                 )
         else:
             return {"message": "No order found"}, 400
 
-    # def get(self):
-       
-    #     customer_id = session['customer_id']
-    #     if customer_id:
-    #         order_ids = [order.id for order in Order.query.filter(Order.customer_id == customer_id).all()]
-    #         line_items = []
-    #         for order_num in order_ids:
-    #             line_item = [row.to_dict(only=("orders.customer.id", "orders.updated_at", "orders.status", "order_id", "quantity", "items.name", "items.price",)) for row in OrderItem.query.filter(OrderItem.order_id == order_num).all()]
-    #             line_items.append(line_item)
-    #         return line_items
-
-    #     return make_response(
-    #         line_items, 200
-
-    #     )
-    #     return {}, 401
-
 api.add_resource(OrderDetails, "/order_details/<int:id>")
-
-def stripe_checkout(order_total):
-
-    session_stripe = stripe.checkout.Session.create(
-        line_items=[{
-        'price_data': {
-            'currency': 'usd',
-            'product_data': {
-            'name': 'Order Total',
-            },
-            'unit_amount': int(order_total),
-        },
-        'quantity': 1,
-        }],
-        mode='payment',
-        success_url='http://localhost:3000/success',
-        cancel_url='http://localhost:3000/cancel',
-    )
-
-    return redirect(session_stripe.url, code=303)
 
 class LastOrder(Resource):
 
@@ -873,17 +774,10 @@ api.add_resource(LastOrder, "/last_order")
 
 class SubmitOrder(Resource):
 
-    # customer_id = session['customer_id'] # Get logged in customer
-    # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first() # Check if they have an order started
-    # check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
-    # in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
-
     def post(self):
         customer_id = session['customer_id']
         if customer_id:
             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-
-            # Update inventory
 
             if saved_order:
                 order_items = [row.to_dict(only=("quantity", "item_id",)) for row in OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()]
@@ -892,10 +786,10 @@ class SubmitOrder(Resource):
                 for product in order_items:
                     check_inventory = Item.query.filter(Item.id == product["item_id"]).first() 
                     check_inventory_list.append(product["quantity"] <= check_inventory.inventory) # Update inventory validation to have more than 0 in stock
-                # return check_inventory_list
 
                 all_in_stock = any(check_inventory_list) # Return list of booleans if in stock
 
+                # Uncomment to verify if all in stock
                 # return make_response(
                 #     {"all in stock": str(all_in_stock)}, 200
                 # )
@@ -956,36 +850,6 @@ class CheckInventory(Resource):
 
 api.add_resource(CheckInventory, "/check_inventory")
 
-# class ClearCart(Resource):
-
-#     def get(self):
-#         customer_id = session['customer_id']
-#         if customer_id:
-#             saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-            
-#             db.session.delete(saved_order)
-#             db.session.commit()
-
-#             # Create new blank order
-#             new_order = Order(
-#                 status="saved",
-#                 customer_id=customer_id,
-#                 shipping=4.99,
-#                 total=4.99
-#             )
-#             db.session.add(new_order)
-#             db.session.commit()
-#             return make_response(
-#                 {}, 201
-#             )
-#         else:
-#             return make_response(
-#                 {"error": "Order does not exist"}, 404
-#             )
-
-# api.add_resource(ClearCart, "/clear_order")
-
-
 @app.route('/', endpoint="home")
 def index():
     return '<h1>The Kitchen Garage</h1>'
@@ -993,12 +857,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
-
-
-# For later use:
-# customer_id = session['customer_id'] # Get logged in customer
-# saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first() # Check if they have an order started
-# check_inventory = Item.query.filter(Item.id == item_id).first() # Get inventory for item
-# in_stock = check_inventory.inventory > quantity # returns boolean value, doesn't need to be serialized # Check if quantity is lower than inventory
-
-
