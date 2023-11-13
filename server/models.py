@@ -109,7 +109,6 @@ class Address(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
 
     # Relationships
-    # customer = db.relationship("Customer", foreign_keys=[Customer.billing_address_id, Customer.shipping_address_id], back_populates="addresses")
     orders = association_proxy("customer", "orders")
 
     # Validations
@@ -183,11 +182,9 @@ class Item(db.Model, SerializerMixin):
     
     @validates("inventory")
     def validate_inventory(self, key, inventory):
-        # if not inventory:
-        #     raise ValueError("Inventory is required")
-        # # elif not isinstance(inventory, int):
-        # #     raise ValueError("Inventory must be a number")
-        if inventory < 0:
+        if not isinstance(inventory, int):
+            raise ValueError("Inventory must be a number")
+        elif inventory < 0:
             raise ValueError("Inventory must be a positive integer")
         return inventory
     
