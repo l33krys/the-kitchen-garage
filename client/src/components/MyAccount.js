@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import { useHistory } from "react-router";
-import { Header, Image, Table, Button, Confirm } from 'semantic-ui-react';
+import { Header, Table, Button, Confirm } from 'semantic-ui-react';
 import EditAccount from './EditAccount';
 
-function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
+function MyAccount({ loggedInUser, setLoggedInUser }) {
 
     const [showEditAccount, setShowEditAccount] = useState(false)
     const [confirmDelete, setConfirmDelete] = useState(false)
     const history = useHistory();
 
     function handleEditInfo() {
-        // history.push("/edit_account")
         setShowEditAccount(!showEditAccount)
     } 
 
@@ -29,7 +28,6 @@ function MyAccount({ loggedInUser, setLoggedInUser, handleLogOutClick }) {
                 method: "DELETE",
               })
               setLoggedInUser(null)
-              // setConfirmDelete(false)
               history.push("/")
             }
         })

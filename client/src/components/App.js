@@ -1,27 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import ItemContainer from "./ItemContainer";
+import { useFetchItemsQuery } from '../store';
 import NavBar from "./NavBar";
 import Home from "./Home";
 import Appliances from "./Appliances";
 import Tools from "./Tools";
 import Accessories from "./Accessories";
-import Login from "./Login";
 import CustomerAcctLayout from "./CustomerAcctLayout"
-import MyAccount from "./MyAccount";
 import OrderHistory from "./OrderHistory";
 import EditAccount from "./EditAccount";
 import EditShippingAddress from "./EditShippingAddress";
-import EditAddress from "./EditBillingAddress";
-import SignUp from "./SignUp";
 import Cart from "./Cart";
 import CustomerFormLayout from "./CustomerFormLayout";
 import OrderDetails from "./OrderDetails";
-// import ItemDetails from "./ItemDetails";
-import { useFetchItemsQuery } from '../store';
 import About from "./About";
 import Footer from "./Footer";
-import Checkout from "./Checkout";
 import Success from "./Success";
 import Cancel from "./Cancel";
 
@@ -43,7 +36,6 @@ function App() {
     })
   }, [])
 
-  // Move back to Cart component to auto update when click on Cart
   useEffect(() => {
     fetch("/order_items_by_order")
     .then((r) => {
@@ -119,9 +111,7 @@ console.log(customerOrderItems)
         setLoggedInUser={setLoggedInUser}
         loggedInUser={loggedInUser}
         customerOrderItems={customerOrderItems}
-        search={search}
         setSearch={setSearch}
-        sortBy={sortBy}
         setSortBy={setSortBy} />
     <Switch>
       <Route path="/" exact>
@@ -139,7 +129,6 @@ console.log(customerOrderItems)
           categoryData={itemAppliances}
           search={search}
           setSearch={setSearch}
-          sortBy={sortBy}
           setSortBy={setSortBy}
           handleAddOrderItem={handleAddOrderItem}
            />
@@ -151,7 +140,6 @@ console.log(customerOrderItems)
           categoryData={itemTools}
           search={search}
           setSearch={setSearch}
-          sortBy={sortBy}
           setSortBy={setSortBy}
           handleAddOrderItem={handleAddOrderItem}
            />
@@ -163,12 +151,10 @@ console.log(customerOrderItems)
           categoryData={itemAccessories}
           search={search}
           setSearch={setSearch}
-          sortBy={sortBy}
           setSortBy={setSortBy}
           handleAddOrderItem={handleAddOrderItem}
            />
       </Route>
-
       <Route path="/account">
         <CustomerAcctLayout 
           setLoggedInUser={setLoggedInUser}
@@ -215,9 +201,6 @@ console.log(customerOrderItems)
       <Route path ="/about">
         <About />
       </Route>
-      <Route path ="/checkout">
-        <Checkout />
-      </Route>
       <Route path ="/success">
         <Success 
           setCustomerOrderItems={setCustomerOrderItems}
@@ -228,12 +211,6 @@ console.log(customerOrderItems)
           abortStripe={abortStripe} 
           setAbortStripe={setAbortStripe} />
       </Route>
-      {/* <Route path="/login">
-        <Login />
-      </Route> */}
-      {/* <Route path="/signup">
-        <SignUp />
-      </Route> */}
     </Switch>
     <Footer />
   </Router>

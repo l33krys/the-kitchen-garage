@@ -1,6 +1,5 @@
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import { Image } from "semantic-ui-react";
 
 function Announcement() {
     const responsive = {
@@ -26,11 +25,7 @@ function Announcement() {
 
 return (
     <Carousel
-    //   ssr
-    //   partialVisbile
-    //   keyBoardControl={true}
       infinite={true}
-    //   Turn back on when finalizing
       autoPlay={true}
       autoPlaySpeed={3000}
       customTransition="all .5" // Changes and not scrolls
@@ -38,10 +33,8 @@ return (
       transitionDuration={1000}
       arrows={false}
       responsive={responsive}
-      
       containerClass="carousel-container"
       itemClass="carousel-item-padding-40-px"
-      
     >
       {announcements.slice(0, 5).map((announcement, index) => {
         return (

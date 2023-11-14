@@ -1,14 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router";
+import React from "react";
 import { Button, Icon } from 'semantic-ui-react'
 
 function About() {
-
-    const history = useHistory()
-
-    function goToHome() {
-        history.push("/")
-    }
 
   return (
     
@@ -21,8 +14,6 @@ function About() {
           The Kitchen Garage
         </Button>
         </a>
-        {/* <br/>
-        <Button style={{ margin: "20px", marginTop: "60px" }}onClick={goToHome}>Return to Store</Button> */}
     </div>
 
   )

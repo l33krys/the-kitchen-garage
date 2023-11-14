@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
-import ItemCard from "./ItemCard";
-import { Dropdown, Search, Input, Icon } from 'semantic-ui-react'
+import React from "react";
+import { Dropdown, Input } from 'semantic-ui-react'
 
-function ItemSort({ items, loggedInUser, customerOrderItems, categoryPage, setCategoryPage, categoryData, search, setSearch, sortBy, setSortBy, handleSortBy  }) {
+function ItemSort({ search, setSearch, setSortBy }) {
 
     const sortOptions = [
         { key: 1, text: "Best Match", value: "Best Match" }, 
@@ -13,11 +12,16 @@ function ItemSort({ items, loggedInUser, customerOrderItems, categoryPage, setCa
     return (
 
         <div style={{ textAlign: "right", marginRight: "140px"}}>
-            <Dropdown defaultValue={sortOptions[0].value} style={{ }} placeholder='Sort By' search selection options={sortOptions}
+            <Dropdown 
+                defaultValue={sortOptions[0].value} 
+                placeholder='Sort By' 
+                search 
+                selection 
+                options={sortOptions}
                 onChange={(e) => setSortBy(e.target.innerText)}
                 />
             <div id="search-container" >
-                <Input
+            <Input
                 icon="search"
                 iconPosition='left'
                 type="text"
@@ -28,8 +32,6 @@ function ItemSort({ items, loggedInUser, customerOrderItems, categoryPage, setCa
                 onChange={(e) => setSearch(e.target.value)}
                 />
             </div>
-
-
         </div>
     )
 }

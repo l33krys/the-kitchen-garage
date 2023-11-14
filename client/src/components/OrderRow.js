@@ -1,8 +1,7 @@
-import React, { useState } from 'react'
-import { Header, Image, Table, Button, Icon } from 'semantic-ui-react'
-import { useDeleteCustomerMutation } from "../store";
+import React from 'react'
+import { Header, Image, Table } from 'semantic-ui-react'
 
-function OrderRow({ loggedInUser, order_item }) {
+function OrderRow({ order_item }) {
   
     return (
        
