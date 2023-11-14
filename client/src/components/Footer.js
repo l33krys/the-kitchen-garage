@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
-import { Icon } from 'semantic-ui-react'
-import About from "./About";
-
+import React from "react";
+import { Icon } from 'semantic-ui-react';
 
 function Footer() {
 
@@ -16,3 +13,4 @@ function Footer() {
 }
 
 export default Footer;
+

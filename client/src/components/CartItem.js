@@ -1,13 +1,7 @@
-import React, { useState } from 'react'
-import { Header, Image, Table, Button, Icon } from 'semantic-ui-react'
-import { useDeleteCustomerMutation } from "../store";
+import React from 'react'
+import { Header, Image, Table, Icon } from 'semantic-ui-react'
 
-function CartItem({ order_item, loggedInUser, updateCustomerOrderItems, setCustomerOrderItems, customerOrderItems }) {
-    const [deleteOrderItem, results] = useDeleteCustomerMutation();
-    const [isHover, setHover] = useState(false)
-
-    console.log(order_item.items.inventory)
-    console.log(order_item)
+function CartItem({ order_item, updateCustomerOrderItems, setCustomerOrderItems, customerOrderItems }) {
 
     function handleUpdateQuantity(addOrSubtract) {
       if (addOrSubtract === "increase") {
@@ -52,15 +46,6 @@ function CartItem({ order_item, loggedInUser, updateCustomerOrderItems, setCusto
       setCustomerOrderItems(updated)
   })
 }
-console.log(customerOrderItems)
-
-    // function handleMouseEvent(event) {
-    //   if (event === "over") {
-    //     // setHover(true)
-    //   } else if (event === "out") {
-    //     // setHover(false)
-    //   }
-    // }
    
     return (
        
@@ -81,11 +66,6 @@ console.log(customerOrderItems)
           <Icon onClick={() => handleUpdateQuantity("increase")} name="angle up"/>
           {order_item.quantity}
           <Icon onClick={() => handleUpdateQuantity("decrease")} name="angle down"/>
-          {/* <Button circular icon="angle angle down" 
-            // style={{ backgroundColor: isHover ? "grey" : "white"}}
-            onMouseOver={() => handleMouseEvent("over")} 
-            onMouseOut={() => handleMouseEvent("out")} 
-            onClick={() => handleUpdateQuantity("increase")} /> */}
         </Table.Cell>
         <Table.Cell style={{ textAlign: "right" }} >${(order_item.items.price*order_item.quantity).toFixed(2)}</Table.Cell>
         <Table.Cell>

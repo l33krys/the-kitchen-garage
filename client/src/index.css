@@ -5,10 +5,7 @@
   --text: hsla(0, 0%, 100%, 0.88);
 }
 
-.nav-link {
-  border-bottom: solid;
 
-}
 
 /* #search-container {
   padding: 30px 0px 20px 0px;
@@ -64,5 +61,26 @@ a:hover {
 
 .custom-dot-list-style {
   padding-bottom: 15px;
+}
+
+.category-links:visited,
+.category-links {
+  margin-left: 75px;
+  margin-right: 75px;
+  color: #F0EBE3;
+}
+
+.nav-link {
+  border-bottom: solid;
+}
+
+#hi {
+  margin-top: 10px;
+}
+
+.account-links:visited,
+.account-links {
+  margin-right: 20px;
+  color: black;
 }
 

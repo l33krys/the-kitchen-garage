@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useHistory } from "react-router";
 import { Button } from 'semantic-ui-react'
 
@@ -9,10 +9,6 @@ function Success() {
     function goToHome() {
         history.push("/")
     }
-
-
-    let location = window.location.href
-    console.log(location.includes("session_id"))
 
   return (
     

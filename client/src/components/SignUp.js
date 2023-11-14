@@ -2,11 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Form, Message, Grid, Segment } from 'semantic-ui-react'
-import { useAddCustomerMutation } from "../store";
+import { Button, Form, Message } from 'semantic-ui-react'
 
-export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
-    const [addCustomer, results] = useAddCustomerMutation();
+export const SignUp = ({ setLoggedInUser }) => {
     const history = useHistory();
 
     const [showSignUpSuccess, setShowSignUpSuccess] = useState(false)
@@ -44,10 +42,7 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
                     last_name: values.last_name,
                     email: values.email,
                     password: values.password
-                  }
-      // using Redux; need response back to auto-login
-      // addCustomer(customer)
-      
+                  }      
       fetch("/customers", {
         method: "POST",
         mode: "cors",
@@ -130,7 +125,6 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
                 name="email"
                 onChange={formik.handleChange}
                 value={formik.values.email}
-                // style={{ position: "absolute", left: "50px",  width: "520px", marginBottom: "0px" }}
               />
               <p style={{ color: "white" }}> {formik.errors.email}</p>
             </Form.Field>
@@ -147,7 +141,6 @@ export const SignUp = ({ loggedInUser, setLoggedInUser }) => {
                 icon='lock'
                 iconPosition='left'
               />
-
               <p style={{ color: "white" }}> {formik.errors.password}</p>
             </Form.Field>
             <Form.Field>

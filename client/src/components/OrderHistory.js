@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from "react";
-import ItemCard from "./ItemCard";
-import { Button, Card, Header, Image, Table } from 'semantic-ui-react'
-import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
-import CartList from "./CartList";
+import { Table } from 'semantic-ui-react'
 import OrdersList from "./OrdersList";
 
 function OrderHistory({ loggedInUser, setLoggedInUser }) {
-
-    // const [orderHistoryDetails, setOrderHistoryDetails] = useState([])
-    
-    // useEffect(() => {
-    //     fetch("/order_history_details")
-    //     .then((r) => r.json())
-    //     .then((data) => setOrderHistoryDetails(data))
-
-    // }, [])
 
     const [orderHistory, setOrderHistory] = useState([])
 
@@ -24,8 +12,6 @@ function OrderHistory({ loggedInUser, setLoggedInUser }) {
         .then((data) => setOrderHistory(data))
 
     }, [])
-
-    console.log(orderHistory)    
 
     return (
 
@@ -42,10 +28,12 @@ function OrderHistory({ loggedInUser, setLoggedInUser }) {
                 </Table.Header>
 
                 <Table.Body>
-                    {orderHistory ? orderHistory.map((order, key) => (
-            <OrdersList key={key} order={order} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} />))
-            : "Loading"
-        }
+                    {orderHistory ? 
+                    orderHistory.map((order, key) => (
+                        <OrdersList key={key} order={order} loggedInUser={loggedInUser} setLoggedInUser={setLoggedInUser} />
+                        ))
+                    : "Loading"
+                    }
                 </Table.Body>
             </Table>
         </div>

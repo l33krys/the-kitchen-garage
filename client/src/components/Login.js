@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router";
-import { Link, Redirect } from 'react-router-dom'
 import { useFormik } from "formik";
 import * as yup from "yup";
-import { Button, Form, Message, Icon } from 'semantic-ui-react'
-import SignUp from "./SignUp";
+import { Button, Form, Message } from 'semantic-ui-react'
 
-export const Login = ({ loggedInUser, setLoggedInUser }) => {
-  const [showLoginSuccess, setShowLoginSuccess] = useState(false)
+export const Login = ({ setLoggedInUser }) => {
   const [showErrorMessage, setShowErrorMessage] = useState(false)
   const [errors, setErrors] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -17,15 +14,6 @@ export const Login = ({ loggedInUser, setLoggedInUser }) => {
     email: yup.string().required("Must enter a valid email"),
     password: yup.string().required("Must enter a password with 8 characters and include at least 1 letter and 1 number"),
   });
-
-  useEffect(() => {
-    if (showLoginSuccess) {
-      const timer = setTimeout(() => {
-        setShowLoginSuccess(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [showLoginSuccess]);
 
   const formik = useFormik({
     initialValues: {
@@ -82,7 +70,6 @@ export const Login = ({ loggedInUser, setLoggedInUser }) => {
           icon="mail"
           iconPosition="left"
         />
-        {/* <p style={{ color: "white" }}> {formik.errors.email}</p> */}
         </Form.Field>
         <Form.Field>
         <label htmlFor="password"style={{color: "#F6F1F1"}}>Password</label>
@@ -96,17 +83,10 @@ export const Login = ({ loggedInUser, setLoggedInUser }) => {
           icon='lock'
           iconPosition='left'
         />
-        {/* <p style={{ color: "white" }}> {formik.errors.password}</p> */}
         </Form.Field>
         <Button style={{ background: "white" }} type="submit">Login</Button>
         {showErrorMessage ? <Message style={{ margin: "auto", width: "350px", marginTop: "20px", color: '#E06469'}} header="Attention Required" content="Please check email and password"></Message> : ""}
-        {showLoginSuccess ? <Message
-        style={{ margin: "auto", width: "350px", marginTop: "20px", color: '#19A7CE'}}
-                        header="Success: You're now logged in"
-                      /> : ""}
-        
       </Form>
-      {/* <Button style={{ background: "white" }} as={Link} to="/signup">Sign Up</Button> */}
     </div>
   );
 };

@@ -1,12 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useHistory } from "react-router";
-import ItemCard from "./ItemCard";
-import { Button, Card, Header, Image, Table, Accordion } from 'semantic-ui-react'
-import { useFetchItemsQuery, useFetchOrdersQuery } from '../store';
-import CartList from "./CartList";
-import OrderDetails from "./OrderDetails";
+import { Button, Table } from 'semantic-ui-react'
 
-function OrdersList({ loggedInUser, setLoggedInUser, order }) {
+function OrdersList({ order }) {
 
     const history = useHistory()
 
