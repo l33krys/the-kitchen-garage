@@ -19,12 +19,18 @@ function NavBar({ loggedInUser, setLoggedInUser, customerOrderItems, setSearch, 
     }
 
     let totalInCart = 0;
-    if (customerOrderItems.length > 0) {
+    if (customerOrderItems && customerOrderItems.length > 0) {
         const itemsInCart = customerOrderItems.map((order_item, key) => (
             order_item.quantity
             ))
         totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
     }
+    // if (customerOrderItems.length > 0) {
+    //     const itemsInCart = customerOrderItems.map((order_item, key) => (
+    //         order_item.quantity
+    //         ))
+    //     totalInCart = itemsInCart.reduce((a, b) => a + b, 0)
+    // }
 
     function resetStates() {
         setSearch("")

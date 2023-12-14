@@ -39,13 +39,26 @@ function App() {
   useEffect(() => {
     fetch("/order_items_by_order")
     .then((r) => {
-        if (r.status === 201) {
+      if (r.status === 401) {
+        fetch("/orders", {method: "POST"})
+        .then((r) => {
+          if (r.status === 201) {
             // Order was created, no items yet
             setCustomerOrderItems([])
-        } else {
-            return r.json()
-        }
-    })
+          }
+        })
+      } else if (r.status === 200) {
+          return r.json()
+      }
+  })
+    // .then((r) => {
+    //     if (r.status === 201) {
+    //         // Order was created, no items yet
+    //         setCustomerOrderItems([])
+    //     } else {
+    //         return r.json()
+    //     }
+    // })
     .then((data) => setCustomerOrderItems(data))
 
 }, [loggedInUser, abortStripe])

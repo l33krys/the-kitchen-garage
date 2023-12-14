@@ -77,7 +77,9 @@ function Cart({ loggedInUser, setLoggedInUser, customerOrderItems, setCustomerOr
                     >
                     <Button type="submit">Stripe</Button>
                 </form>
-                    {customerOrderItems.length > 0 ? <Button onClick={handleCheckOut}>Go To Payment</Button> : null}
+                    {customerOrderItems && customerOrderItems.length > 0 ? <Button onClick={handleCheckOut}>Go To Payment</Button> : null}
+                <p style={{ fontStyle: "italic", color: "#BB2525" }}>Note: If order is processed, you will be redirected to a Stripe-hosted payment page in test mode.<br/>
+                    Use test card number 4242 4242 4242 4242 with future expiry date to complete checkout.</p>
                 <Modal
                     centered={true}
                     open={invetoryTooLow}

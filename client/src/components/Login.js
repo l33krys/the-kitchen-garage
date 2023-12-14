@@ -40,7 +40,9 @@ export const Login = ({ setLoggedInUser }) => {
           r.json()
           .then((user) => {
             setLoggedInUser(user)
-            setShowErrorMessage(false)           
+            setShowErrorMessage(false)
+            // create new order if none saved; customer always has a working "saved" order
+            fetch("/orders", {method: "POST"})           
           }) 
           } else {
             r.json().then((err) => {

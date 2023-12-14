@@ -33,7 +33,7 @@ function CartList({ loggedInUser, setLoggedInUser, customerOrderItems, setCustom
             </Table.Row>
             </Table.Header>
             <Table.Body>
-            {customerOrderItems.length > 0 ? 
+            {customerOrderItems && customerOrderItems.length > 0 ? 
               customerOrderItems.map((order_item, key) => (
                 <CartItem 
                   key={key} 
