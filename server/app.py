@@ -15,6 +15,7 @@ from marshmallow import fields
 from config import app, db, api, ma, CORS
 # Add your model imports
 from models import *
+from schemas import *
 
 # Views go here!
 CORS(app)
@@ -94,7 +95,8 @@ class AbortStripePayment(Resource):
         customer_id = session['customer_id']
         if customer_id:
             last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
-            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            saved_order = saved_order_lookup(customer_id)
 
             return make_response(saved_order.to_dict(only=("id", "status")), 200)
                 
@@ -104,7 +106,8 @@ class AbortStripePayment(Resource):
         customer_id = session['customer_id']
         if customer_id:
             last_submitted = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
-            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            saved_order = saved_order_lookup(customer_id)
             db.session.delete(saved_order) # Delete new saved order due to reversing submitted order
             db.session.commit()
 
@@ -127,83 +130,9 @@ class AbortStripePayment(Resource):
 
 api.add_resource(AbortStripePayment, "/abort_stripe")
 
-class AddressSchema(ma.SQLAlchemySchema):
-
-    class Meta:
-        model = Address
-        load_instance = True
-
-    id = ma.auto_field()
-    street = ma.auto_field()
-    city = ma.auto_field()
-    state = ma.auto_field()
-    zip_code = ma.auto_field()
-
-address_schema = AddressSchema()
-addresses_schema = AddressSchema(many=True)
-
-class CustomerSchema(ma.SQLAlchemySchema):
-
-    class Meta:
-        model = Customer
-        load_instance = True
-
-    id = ma.auto_field()
-    first_name = ma.auto_field()
-    last_name = ma.auto_field()
-    email = ma.auto_field()
-    phone_number = ma.auto_field()
-    billing_address = fields.Nested(AddressSchema)
-    shipping_address = fields.Nested(AddressSchema)
-
-customer_schema = CustomerSchema()
-customers_schema = CustomerSchema(many=True)
-
-class ItemSchema(ma.SQLAlchemySchema):
-    class Meta:
-        model = Item
-        load_instance = True
-
-    id = ma.auto_field()
-    name = ma.auto_field()
-    image = ma.auto_field()
-    category = ma.auto_field()
-    description = ma.auto_field()
-    inventory = ma.auto_field()
-    price = ma.auto_field()
-
-item_schema = ItemSchema()
-items_schema = ItemSchema(many=True)
-
-class OrderSchema(ma.SQLAlchemySchema):
-
-    class Meta:
-        model = Order
-        load_instance = True
-
-    id = ma.auto_field()
-    status = ma.auto_field()
-    customer_id = ma.auto_field()
-    customer = fields.Nested(CustomerSchema(only=("email", "shipping_address")))
-    shipping = ma.auto_field()
-    # total = ma.auto_field()
-
-order_schema = OrderSchema()
-orders_schema = OrderSchema(many=True)
-
-class OrderItemSchema(ma.SQLAlchemySchema):
-
-    class Meta:
-        model = OrderItem
-        load_instance = True
-
-    id = ma.auto_field()
-    items = fields.Nested(ItemSchema)
-    quantity = ma.auto_field()
-    orders = fields.Nested(OrderSchema)
-
-order_item_schema = OrderItemSchema()
-order_items_schema = OrderItemSchema(many=True)
+def saved_order_lookup(customer_id):
+    saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+    return saved_order
 
 class Customers(Resource):
 
@@ -460,40 +389,51 @@ class Orders(Resource):
     
     def post(self):
 
-        status = request.get_json()["status"]
-        customer_id = request.get_json()["customer_id"]
-        shipping = request.get_json()["shipping"]
-        total = request.get_json()["total"]
-
-        try:
-            order = Order(
-                status=status,
-                customer_id=customer_id,
-                shipping=shipping,
-                total=total
+        customer_id = session['customer_id']
+        saved_order = saved_order_lookup(customer_id)
+        if not saved_order:
+            try:
+                order = Order(
+                    status="saved",
+                    customer_id=customer_id,
+                    shipping=4.99,
+                    total=4.99
+                )
+                db.session.add(order)
+                db.session.commit()
+                return make_response(
+                    order_schema.dump(order), 201
+                )
+            except ValueError:
+                return make_response(
+                    {"errors": ["validation errors"]}, 400
             )
-            db.session.add(order)
-            db.session.commit()
-            return make_response(
-                order_schema.dump(order), 201
-            )
-        except ValueError:
-            return make_response(
-                {"errors": ["validation errors"]}, 400
-            )
+        else:
+            return make_response(order_schema.dump(saved_order), 200)
 
 class OrderById(Resource):
 
+    # def get(self, id):
+    #     order = Order.query.filter_by(id=id).first()
+    #     if order:
+    #         return make_response(
+    #             order_schema.dump(order), 200
+    #         )
+    #     else:
+    #         return make_response(
+    #             {"error": "Order does not exist"}, 404
+    #         )
     def get(self, id):
-        order = Order.query.filter_by(id=id).first()
-        if order:
-            return make_response(
-                order_schema.dump(order), 200
-            )
+        customer_id = session['customer_id']
+        if customer_id:
+            order_summary = Order.query.filter(Order.customer_id == customer_id, Order.id == id).first()
+            if order_summary:
+                order_items = OrderItem.query.filter(OrderItem.order_id == id).all()
+                return make_response(
+                    order_items_schema.dump(order_items), 200
+                )
         else:
-            return make_response(
-                {"error": "Order does not exist"}, 404
-            )
+            return {"message": "No order found"}, 400
     
     def patch(self, id):
         data = request.get_json()
@@ -550,7 +490,8 @@ class OrderItems(Resource):
         
         try:
             customer_id = session['customer_id']
-            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            saved_order = saved_order_lookup(customer_id)
 
             if saved_order:
                 order_item_exists = OrderItem.query.filter(OrderItem.order_id == saved_order.id, OrderItem.item_id == item_id).first()
@@ -588,7 +529,8 @@ class OrderItems(Resource):
                 db.session.add(new_order)
                 db.session.commit()
 
-                saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+                # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+                saved_order = saved_order_lookup(customer_id)
                 order_item = OrderItem(
                     item_id=item_id,
                     quantity=quantity,
@@ -671,20 +613,6 @@ class Login(Resource):
 
             if customer.authenticate(password):
                 session["customer_id"] = customer.id
-
-                customer_id = session['customer_id']
-                saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
-                # If no saved order, create new one
-                if not saved_order:
-                    new_order = Order(
-                        status="saved",
-                        customer_id=customer_id,
-                        shipping=4.99,
-                        total=4.99
-                    )
-                    db.session.add(new_order)
-                    db.session.commit()
-
                 res = make_response(customer_schema.dump(customer), 200)
                 res.headers['Access-Control-Allow-Origin'] = "http://localhost:3000"
                 return res
@@ -697,7 +625,7 @@ class Logout(Resource):
         session["customer_id"] = None
         return {}, 204
 
-
+# CRUD and session routes code block
 api.add_resource(Customers, "/customers", endpoint="customer_list")
 api.add_resource(CustomerById, "/customers/<int:id>", endpoint="customer")
 api.add_resource(Addresses, "/addresses", endpoint="address_list")
@@ -718,66 +646,56 @@ class OrderItemsbyOrder(Resource):
     def get(self):
         customer_id = session['customer_id']
         if customer_id:
-            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.
-            status == "saved").first()
+            # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.
+            # status == "saved").first()
+            saved_order = saved_order_lookup(customer_id)
             if saved_order:
                 order_items = OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()
                 return make_response(
                     order_items_schema.dump(order_items), 200
                 )
-        else:
-            # If no saved order, create new one
-            new_order = Order(
-                status="saved",
-                customer_id=customer_id,
-                shipping=4.99,
-                total=4.99
-            )
-            db.session.add(new_order)
-            db.session.commit()
-            return make_response({}, 201)
-
         return {}, 401
 
 api.add_resource(OrderItemsbyOrder, "/order_items_by_order")
 
-class OrderDetails(Resource):
+# class OrderDetails(Resource):
 
-    def get(self, id):
+#     def get(self, id):
 
-        customer_id = session['customer_id']
-        if customer_id:
-            order_summary = Order.query.filter(Order.customer_id == customer_id, Order.id == id).first()
-            if order_summary:
-                order_items = OrderItem.query.filter(OrderItem.order_id == id).all()
-                return make_response(
-                    order_items_schema.dump(order_items), 200
-                )
-        else:
-            return {"message": "No order found"}, 400
+#         customer_id = session['customer_id']
+#         if customer_id:
+#             order_summary = Order.query.filter(Order.customer_id == customer_id, Order.id == id).first()
+#             if order_summary:
+#                 order_items = OrderItem.query.filter(OrderItem.order_id == id).all()
+#                 return make_response(
+#                     order_items_schema.dump(order_items), 200
+#                 )
+#         else:
+#             return {"message": "No order found"}, 400
 
-api.add_resource(OrderDetails, "/order_details/<int:id>")
+# api.add_resource(OrderDetails, "/order_details/<int:id>")
 
-class LastOrder(Resource):
+# class LastOrder(Resource):
 
-    def get(self):
-        customer_id = session['customer_id']
-        # Last submitted order by customer
-        order = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
+#     def get(self):
+#         customer_id = session['customer_id']
+#         # Last submitted order by customer
+#         order = Order.query.filter(Order.customer_id == customer_id, Order.status == "submitted").order_by(Order.id.desc()).first()
 
 
-        return make_response(
-            order_schema.dump(order), 200
-        )
+#         return make_response(
+#             order_schema.dump(order), 200
+#         )
 
-api.add_resource(LastOrder, "/last_order")
+# api.add_resource(LastOrder, "/last_order")
 
 class SubmitOrder(Resource):
 
     def post(self):
         customer_id = session['customer_id']
         if customer_id:
-            saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            # saved_order = Order.query.filter(Order.customer_id == customer_id, Order.status == "saved").first()
+            saved_order = saved_order_lookup(customer_id)
 
             if saved_order:
                 order_items = [row.to_dict(only=("quantity", "item_id",)) for row in OrderItem.query.filter(OrderItem.order_id == saved_order.id).all()]
@@ -838,17 +756,17 @@ class OrderHistory(Resource):
 
 api.add_resource(OrderHistory, "/order_history")
 
-class CheckInventory(Resource):
+# class CheckInventory(Resource):
 
-    def get(self):
+#     def get(self):
 
-        inventory = Item.query.filter(Item.id == 1).first()
+#         inventory = Item.query.filter(Item.id == 1).first()
 
-        return make_response(
-            inventory.to_dict(only=("name", "inventory",)), 200
-        )
+#         return make_response(
+#             inventory.to_dict(only=("name", "inventory",)), 200
+#         )
 
-api.add_resource(CheckInventory, "/check_inventory")
+# api.add_resource(CheckInventory, "/check_inventory")
 
 @app.route('/', endpoint="home")
 def index():

@@ -55,7 +55,7 @@ function CartItem({ order_item, updateCustomerOrderItems, setCustomerOrderItems,
             <Image src={order_item.items.image} rounded size='mini' />
             <Header.Content style={{ paddingLeft: "30px", paddingRight: "30px" }}>
             {order_item.items.name} 
-              <Header.Subheader style={{ color: "red"}} >
+              <Header.Subheader style={{ fontStyle: "italic", color: "#BB2525"}} >
                 {order_item.quantity > order_item.items.inventory ? "Reduce quantity" : null}
               </Header.Subheader>
             </Header.Content>

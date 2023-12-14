@@ -9,7 +9,7 @@ function OrderDetails({ loggedInUser, setLoggedInUser, orderId }) {
     const [orderDetails, setOrderDetails] = useState([])
 
     useEffect(() => {
-        fetch(`/order_details/${orderId}`)
+        fetch(`/orders/${orderId}`)
         .then((r) => r.json())
         .then((orderDetails) => {
             setOrderDetails(orderDetails)
